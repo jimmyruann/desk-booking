@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "name": "desk",
+    "interval": 3600000
+  },
+  {
+    "id": 2,
+    "name": "room",
+    "interval": 900000
+  }
+]

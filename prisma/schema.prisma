@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+}
+
+// // Please follow the below convention // //
+// Capital when refer to another object
+// camelCase when refer to Enum and other
+// Enum value must all in CAPITAL
+
+enum UserRole {
+  MANAGER
+  ADMIN
+}
+
+model User {
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
+  username  String     @unique
+  password  String
+  firstName String
+  lastName  String
+  roles     UserRole[]
+  Booking   Booking[]
+}
+
+model Location {
+  id   Int    @id @default(autoincrement())
+  name String
+  Area Area[]
+}
+
+model AreaType {
+  id       Int    @id @default(autoincrement())
+  name     String
+  interval Int
+  Area     Area[]
+}
+
+model Area {
+  id         Int       @id @default(autoincrement())
+  htmlId     String    @unique
+  name       String    @default("")
+  locationId Int
+  areaTypeId Int
+  Location   Location  @relation(fields: [locationId], references: [id])
+  AreaType   AreaType  @relation(fields: [areaTypeId], references: [id])
+  Booking    Booking[]
+}
+
+model Booking {
+  id        Int      @id @default(autoincrement())
+  areaId    Int
+  userId    Int
+  Area      Area     @relation(fields: [areaId], references: [id])
+  User      User     @relation(fields: [userId], references: [id])
+  startTime DateTime
+  endTime   DateTime
+
+}
