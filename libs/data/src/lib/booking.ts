@@ -1,4 +1,3 @@
-import { IsBeforeConstraint } from '@desk-booking/utils';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -74,3 +73,6 @@ export type FindOneBookingReturn = Booking & {
 };
 
 export type FindAllBookingReturn = FindOneBookingReturn[];
+function IsBeforeConstraint(IsBeforeConstraint: any, arg1: string[]) {
+  throw new Error('Function not implemented.');
+}

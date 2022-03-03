@@ -16,7 +16,7 @@ async function main() {
       lastName: 'Smith',
       username: 'admin',
       roles: [UserRole.MANAGER, UserRole.ADMIN],
-      password: bcrypt.hashSync('password'),
+      password: bcrypt.hashSync('password', 10),
     },
   });
 

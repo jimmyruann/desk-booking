@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcrypt';
 import { HttpException } from '@nestjs/common';
 import { PrismaService } from '../../shared/prisma/prisma.service';
 
@@ -22,7 +22,7 @@ describe('UserService', () => {
       id: 1,
       email: 'fake@email.com',
       username: 'faker',
-      password: bcrypt.hashSync('faker_password'),
+      password: bcrypt.hashSync('faker_password', 10),
       firstName: 'Faker',
       lastName: 'Smith',
     };
