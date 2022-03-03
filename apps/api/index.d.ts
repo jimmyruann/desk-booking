@@ -1,8 +1,9 @@
-import { User as U, UserRole } from '@prisma/client';
+import { UserRole } from '@prisma/client';
+import { ExpressUser } from '@desk-booking/data';
 
 declare global {
   namespace Express {
-    interface User extends Omit<U, 'password'> {
+    interface User extends ExpressUser {
       id: number;
       email: string;
       username: string;
