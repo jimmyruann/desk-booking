@@ -33,6 +33,14 @@ export class AreasController {
     return this.areasService.findOne(idOrHtmlId);
   }
 
+  @Get(':idOrHtmlId/bookings')
+  findOneWithBookings(
+    @Param('idOrHtmlId') idOrHtmlId: string,
+    @Query('date') date: Date
+  ) {
+    return this.areasService.findOneWithBookings(idOrHtmlId, date);
+  }
+
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Delete(':idOrHtmlId')
   remove(@Param('idOrHtmlId') idOrHtmlId: string) {

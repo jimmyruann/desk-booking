@@ -1,7 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Area, AreaType } from '@prisma/client';
+import { Area, AreaType, Booking } from '@prisma/client';
 import { Type } from 'class-transformer';
 import { IsInt, IsNotEmpty, IsPositive } from 'class-validator';
+import dayjs from 'dayjs';
 
 export class CreateAreaDto implements Omit<Area, 'id'> {
   @ApiProperty()
@@ -31,3 +32,8 @@ export type FindOneReturn = Area & {
 };
 
 export type FindAllLocationReturn = Area[];
+
+export type FindOneWithBookingReturn = Area & {
+  Booking: Booking[];
+  AreaType: AreaType;
+};

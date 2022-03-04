@@ -1,4 +1,4 @@
-import { Group, Pagination } from '@mantine/core';
+import { createStyles, Group, LoadingOverlay, Pagination } from '@mantine/core';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import BookingTimeListItem from '../booking-time-list-item/booking-time-list-item';
@@ -17,12 +17,26 @@ export interface BookingTimeListProps {
     numberPerPage: number;
   };
   bookingItemUseState: [BookingItem[], (bookingItems: BookingItem[]) => void];
+  loading: boolean;
 }
+
+const useStyles = createStyles((theme) => ({
+  container: {
+    position: 'relative',
+    paddingBlock: theme.spacing.md,
+    minHeight: 400,
+  },
+  pagination: {
+    marginInline: 'auto',
+  },
+}));
 
 export function BookingTimeList({
   pagination,
   bookingItemUseState,
+  loading,
 }: BookingTimeListProps) {
+  const { classes } = useStyles();
   const [activePage, setPage] = useState(1);
   const [bookingItems, setBookingItems] = bookingItemUseState;
 
@@ -36,7 +50,8 @@ export function BookingTimeList({
   };
 
   return (
-    <Group spacing="sm" className="tw-py-4">
+    <Group spacing="sm" className={classes.container}>
+      <LoadingOverlay visible={loading} />
       {bookingItems
         .slice(
           (activePage - 1) * pagination.numberPerPage,
@@ -44,6 +59,7 @@ export function BookingTimeList({
         )
         .map(({ startTime, endTime, ...rest }, i) => (
           <BookingTimeListItem
+            key={i}
             onClick={() =>
               handleChecked(i + (activePage - 1) * pagination.numberPerPage)
             }
@@ -54,13 +70,15 @@ export function BookingTimeList({
             )}`}
           </BookingTimeListItem>
         ))}
-      <div className="tw-mx-auto">
-        <Pagination
-          page={activePage}
-          onChange={setPage}
-          total={Math.ceil(bookingItems.length / pagination.numberPerPage)}
-        />
-      </div>
+      {bookingItems.length && (
+        <div className={classes.pagination}>
+          <Pagination
+            page={activePage}
+            onChange={setPage}
+            total={Math.ceil(bookingItems.length / pagination.numberPerPage)}
+          />
+        </div>
+      )}
     </Group>
   );
 }

@@ -3,18 +3,26 @@ import {
   CreateAreaReturn,
   FindAllLocationReturn,
   FindOneReturn,
+  FindOneWithBookingReturn,
 } from '@desk-booking/data';
 import { Injectable } from '@nestjs/common';
+import dayjs from 'dayjs';
 import { PrismaService } from '../../shared/prisma/prisma.service';
 
 @Injectable()
 export class AreasService {
   constructor(private prisma: PrismaService) {}
+
+  private idOrHtmlId(id: string) {
+    return /^-?\d+$/.test(id) ? { id: +id } : { htmlId: id };
+  }
+
   async create(createAreaDto: CreateAreaDto): Promise<CreateAreaReturn> {
     return await this.prisma.area.create({
       data: createAreaDto,
     });
   }
+
   async findAllByLocation(location: string): Promise<FindAllLocationReturn> {
     return this.prisma.area.findMany({
       where: {
@@ -32,6 +40,28 @@ export class AreasService {
     return await this.prisma.area.findUnique({
       where: query,
       include: {
+        AreaType: true,
+      },
+    });
+  }
+
+  async findOneWithBookings(
+    id: string,
+    date: Date
+  ): Promise<FindOneWithBookingReturn> {
+    return await this.prisma.area.findUnique({
+      where: this.idOrHtmlId(id),
+      include: {
+        Booking: {
+          where: {
+            startTime: {
+              gte: dayjs(date).startOf('date').toDate(),
+            },
+            endTime: {
+              lte: dayjs(date).endOf('date').toDate(),
+            },
+          },
+        },
         AreaType: true,
       },
     });

@@ -1,5 +1,6 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
@@ -18,6 +19,22 @@ async function bootstrap() {
       transformOptions: { enableImplicitConversion: true },
     })
   );
+
+  // Swagger
+  const swaggerDocumentConfigs = new DocumentBuilder()
+    .setTitle('Desk Booking Rest API')
+    .setDescription('Ligma')
+    .setVersion('1.0')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      'access-token'
+    )
+    .build();
+  const swaggerDocument = SwaggerModule.createDocument(
+    app,
+    swaggerDocumentConfigs
+  );
+  SwaggerModule.setup('api', app, swaggerDocument);
 
   // Express middleware
   app.use(helmet());

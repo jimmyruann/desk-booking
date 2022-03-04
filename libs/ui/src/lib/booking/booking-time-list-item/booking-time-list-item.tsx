@@ -28,7 +28,7 @@ export function BookingTimeListItem({
   disabled,
   onClick,
 }: BookingTimeListItemProps) {
-  const { classes } = useStyles(!!checked);
+  const { classes } = useStyles(checked);
 
   return (
     <Button
@@ -37,6 +37,7 @@ export function BookingTimeListItem({
       fullWidth
       disabled={disabled}
       onClick={onClick}
+      className={classes.button}
     >
       <span className={classes.text}>{children}</span>
     </Button>
