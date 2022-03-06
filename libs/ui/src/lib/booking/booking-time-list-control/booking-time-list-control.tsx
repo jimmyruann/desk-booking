@@ -18,6 +18,10 @@ const useStyles = createStyles(() => ({
   datePicker: {
     width: '100%',
   },
+  buttonWrapper: {
+    display: 'flex',
+    alignItems: 'end',
+  },
 }));
 
 export function BookingTimeListControl({
@@ -41,9 +45,16 @@ export function BookingTimeListControl({
         className={classes.datePicker}
         allowFreeInput
       />
-      <Button color="teal" onClick={handleOnSubmit} disabled={disabled}>
-        Confirm & Book
-      </Button>
+      <div className={classes.buttonWrapper}>
+        <Button
+          color="teal"
+          onClick={handleOnSubmit}
+          disabled={disabled}
+          fullWidth
+        >
+          Confirm & Book
+        </Button>
+      </div>
     </SimpleGrid>
   );
 }

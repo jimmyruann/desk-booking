@@ -52,7 +52,6 @@ export const generateAvailableTime = ({
     return {
       startTime,
       endTime,
-      checked: false,
       disabled: disabled,
     };
   });

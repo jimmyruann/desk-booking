@@ -5,12 +5,21 @@ import {
   Loading,
   Node,
   Map,
+  BookingItem,
 } from '@desk-booking/ui';
 import {
   CreateBookingReturn,
   FindOneWithBookingReturn,
 } from '@desk-booking/data';
-import { Container, createStyles, Grid } from '@mantine/core';
+import {
+  Text,
+  createStyles,
+  Divider,
+  Grid,
+  Tabs,
+  Timeline,
+  Table,
+} from '@mantine/core';
 
 import { useState } from 'react';
 import axios, { AxiosError } from 'axios';
@@ -21,6 +30,7 @@ import { useApi } from '../../shared/context/ApiClient';
 import { generateAvailableTime } from '../../shared/utils/generateAvailableTime';
 import { useNotifications } from '@mantine/notifications';
 import { mergeTime } from '../../shared/utils/time';
+import { HiOutlineCalendar, HiOutlineUserGroup } from 'react-icons/hi';
 
 /* eslint-disable-next-line */
 export interface BookingPageProps {}
@@ -33,7 +43,15 @@ const useStyles = createStyles((theme) => ({
     boxShadow: theme.shadows.md,
     height: '100%',
   },
-  bookingBox: {},
+  divider: {
+    marginBlock: theme.spacing.sm,
+  },
+  greenText: {
+    color: theme.colors.green[8],
+  },
+  redText: {
+    color: theme.colors.red[8],
+  },
 }));
 
 export function BookingPage(props: BookingPageProps) {
@@ -44,7 +62,11 @@ export function BookingPage(props: BookingPageProps) {
   const [currentlySelectedData, setCurrentlySelectedData] = useState(
     dayjs().startOf('day').toDate()
   );
-  const [currentlySelectedNodeID, setCurrentlySelectedNodeID] = useState('');
+  const [unavailabilities, setUnavailabilities] = useState<
+    FindOneWithBookingReturn['Booking']
+  >([]);
+  const [availabilities, setAvailabilities] = useState<BookingItem[]>([]);
+  const [currentHtmlId, setCurrentHtmlId] = useState('');
   const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
 
   const createBookingMutation = useMutation(
@@ -103,50 +125,55 @@ export function BookingPage(props: BookingPageProps) {
     }
   );
 
-  const getAvailabilityForArea = useQuery(
+  useQuery(
     [
       'GET_AREA_BOOKING_DATA',
-      { currentlySelectedNodeID, currentlySelectedData },
+      { htmlId: currentHtmlId, date: currentlySelectedData },
     ] as const,
     async ({ queryKey }) => {
-      if (
-        !queryKey[1].currentlySelectedNodeID ||
-        !queryKey[1].currentlySelectedData
-      )
-        return [];
+      const { date, htmlId } = queryKey[1];
+      if (!date || !htmlId) return null;
 
       // Fetching
       const { data } = await api.client.get<FindOneWithBookingReturn>(
-        `/areas/${queryKey[1].currentlySelectedNodeID}/bookings`,
+        `/areas/${htmlId}/bookings`,
         {
           params: {
-            from: queryKey[1].currentlySelectedData,
-            to: dayjs(queryKey[1].currentlySelectedData).endOf('day').toDate(),
+            from: date,
+            to: dayjs(date).endOf('day').toDate(),
           },
         }
       );
 
-      const generatedTimes = generateAvailableTime({
-        from: dayjs(queryKey[1].currentlySelectedData)
-          .startOf('day')
-          .add(8, 'hour')
-          .toDate(),
-        to: dayjs(queryKey[1].currentlySelectedData)
-          .endOf('day')
-          .subtract(4, 'hour')
-          .toDate(),
-        intervalInMs: data.AreaType.interval,
-        excludes: data.Booking,
-        noPastTime: true,
-      });
-
-      return generatedTimes;
+      return data;
     },
     {
       onSuccess: (data) => {
-        setCheckedItems(new Array(data.length).fill(false));
+        if (data) {
+          const generatedAvailabilities = generateAvailableTime({
+            from: dayjs(currentlySelectedData)
+              .startOf('day')
+              .add(8, 'hour')
+              .toDate(),
+            to: dayjs(currentlySelectedData)
+              .endOf('day')
+              .subtract(4, 'hour')
+              .toDate(),
+            intervalInMs: data.AreaType.interval,
+            excludes: data.Booking,
+            noPastTime: true,
+          });
+          setAvailabilities(generatedAvailabilities);
+          setCheckedItems(
+            new Array(generatedAvailabilities.length).fill(false)
+          );
+          setUnavailabilities(mergeTime(data.Booking));
+        }
       },
       onError: (error: AxiosError) => {
+        setAvailabilities([]);
+        setCheckedItems([]);
+        setUnavailabilities([]);
         notifications.showNotification({
           title: error.response.data.title || error.name,
           message: error.response.data.message || error.message,
@@ -156,20 +183,21 @@ export function BookingPage(props: BookingPageProps) {
   );
 
   const handleConfirmAndBook = () => {
-    let bookings: { startTime: Date; endTime }[] = [];
-
-    for (let i = 0; i < checkedItems.length; i++) {
-      if (checkedItems[i]) {
-        bookings.push({
-          startTime: getAvailabilityForArea.data[i].startTime,
-          endTime: getAvailabilityForArea.data[i].endTime,
-        });
-      }
-    }
-    bookings = mergeTime(bookings);
+    const bookings = mergeTime(
+      checkedItems
+        .map((curr, i) => {
+          return (
+            curr && {
+              startTime: availabilities[i].startTime,
+              endTime: availabilities[i].endTime,
+            }
+          );
+        })
+        .filter((curr) => !!curr)
+    );
 
     createBookingMutation.mutate({
-      htmlId: currentlySelectedNodeID,
+      htmlId: currentHtmlId,
       bookings,
     });
   };
@@ -178,24 +206,24 @@ export function BookingPage(props: BookingPageProps) {
   if (getFloorPlanMap.isError) return <div>Something went wrong</div>;
 
   return (
-    <Container fluid>
-      <Grid grow gutter="sm">
-        <Grid.Col span={7}>
-          <Map
-            mapData={getFloorPlanMap.data}
-            viewBox={
-              getFloorPlanMap.data.attributes['viewBox'] &&
-              getFloorPlanMap.data.attributes['viewBox']
-                .split(' ')
-                .map((each) => parseInt(each) || 0)
-            }
-            currentHtmlId={currentlySelectedNodeID}
-            setCurrentHtmlId={setCurrentlySelectedNodeID}
-            className={classes.common}
-          />
-        </Grid.Col>
-        <Grid.Col span={5}>
-          <div className={classes.common}>
+    <Grid grow>
+      <Grid.Col md={12} lg={7} xl={7}>
+        <Map
+          mapData={getFloorPlanMap.data}
+          viewBox={
+            getFloorPlanMap.data.attributes['viewBox'] &&
+            getFloorPlanMap.data.attributes['viewBox']
+              .split(' ')
+              .map((each) => parseInt(each) || 0)
+          }
+          currentHtmlId={currentHtmlId}
+          setCurrentHtmlId={setCurrentHtmlId}
+          className={classes.common}
+        />
+      </Grid.Col>
+      <Grid.Col md={12} lg={5} xl={5}>
+        <Tabs grow className={classes.common}>
+          <Tabs.Tab label="Booking" icon={<HiOutlineCalendar size={18} />}>
             <BookingTimeListControl
               dateUseState={[currentlySelectedData, setCurrentlySelectedData]}
               handleOnSubmit={handleConfirmAndBook}
@@ -204,21 +232,55 @@ export function BookingPage(props: BookingPageProps) {
                 checkedItems.every((each) => !each)
               }
             />
-            <br />
-            {getAvailabilityForArea.data &&
-              !!getAvailabilityForArea.data.length && (
-                <BookingTimeList
-                  pagination={{ numberPerPage: 16 }}
-                  bookingItems={getAvailabilityForArea.data}
-                  style={{ display: 'relative' }}
-                  checkedItems={checkedItems}
-                  setCheckedItems={setCheckedItems}
-                />
-              )}
-          </div>
-        </Grid.Col>
-      </Grid>
-    </Container>
+            <Divider size="sm" className={classes.divider} />
+            {availabilities && !!availabilities.length && (
+              <BookingTimeList
+                pagination={{ numberPerPage: 16 }}
+                bookingItems={availabilities}
+                style={{ display: 'relative' }}
+                checkedItems={checkedItems}
+                setCheckedItems={setCheckedItems}
+              />
+            )}
+          </Tabs.Tab>
+          <Tabs.Tab label="People" icon={<HiOutlineUserGroup size={18} />}>
+            <Table>
+              <thead>
+                <tr>
+                  <th>Booked By</th>
+                  <th>Start</th>
+                  <th>End</th>
+                  <th>When</th>
+                </tr>
+              </thead>
+              <tbody>
+                {unavailabilities.map((unavailability, i) => {
+                  const start = dayjs(unavailability.startTime);
+                  const end = dayjs(unavailability.endTime);
+
+                  return (
+                    <tr>
+                      <td>{`${unavailability.User.firstName} ${unavailability.User.lastName}`}</td>
+                      <td>{start.format('hh:mm A')}</td>
+                      <td>{end.format('hh:mm A')}</td>
+                      <td
+                        className={` ${
+                          end.toDate() > new Date()
+                            ? classes.greenText
+                            : classes.redText
+                        }`}
+                      >
+                        {start.fromNow()}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </Tabs.Tab>
+        </Tabs>
+      </Grid.Col>
+    </Grid>
   );
 }
 

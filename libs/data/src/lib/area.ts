@@ -48,6 +48,11 @@ export type FindOneReturn = Area & {
 export type FindAllLocationReturn = Area[];
 
 export type FindOneWithBookingReturn = Area & {
-  Booking: Booking[];
   AreaType: AreaType;
+  Booking: (Booking & {
+    User: {
+      firstName: string;
+      lastName: string;
+    };
+  })[];
 };

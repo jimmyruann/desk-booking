@@ -1,4 +1,4 @@
-import { createStyles, Pagination, SimpleGrid } from '@mantine/core';
+import { createStyles, Divider, Pagination, SimpleGrid } from '@mantine/core';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import BookingTimeListItem from '../booking-time-list-item/booking-time-list-item';
@@ -30,6 +30,9 @@ const useStyles = createStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
   },
+  divider: {
+    marginBlock: theme.spacing.sm,
+  },
 }));
 
 export function BookingTimeList({
@@ -50,15 +53,7 @@ export function BookingTimeList({
 
   return (
     <div {...props}>
-      <SimpleGrid
-        spacing="sm"
-        cols={2}
-        breakpoints={[
-          { maxWidth: 980, cols: 1, spacing: 'sm' },
-          { maxWidth: 755, cols: 1, spacing: 'sm' },
-          { maxWidth: 600, cols: 1, spacing: 'sm' },
-        ]}
-      >
+      <SimpleGrid spacing="sm" cols={2}>
         {bookingItems
           .slice(
             (activePage - 1) * pagination.numberPerPage,
@@ -79,8 +74,7 @@ export function BookingTimeList({
             </BookingTimeListItem>
           ))}
       </SimpleGrid>
-      <br />
-      <br />
+      <Divider size="sm" className={classes.divider} />
       <div className={classes.pagination}>
         <Pagination
           page={activePage}

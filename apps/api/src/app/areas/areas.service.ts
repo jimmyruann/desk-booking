@@ -62,6 +62,14 @@ export class AreasService {
               lte: to,
             },
           },
+          include: {
+            User: {
+              select: {
+                firstName: true,
+                lastName: true,
+              },
+            },
+          },
         },
         AreaType: true,
       },
