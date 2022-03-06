@@ -12,6 +12,8 @@ import RedirectAuth from '../shared/components/RedirectAuth';
 import BookingPage from './booking-page/booking-page';
 import MyBookingPage from './my-booking-page/my-booking-page';
 import FeedbackPage from './feedback-page/feedback-page';
+import { MantineProvider } from '@mantine/core';
+import { NotificationsProvider } from '@mantine/notifications';
 
 const appRoutes: RouteObject[] = [
   {
@@ -55,7 +57,11 @@ export function App() {
     <MyQueryClientProvider>
       <ApiClientProvider>
         <AuthenticationProvider>
-          <GlobalMessageProvider>{routes}</GlobalMessageProvider>
+          <GlobalMessageProvider>
+            <MantineProvider>
+              <NotificationsProvider>{routes}</NotificationsProvider>
+            </MantineProvider>
+          </GlobalMessageProvider>
         </AuthenticationProvider>
       </ApiClientProvider>
     </MyQueryClientProvider>

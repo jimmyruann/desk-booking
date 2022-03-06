@@ -49,7 +49,7 @@ export class BookingsService {
       },
     });
 
-    const hasBookedOther = await this.prisma.booking.count({
+    const hasBookedOther = await this.prisma.booking.findMany({
       where: {
         userId,
         Area: {
@@ -66,11 +66,17 @@ export class BookingsService {
           },
         })),
       },
+      include: {
+        Area: true,
+      },
     });
 
-    if (hasBookedOther)
+    if (hasBookedOther.length)
       throw new HttpException(
-        `You can only book 1 ${entityType.AreaType.name} at a time.`,
+        {
+          title: `One ${entityType.AreaType.name} at a time`,
+          message: `You have already booked ${hasBookedOther[0].Area.htmlId} at this time.`,
+        },
         HttpStatus.BAD_REQUEST
       );
 

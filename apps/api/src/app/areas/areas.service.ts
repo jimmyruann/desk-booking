@@ -47,7 +47,8 @@ export class AreasService {
 
   async findOneWithBookings(
     id: string,
-    date: Date
+    from: Date,
+    to: Date
   ): Promise<FindOneWithBookingReturn> {
     return await this.prisma.area.findUnique({
       where: this.idOrHtmlId(id),
@@ -55,10 +56,10 @@ export class AreasService {
         Booking: {
           where: {
             startTime: {
-              gte: dayjs(date).startOf('date').toDate(),
+              gte: from,
             },
             endTime: {
-              lte: dayjs(date).endOf('date').toDate(),
+              lte: to,
             },
           },
         },

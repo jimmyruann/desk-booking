@@ -1,8 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Area, AreaType, Booking } from '@prisma/client';
 import { Type } from 'class-transformer';
-import { IsInt, IsNotEmpty, IsPositive } from 'class-validator';
+import { IsInt, IsNotEmpty, IsPositive, Validate } from 'class-validator';
 import dayjs from 'dayjs';
+import { IsBeforeConstraint } from './booking';
 
 export class CreateAreaDto implements Omit<Area, 'id'> {
   @ApiProperty()
@@ -23,6 +24,19 @@ export class CreateAreaDto implements Omit<Area, 'id'> {
   @IsInt()
   @IsPositive()
   areaTypeId: number;
+}
+
+export class FindOneWithBookingQuery {
+  @ApiProperty()
+  @Type(() => Date)
+  @IsNotEmpty()
+  @Validate(IsBeforeConstraint, ['to'])
+  from: Date;
+
+  @ApiProperty()
+  @Type(() => Date)
+  @IsNotEmpty()
+  to: Date;
 }
 
 export type CreateAreaReturn = Area;

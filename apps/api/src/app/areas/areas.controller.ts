@@ -1,4 +1,4 @@
-import { CreateAreaDto } from '@desk-booking/data';
+import { CreateAreaDto, FindOneWithBookingQuery } from '@desk-booking/data';
 import {
   Body,
   Controller,
@@ -36,9 +36,9 @@ export class AreasController {
   @Get(':idOrHtmlId/bookings')
   findOneWithBookings(
     @Param('idOrHtmlId') idOrHtmlId: string,
-    @Query('date') date: Date
+    @Query() { from, to }: FindOneWithBookingQuery
   ) {
-    return this.areasService.findOneWithBookings(idOrHtmlId, date);
+    return this.areasService.findOneWithBookings(idOrHtmlId, from, to);
   }
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)

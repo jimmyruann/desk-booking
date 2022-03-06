@@ -1,60 +1,71 @@
 import './booking-page.module.css';
 import {
-  BookingItem,
   BookingTimeList,
   BookingTimeListControl,
   Loading,
   Node,
-  SVGNode,
-  SVGNodeArea,
-  Notification,
-  NotificationContent,
+  Map,
 } from '@desk-booking/ui';
-import { Container, Grid } from '@mantine/core';
+import {
+  CreateBookingReturn,
+  FindOneWithBookingReturn,
+} from '@desk-booking/data';
+import { Container, createStyles, Grid } from '@mantine/core';
+
 import { useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
 import axios, { AxiosError } from 'axios';
-import { useApi } from '../../shared/context/ApiClient';
-import _ from 'lodash';
 import dayjs from 'dayjs';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+
+import { useApi } from '../../shared/context/ApiClient';
 import { generateAvailableTime } from '../../shared/utils/generateAvailableTime';
-import { FindOneWithBookingReturn } from '@desk-booking/data';
-import ms from 'ms';
+import { useNotifications } from '@mantine/notifications';
+import { mergeTime } from '../../shared/utils/time';
 
 /* eslint-disable-next-line */
 export interface BookingPageProps {}
 
+const useStyles = createStyles((theme) => ({
+  common: {
+    backgroundColor: theme.white,
+    padding: theme.spacing.md,
+    borderRadius: theme.radius.sm,
+    boxShadow: theme.shadows.md,
+    height: '100%',
+  },
+  bookingBox: {},
+}));
+
 export function BookingPage(props: BookingPageProps) {
   const api = useApi();
+  const { classes } = useStyles();
+  const notifications = useNotifications();
   const queryClient = useQueryClient();
   const [currentlySelectedData, setCurrentlySelectedData] = useState(
     dayjs().startOf('day').toDate()
   );
   const [currentlySelectedNodeID, setCurrentlySelectedNodeID] = useState('');
-  const [bookingItems, setBookingItems] = useState<BookingItem[]>([]);
-  const [status, setStatus] = useState<NotificationContent>({
-    message: '',
-    isError: false,
-  });
+  const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
 
   const createBookingMutation = useMutation(
     (data: {
       htmlId: string;
       bookings: { startTime: Date; endTime: Date }[];
     }) => {
-      return api.client.post('/bookings', data);
+      return api.client.post<CreateBookingReturn>('/bookings', data);
     },
     {
-      onSuccess: () => {
-        setStatus({
-          message: '',
-          isError: false,
+      onSuccess: ({ data }) => {
+        notifications.showNotification({
+          title: 'Booking Confirmed',
+          message: `You have booked ${data.htmlId}.`,
         });
       },
       onError: (error: AxiosError) => {
-        setStatus({
-          message: error.response.data.message || 'Something went wrong',
-          isError: true,
+        notifications.showNotification({
+          color: 'red',
+          title: error.response.data.title || 'Something went wrong',
+          message: error.response.data.message || error.message,
         });
       },
       onSettled: () => {
@@ -63,29 +74,25 @@ export function BookingPage(props: BookingPageProps) {
     }
   );
 
-  const svgMap = useQuery(
+  const getFloorPlanMap = useQuery(
     ['GET_FLOOR_PLAN', 'singapore'] as const,
     async ({ queryKey }) => {
       const { data } = await axios.get<Node>(
         `https://jimmy-floorplan.s3.ap-southeast-2.amazonaws.com/floorplan/${queryKey[1]}.json`
       );
-
-      const grouped = _.groupBy(data.children, (children) => {
-        return children.attributes['id'];
-      });
-
-      return {
-        svgAttributes: data.attributes,
-        rooms: grouped['rooms'][0] || null,
-        desks: grouped['desks'][0] || null,
-        base: grouped['base'][0] || null,
-      };
+      return data;
     },
     {
-      onError: () => {
-        setStatus({
-          message: 'Unable to load map data',
-          isError: true,
+      onError: (error: AxiosError) => {
+        notifications.showNotification({
+          title: 'Unable to load map',
+          message: (
+            <div>
+              We were unable to process your booking. Try again later.
+              <br />
+              Error: {error.message}
+            </div>
+          ),
         });
       },
       refetchInterval: false,
@@ -96,25 +103,30 @@ export function BookingPage(props: BookingPageProps) {
     }
   );
 
-  const selectAreaBookings = useQuery(
+  const getAvailabilityForArea = useQuery(
     [
       'GET_AREA_BOOKING_DATA',
       { currentlySelectedNodeID, currentlySelectedData },
     ] as const,
     async ({ queryKey }) => {
-      if (!queryKey[1].currentlySelectedNodeID) return [];
+      if (
+        !queryKey[1].currentlySelectedNodeID ||
+        !queryKey[1].currentlySelectedData
+      )
+        return [];
 
       // Fetching
       const { data } = await api.client.get<FindOneWithBookingReturn>(
         `/areas/${queryKey[1].currentlySelectedNodeID}/bookings`,
         {
           params: {
-            date: queryKey[1].currentlySelectedData,
+            from: queryKey[1].currentlySelectedData,
+            to: dayjs(queryKey[1].currentlySelectedData).endOf('day').toDate(),
           },
         }
       );
 
-      return generateAvailableTime({
+      const generatedTimes = generateAvailableTime({
         from: dayjs(queryKey[1].currentlySelectedData)
           .startOf('day')
           .add(8, 'hour')
@@ -123,78 +135,87 @@ export function BookingPage(props: BookingPageProps) {
           .endOf('day')
           .subtract(4, 'hour')
           .toDate(),
-        intervalInMs: data.AreaType.interval || ms('1h'),
+        intervalInMs: data.AreaType.interval,
         excludes: data.Booking,
         noPastTime: true,
       });
+
+      return generatedTimes;
     },
     {
-      onSuccess: (data) => setBookingItems(data),
-      onError: () => setBookingItems([]),
+      onSuccess: (data) => {
+        setCheckedItems(new Array(data.length).fill(false));
+      },
+      onError: (error: AxiosError) => {
+        notifications.showNotification({
+          title: error.response.data.title || error.name,
+          message: error.response.data.message || error.message,
+        });
+      },
     }
   );
 
   const handleConfirmAndBook = () => {
+    let bookings: { startTime: Date; endTime }[] = [];
+
+    for (let i = 0; i < checkedItems.length; i++) {
+      if (checkedItems[i]) {
+        bookings.push({
+          startTime: getAvailabilityForArea.data[i].startTime,
+          endTime: getAvailabilityForArea.data[i].endTime,
+        });
+      }
+    }
+    bookings = mergeTime(bookings);
+
     createBookingMutation.mutate({
       htmlId: currentlySelectedNodeID,
-      bookings: bookingItems
-        .filter((bookingItem) => bookingItem.checked)
-        .map(({ startTime, endTime }) => ({ startTime, endTime })),
+      bookings,
     });
   };
 
-  if (svgMap.isLoading) return <Loading />;
-  if (svgMap.isError) return <div>Something went wrong</div>;
+  if (getFloorPlanMap.isLoading) return <Loading />;
+  if (getFloorPlanMap.isError) return <div>Something went wrong</div>;
 
   return (
     <Container fluid>
-      {status.message && (
-        <div className="tw-mb-4">
-          <Notification
-            {...status}
-            onClose={() => setStatus({ message: '', isError: false })}
-          />
-        </div>
-      )}
-
-      <Grid grow>
-        <Grid.Col md={8}>
-          <svg {...svgMap.data.svgAttributes} width="100%">
-            <SVGNode node={svgMap.data.base} />
-            {svgMap.data.rooms.children.map((each, i) => (
-              <SVGNodeArea
-                key={i}
-                node={each}
-                areaType="room"
-                currentHtmlId={currentlySelectedNodeID}
-                setCurrentHtmlId={setCurrentlySelectedNodeID}
-              />
-            ))}
-            {svgMap.data.desks.children.map((each, i) => (
-              <SVGNodeArea
-                key={i}
-                node={each}
-                areaType="desk"
-                currentHtmlId={currentlySelectedNodeID}
-                setCurrentHtmlId={setCurrentlySelectedNodeID}
-              />
-            ))}
-          </svg>
-        </Grid.Col>
-        <Grid.Col md={4}>
-          <BookingTimeListControl
-            dateUseState={[currentlySelectedData, setCurrentlySelectedData]}
-            handleOnSubmit={handleConfirmAndBook}
-            disabled={
-              createBookingMutation.isLoading ||
-              !bookingItems.filter((bookingItem) => bookingItem.checked).length
+      <Grid grow gutter="sm">
+        <Grid.Col span={7}>
+          <Map
+            mapData={getFloorPlanMap.data}
+            viewBox={
+              getFloorPlanMap.data.attributes['viewBox'] &&
+              getFloorPlanMap.data.attributes['viewBox']
+                .split(' ')
+                .map((each) => parseInt(each) || 0)
             }
+            currentHtmlId={currentlySelectedNodeID}
+            setCurrentHtmlId={setCurrentlySelectedNodeID}
+            className={classes.common}
           />
-          <BookingTimeList
-            pagination={{ numberPerPage: 12 }}
-            bookingItemUseState={[bookingItems, setBookingItems]}
-            loading={selectAreaBookings.isLoading}
-          />
+        </Grid.Col>
+        <Grid.Col span={5}>
+          <div className={classes.common}>
+            <BookingTimeListControl
+              dateUseState={[currentlySelectedData, setCurrentlySelectedData]}
+              handleOnSubmit={handleConfirmAndBook}
+              disabled={
+                createBookingMutation.isLoading ||
+                checkedItems.every((each) => !each)
+              }
+            />
+            <br />
+            {getAvailabilityForArea.data &&
+              !!getAvailabilityForArea.data.length && (
+                <BookingTimeList
+                  pagination={{ numberPerPage: 16 }}
+                  bookingItems={getAvailabilityForArea.data}
+                  style={{ display: 'relative' }}
+                  checkedItems={checkedItems}
+                  setCheckedItems={setCheckedItems}
+                />
+              )}
+          </div>
         </Grid.Col>
       </Grid>
     </Container>

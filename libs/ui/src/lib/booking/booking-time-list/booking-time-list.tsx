@@ -1,4 +1,4 @@
-import { createStyles, Group, LoadingOverlay, Pagination } from '@mantine/core';
+import { createStyles, Pagination, SimpleGrid } from '@mantine/core';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import BookingTimeListItem from '../booking-time-list-item/booking-time-list-item';
@@ -8,16 +8,16 @@ export interface BookingItem {
   startTime: Date;
   endTime: Date;
   disabled: boolean;
-  checked: boolean;
 }
 
 /* eslint-disable-next-line */
-export interface BookingTimeListProps {
+export interface BookingTimeListProps extends React.HTMLProps<HTMLDivElement> {
   pagination: {
     numberPerPage: number;
   };
-  bookingItemUseState: [BookingItem[], (bookingItems: BookingItem[]) => void];
-  loading: boolean;
+  bookingItems: BookingItem[];
+  checkedItems: boolean[];
+  setCheckedItems: (checkedItems: boolean[]) => void;
 }
 
 const useStyles = createStyles((theme) => ({
@@ -27,59 +27,68 @@ const useStyles = createStyles((theme) => ({
     minHeight: 400,
   },
   pagination: {
-    marginInline: 'auto',
+    display: 'flex',
+    justifyContent: 'center',
   },
 }));
 
 export function BookingTimeList({
   pagination,
-  bookingItemUseState,
-  loading,
+  bookingItems,
+  checkedItems,
+  setCheckedItems,
+  ...props
 }: BookingTimeListProps) {
   const { classes } = useStyles();
   const [activePage, setPage] = useState(1);
-  const [bookingItems, setBookingItems] = bookingItemUseState;
 
   const handleChecked = (position: number) => {
-    setBookingItems(
-      bookingItems.map((item, i) => {
-        if (i === position) return { ...item, checked: !item.checked };
-        return item;
-      })
-    );
+    const temp = checkedItems.slice(0);
+    temp[position] = !temp[position];
+    setCheckedItems(temp);
   };
 
   return (
-    <Group spacing="sm" className={classes.container}>
-      <LoadingOverlay visible={loading} />
-      {bookingItems
-        .slice(
-          (activePage - 1) * pagination.numberPerPage,
-          activePage * pagination.numberPerPage
-        )
-        .map(({ startTime, endTime, ...rest }, i) => (
-          <BookingTimeListItem
-            key={i}
-            onClick={() =>
-              handleChecked(i + (activePage - 1) * pagination.numberPerPage)
-            }
-            {...rest}
-          >
-            {`${dayjs(startTime).format('hh:mm A')} - ${dayjs(endTime).format(
-              'hh:mm A'
-            )}`}
-          </BookingTimeListItem>
-        ))}
-      {bookingItems.length && (
-        <div className={classes.pagination}>
-          <Pagination
-            page={activePage}
-            onChange={setPage}
-            total={Math.ceil(bookingItems.length / pagination.numberPerPage)}
-          />
-        </div>
-      )}
-    </Group>
+    <div {...props}>
+      <SimpleGrid
+        spacing="sm"
+        cols={2}
+        breakpoints={[
+          { maxWidth: 980, cols: 1, spacing: 'sm' },
+          { maxWidth: 755, cols: 1, spacing: 'sm' },
+          { maxWidth: 600, cols: 1, spacing: 'sm' },
+        ]}
+      >
+        {bookingItems
+          .slice(
+            (activePage - 1) * pagination.numberPerPage,
+            activePage * pagination.numberPerPage
+          )
+          .map(({ startTime, endTime, disabled }, i) => (
+            <BookingTimeListItem
+              key={i}
+              disabled={disabled}
+              checked={checkedItems[i]}
+              onClick={() =>
+                handleChecked(i + (activePage - 1) * pagination.numberPerPage)
+              }
+            >
+              {`${dayjs(startTime).format('hh:mm A')} - ${dayjs(endTime).format(
+                'hh:mm A'
+              )}`}
+            </BookingTimeListItem>
+          ))}
+      </SimpleGrid>
+      <br />
+      <br />
+      <div className={classes.pagination}>
+        <Pagination
+          page={activePage}
+          onChange={setPage}
+          total={Math.ceil(bookingItems.length / pagination.numberPerPage)}
+        />
+      </div>
+    </div>
   );
 }
 

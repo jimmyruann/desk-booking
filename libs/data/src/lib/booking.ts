@@ -73,6 +73,7 @@ export type FindOneBookingReturn = Booking & {
 };
 
 export type FindAllBookingReturn = FindOneBookingReturn[];
-function IsBeforeConstraint(IsBeforeConstraint: any, arg1: string[]) {
+
+export function IsBeforeConstraint(IsBeforeConstraint: any, arg1: string[]) {
   throw new Error('Function not implemented.');
 }

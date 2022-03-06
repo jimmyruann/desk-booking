@@ -10,7 +10,6 @@ export interface AppLayoutProps {}
 export function AppLayout(props: AppLayoutProps) {
   return (
     <AppShell
-      padding="md"
       header={<AppHeader />}
       navbar={<AppSideMenu />}
       styles={(theme) => ({

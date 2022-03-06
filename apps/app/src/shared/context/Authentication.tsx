@@ -102,7 +102,7 @@ export const AuthenticationProvider = ({
       return [true, null];
     } catch (error) {
       const err = error as AxiosError;
-      return [false, err.response.data.message];
+      return [false, err.response.data.message || err.message];
     }
   };
 
