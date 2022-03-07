@@ -47,7 +47,7 @@ export type FindOneReturn = Area & {
 
 export type FindAllLocationReturn = Area[];
 
-export type FindOneWithBookingReturn = Area & {
+export type AreaFindOneWithBookingReturn = Area & {
   AreaType: AreaType;
   Booking: (Booking & {
     User: {

@@ -9,14 +9,12 @@ dayjs.extend(relativeTime);
 
 /* eslint-disable-next-line */
 export interface BookingTableProps {
-  label: string;
   data: FindAllBookingReturn;
 }
 
-export function BookingTable({ data, label }: BookingTableProps) {
+export function BookingTable({ data }: BookingTableProps) {
   return (
     <div className="tw-py-2">
-      <h2 className="tw-m-0 tw-pt-6 tw-font-sans">{label}</h2>
       <Table highlightOnHover={true} striped={true}>
         <thead>
           <tr>

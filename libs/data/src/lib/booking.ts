@@ -4,7 +4,6 @@ import {
   ArrayMinSize,
   IsArray,
   IsInt,
-  IsISO8601,
   IsNotEmpty,
   Min,
   Validate,
@@ -15,13 +14,11 @@ export class BookingsTime {
   @ApiProperty()
   @IsNotEmpty()
   @Type(() => Date)
-  @IsISO8601()
   @Validate(IsBeforeConstraint, ['endTime'])
   readonly startTime: Date;
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsISO8601()
   @Type(() => Date)
   readonly endTime: Date;
 }

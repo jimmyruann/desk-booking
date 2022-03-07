@@ -3,4 +3,5 @@
 
 export const environment = {
   production: false,
+  floorPlanUrl: 'http://localhost:3000',
 };

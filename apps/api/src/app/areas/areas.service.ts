@@ -3,7 +3,7 @@ import {
   CreateAreaReturn,
   FindAllLocationReturn,
   FindOneReturn,
-  FindOneWithBookingReturn,
+  AreaFindOneWithBookingReturn,
 } from '@desk-booking/data';
 import { Injectable } from '@nestjs/common';
 import dayjs from 'dayjs';
@@ -49,7 +49,7 @@ export class AreasService {
     id: string,
     from: Date,
     to: Date
-  ): Promise<FindOneWithBookingReturn> {
+  ): Promise<AreaFindOneWithBookingReturn> {
     return await this.prisma.area.findUnique({
       where: this.idOrHtmlId(id),
       include: {

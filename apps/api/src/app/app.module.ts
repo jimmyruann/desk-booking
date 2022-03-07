@@ -10,6 +10,7 @@ import { AreaTypesModule } from './area-types/area-types.module';
 import { AuthModule } from '../auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt.guard';
     UserModule,
     AreaTypesModule,
     AuthModule,
+    FeedbackModule,
   ],
   controllers: [AppController],
   providers: [

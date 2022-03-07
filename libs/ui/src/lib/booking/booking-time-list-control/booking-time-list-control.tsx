@@ -4,7 +4,8 @@ import './booking-time-list-control.module.css';
 
 /* eslint-disable-next-line */
 export interface BookingTimeListControlProps {
-  dateUseState: [date: Date, setDate: (date: Date) => void];
+  date: Date;
+  setDate: (date: Date) => void;
   handleOnSubmit: () => void;
   disabled: boolean;
 }
@@ -25,11 +26,11 @@ const useStyles = createStyles(() => ({
 }));
 
 export function BookingTimeListControl({
-  dateUseState,
+  date,
+  setDate,
   handleOnSubmit,
   disabled,
 }: BookingTimeListControlProps) {
-  const [date, setDate] = dateUseState;
   const { classes } = useStyles();
 
   return (

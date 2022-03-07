@@ -1,3 +1,4 @@
+export * from './lib/nav/nav-user-item/nav-user-item';
 export * from './lib/floorplan/map/map';
 export * from './lib/common/notification/notification';
 export * from './lib/common/loading/loading';

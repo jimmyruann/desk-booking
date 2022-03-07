@@ -1,27 +1,18 @@
 import './booking-page.module.css';
 import {
-  BookingTimeList,
-  BookingTimeListControl,
   Loading,
   Node,
   Map,
   BookingItem,
+  BookingTimeListControl,
 } from '@desk-booking/ui';
 import {
   CreateBookingReturn,
-  FindOneWithBookingReturn,
+  AreaFindOneWithBookingReturn,
 } from '@desk-booking/data';
-import {
-  Text,
-  createStyles,
-  Divider,
-  Grid,
-  Tabs,
-  Timeline,
-  Table,
-} from '@mantine/core';
+import { createStyles, Grid, Tabs } from '@mantine/core';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import dayjs from 'dayjs';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -31,6 +22,11 @@ import { generateAvailableTime } from '../../shared/utils/generateAvailableTime'
 import { useNotifications } from '@mantine/notifications';
 import { mergeTime } from '../../shared/utils/time';
 import { HiOutlineCalendar, HiOutlineUserGroup } from 'react-icons/hi';
+import { environment } from '../../environments/environment';
+import { BookingPageContext } from './context/BookingPageContext';
+import TimeTab from './components/time-tab/time-tab';
+import PeopleTab from './components/people-tab/people-tab';
+import { useUserLocation } from '@app/src/shared/context/UserLocation';
 
 /* eslint-disable-next-line */
 export interface BookingPageProps {}
@@ -41,33 +37,105 @@ const useStyles = createStyles((theme) => ({
     padding: theme.spacing.md,
     borderRadius: theme.radius.sm,
     boxShadow: theme.shadows.md,
-    height: '100%',
-  },
-  divider: {
-    marginBlock: theme.spacing.sm,
-  },
-  greenText: {
-    color: theme.colors.green[8],
-  },
-  redText: {
-    color: theme.colors.red[8],
   },
 }));
 
 export function BookingPage(props: BookingPageProps) {
-  const api = useApi();
   const { classes } = useStyles();
-  const notifications = useNotifications();
+
+  const api = useApi();
   const queryClient = useQueryClient();
-  const [currentlySelectedData, setCurrentlySelectedData] = useState(
-    dayjs().startOf('day').toDate()
-  );
-  const [unavailabilities, setUnavailabilities] = useState<
-    FindOneWithBookingReturn['Booking']
-  >([]);
-  const [availabilities, setAvailabilities] = useState<BookingItem[]>([]);
+  const notifications = useNotifications();
+  const userLocation = useUserLocation();
+
+  const [date, setDate] = useState(dayjs().startOf('day').toDate());
+  const [checked, setChecked] = useState<boolean[]>([]);
   const [currentHtmlId, setCurrentHtmlId] = useState('');
-  const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
+  const [availabilities, setAvailabilities] = useState<BookingItem[]>([]);
+
+  useEffect(() => {
+    setChecked([]);
+    setCurrentHtmlId('');
+    setAvailabilities([]);
+  }, [userLocation.location]);
+
+  const getArea = useQuery(
+    [
+      'GET_AREA_BOOKING_DATA',
+      {
+        htmlId: currentHtmlId,
+        date,
+      },
+    ] as const,
+    async ({ queryKey }) => {
+      const { date, htmlId } = queryKey[1];
+      if (!date || !htmlId) return null;
+
+      // Fetching
+      const { data } = await api.client.get<AreaFindOneWithBookingReturn>(
+        `/areas/${htmlId}/bookings`,
+        {
+          params: {
+            from: date,
+            to: dayjs(date).endOf('day').toDate(),
+          },
+        }
+      );
+
+      return data;
+    },
+
+    {
+      onSuccess: (areaData) => {
+        if (areaData) {
+          const ava = generateAvailableTime({
+            from: dayjs(date).startOf('day').add(8, 'hour').toDate(),
+            to: dayjs(date).endOf('day').subtract(4, 'hour').toDate(),
+            intervalInMs: areaData.AreaType.interval,
+            excludes: areaData.Booking,
+            noPastTime: true,
+          });
+          setAvailabilities(ava);
+          setChecked(new Array(ava.length).fill(false));
+        }
+      },
+      onError: (error: AxiosError) => {
+        notifications.showNotification({
+          title: error.response.data.title || error.name,
+          message: error.response.data.message || error.message,
+        });
+      },
+    }
+  );
+
+  const getFloorPlanMap = useQuery(
+    ['GET_FLOOR_PLAN', userLocation.location] as const,
+    async ({ queryKey }) => {
+      const { data } = await axios.get<Node>(
+        `${environment.floorPlanUrl}/${queryKey[1]}.json`
+      );
+      return data;
+    },
+    {
+      onError: (error: AxiosError) => {
+        notifications.showNotification({
+          title: 'Unable to load map',
+          message: (
+            <div>
+              We were unable to process your booking. Try again later.
+              <br />
+              Error: {error.message}
+            </div>
+          ),
+        });
+      },
+      refetchInterval: false,
+      refetchIntervalInBackground: false,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    }
+  );
 
   const createBookingMutation = useMutation(
     (data: {
@@ -96,95 +164,9 @@ export function BookingPage(props: BookingPageProps) {
     }
   );
 
-  const getFloorPlanMap = useQuery(
-    ['GET_FLOOR_PLAN', 'singapore'] as const,
-    async ({ queryKey }) => {
-      const { data } = await axios.get<Node>(
-        `https://jimmy-floorplan.s3.ap-southeast-2.amazonaws.com/floorplan/${queryKey[1]}.json`
-      );
-      return data;
-    },
-    {
-      onError: (error: AxiosError) => {
-        notifications.showNotification({
-          title: 'Unable to load map',
-          message: (
-            <div>
-              We were unable to process your booking. Try again later.
-              <br />
-              Error: {error.message}
-            </div>
-          ),
-        });
-      },
-      refetchInterval: false,
-      refetchIntervalInBackground: false,
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-    }
-  );
-
-  useQuery(
-    [
-      'GET_AREA_BOOKING_DATA',
-      { htmlId: currentHtmlId, date: currentlySelectedData },
-    ] as const,
-    async ({ queryKey }) => {
-      const { date, htmlId } = queryKey[1];
-      if (!date || !htmlId) return null;
-
-      // Fetching
-      const { data } = await api.client.get<FindOneWithBookingReturn>(
-        `/areas/${htmlId}/bookings`,
-        {
-          params: {
-            from: date,
-            to: dayjs(date).endOf('day').toDate(),
-          },
-        }
-      );
-
-      return data;
-    },
-    {
-      onSuccess: (data) => {
-        if (data) {
-          const generatedAvailabilities = generateAvailableTime({
-            from: dayjs(currentlySelectedData)
-              .startOf('day')
-              .add(8, 'hour')
-              .toDate(),
-            to: dayjs(currentlySelectedData)
-              .endOf('day')
-              .subtract(4, 'hour')
-              .toDate(),
-            intervalInMs: data.AreaType.interval,
-            excludes: data.Booking,
-            noPastTime: true,
-          });
-          setAvailabilities(generatedAvailabilities);
-          setCheckedItems(
-            new Array(generatedAvailabilities.length).fill(false)
-          );
-          setUnavailabilities(mergeTime(data.Booking));
-        }
-      },
-      onError: (error: AxiosError) => {
-        setAvailabilities([]);
-        setCheckedItems([]);
-        setUnavailabilities([]);
-        notifications.showNotification({
-          title: error.response.data.title || error.name,
-          message: error.response.data.message || error.message,
-        });
-      },
-    }
-  );
-
   const handleConfirmAndBook = () => {
     const bookings = mergeTime(
-      checkedItems
+      checked
         .map((curr, i) => {
           return (
             curr && {
@@ -206,81 +188,54 @@ export function BookingPage(props: BookingPageProps) {
   if (getFloorPlanMap.isError) return <div>Something went wrong</div>;
 
   return (
-    <Grid grow>
-      <Grid.Col md={12} lg={7} xl={7}>
-        <Map
-          mapData={getFloorPlanMap.data}
-          viewBox={
-            getFloorPlanMap.data.attributes['viewBox'] &&
-            getFloorPlanMap.data.attributes['viewBox']
-              .split(' ')
-              .map((each) => parseInt(each) || 0)
-          }
-          currentHtmlId={currentHtmlId}
-          setCurrentHtmlId={setCurrentHtmlId}
-          className={classes.common}
-        />
-      </Grid.Col>
-      <Grid.Col md={12} lg={5} xl={5}>
-        <Tabs grow className={classes.common}>
-          <Tabs.Tab label="Booking" icon={<HiOutlineCalendar size={18} />}>
+    <BookingPageContext.Provider
+      value={{
+        date,
+        setDate,
+        checked,
+        setChecked,
+        currentHtmlId,
+        setCurrentHtmlId,
+      }}
+    >
+      <Grid grow>
+        <Grid.Col md={12} lg={7} xl={7}>
+          <Map
+            mapData={getFloorPlanMap.data}
+            viewBox={
+              getFloorPlanMap.data.attributes['viewBox'] &&
+              getFloorPlanMap.data.attributes['viewBox']
+                .split(' ')
+                .map((each) => parseInt(each) || 0)
+            }
+            currentHtmlId={currentHtmlId}
+            setCurrentHtmlId={setCurrentHtmlId}
+            className={classes.common}
+          />
+        </Grid.Col>
+        <Grid.Col md={12} lg={5} xl={5}>
+          <div className={classes.common}>
             <BookingTimeListControl
-              dateUseState={[currentlySelectedData, setCurrentlySelectedData]}
+              date={date}
+              setDate={setDate}
               handleOnSubmit={handleConfirmAndBook}
               disabled={
                 createBookingMutation.isLoading ||
-                checkedItems.every((each) => !each)
+                checked.every((each) => !each)
               }
             />
-            <Divider size="sm" className={classes.divider} />
-            {availabilities && !!availabilities.length && (
-              <BookingTimeList
-                pagination={{ numberPerPage: 16 }}
-                bookingItems={availabilities}
-                style={{ display: 'relative' }}
-                checkedItems={checkedItems}
-                setCheckedItems={setCheckedItems}
-              />
-            )}
-          </Tabs.Tab>
-          <Tabs.Tab label="People" icon={<HiOutlineUserGroup size={18} />}>
-            <Table>
-              <thead>
-                <tr>
-                  <th>Booked By</th>
-                  <th>Start</th>
-                  <th>End</th>
-                  <th>When</th>
-                </tr>
-              </thead>
-              <tbody>
-                {unavailabilities.map((unavailability, i) => {
-                  const start = dayjs(unavailability.startTime);
-                  const end = dayjs(unavailability.endTime);
-
-                  return (
-                    <tr>
-                      <td>{`${unavailability.User.firstName} ${unavailability.User.lastName}`}</td>
-                      <td>{start.format('hh:mm A')}</td>
-                      <td>{end.format('hh:mm A')}</td>
-                      <td
-                        className={` ${
-                          end.toDate() > new Date()
-                            ? classes.greenText
-                            : classes.redText
-                        }`}
-                      >
-                        {start.fromNow()}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
-          </Tabs.Tab>
-        </Tabs>
-      </Grid.Col>
-    </Grid>
+            <Tabs grow>
+              <Tabs.Tab label="Booking" icon={<HiOutlineCalendar size={18} />}>
+                <TimeTab availabilities={availabilities} />
+              </Tabs.Tab>
+              <Tabs.Tab label="People" icon={<HiOutlineUserGroup size={18} />}>
+                <PeopleTab data={getArea.data} />
+              </Tabs.Tab>
+            </Tabs>
+          </div>
+        </Grid.Col>
+      </Grid>
+    </BookingPageContext.Provider>
   );
 }
 

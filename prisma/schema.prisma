@@ -26,6 +26,7 @@ model User {
   lastName  String
   roles     UserRole[]
   Booking   Booking[]
+  Feedback  Feedback[]
 }
 
 model Location {
@@ -61,4 +62,13 @@ model Booking {
   startTime DateTime
   endTime   DateTime
 
+}
+
+model Feedback {
+  id      Int    @id @default(autoincrement())
+  userId  Int
+  User    User   @relation(fields: [userId], references: [id])
+  type    String
+  title   String
+  message String
 }
