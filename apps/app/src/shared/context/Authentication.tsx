@@ -84,10 +84,8 @@ export const AuthenticationProvider = ({
     },
     {
       onSettled: () => {
-        // setIsLoggedIn(false);
         setUser(null);
         api.saveAccessToken(null);
-
         setIsLoading(false);
       },
     }

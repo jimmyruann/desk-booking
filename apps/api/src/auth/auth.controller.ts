@@ -46,8 +46,6 @@ export class AuthController {
 
   @All('logout')
   async logout(@Req() req: Request, @Res() res: Response) {
-    console.log(req.cookies[COOKIE_CONSTANT.refresh.name]);
-
     if (req.cookies[COOKIE_CONSTANT.refresh.name]) {
       const user = await this.jwtService.verifyAsync<Express.User>(
         req.cookies[COOKIE_CONSTANT.refresh.name],

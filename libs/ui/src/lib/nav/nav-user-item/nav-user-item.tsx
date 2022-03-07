@@ -18,53 +18,43 @@ export interface NavUserItemProps extends UnstyledButtonProps {
   icon?: React.ReactNode;
 }
 
-const useStyles = createStyles((theme) => ({
-  user: {
-    display: 'block',
-    width: '100%',
-    padding: theme.spacing.md,
-    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
+export const NavUserItem = React.forwardRef<
+  HTMLButtonElement,
+  NavUserItemProps
+>(({ image, name, email, icon, ...others }: NavUserItemProps, ref) => (
+  <UnstyledButton
+    ref={ref}
+    sx={(theme) => ({
+      display: 'block',
+      width: '100%',
+      padding: theme.spacing.md,
+      color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
 
-    '&:hover': {
-      backgroundColor:
-        theme.colorScheme === 'dark'
-          ? theme.colors.dark[8]
-          : theme.colors.gray[0],
-    },
-  },
-  chevron: {
-    transition: 'transform 200ms ease',
-  },
-}));
+      '&:hover': {
+        backgroundColor:
+          theme.colorScheme === 'dark'
+            ? theme.colors.dark[8]
+            : theme.colors.gray[0],
+      },
+    })}
+    {...others}
+  >
+    <Group>
+      <Avatar src={image} radius="xl" />
 
-export function NavUserItem({
-  image,
-  name,
-  email,
-  icon,
-  ...others
-}: NavUserItemProps) {
-  const { classes } = useStyles();
+      <div style={{ flex: 1 }}>
+        <Text size="sm" weight={500}>
+          {name}
+        </Text>
 
-  return (
-    <UnstyledButton className={classes.user} {...others}>
-      <Group>
-        <Avatar src={image} radius="xl" />
+        <Text color="dimmed" size="xs">
+          {email}
+        </Text>
+      </div>
 
-        <div style={{ flex: 1 }}>
-          <Text size="sm" weight={500}>
-            {name}
-          </Text>
-
-          <Text color="dimmed" size="xs">
-            {email}
-          </Text>
-        </div>
-
-        {icon || <HiOutlineChevronRight size={14} />}
-      </Group>
-    </UnstyledButton>
-  );
-}
+      {icon || <HiOutlineChevronRight size={14} />}
+    </Group>
+  </UnstyledButton>
+));
 
 export default NavUserItem;
