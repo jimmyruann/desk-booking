@@ -23,7 +23,6 @@ async function bootstrap() {
   // Swagger
   const swaggerDocumentConfigs = new DocumentBuilder()
     .setTitle('Desk Booking Rest API')
-    .setDescription('Ligma')
     .setVersion('1.0')
     .addBearerAuth(
       { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
@@ -42,6 +41,11 @@ async function bootstrap() {
     credentials: true,
   });
   app.use(cookieParser());
+  // app.use(
+  //   csurf({
+  //     cookie: true,
+  //   })
+  // );
 
   // Start server
   const port = process.env.PORT || 3333;
