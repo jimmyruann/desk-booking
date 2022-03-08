@@ -1,4 +1,3 @@
-import { useApi } from '@app/src/shared/context/ApiClient';
 import { CreateFeedbackDto, CreateFeedbackReturn } from '@desk-booking/data';
 import {
   Button,
@@ -16,6 +15,7 @@ import { useNotifications } from '@mantine/notifications';
 import { AxiosError } from 'axios';
 import { useMutation } from 'react-query';
 import validator from 'validator';
+import { useApi } from '../../shared/context/ApiClient';
 import './feedback-page.module.css';
 
 const useStyles = createStyles((theme) => ({

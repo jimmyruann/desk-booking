@@ -6,7 +6,6 @@ declare global {
     interface User extends ExpressUser {
       id: number;
       email: string;
-      username: string;
       roles: UserRole[];
       firstName: string;
       lastName: string;

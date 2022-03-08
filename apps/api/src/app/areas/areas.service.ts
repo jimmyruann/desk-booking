@@ -1,12 +1,11 @@
 import {
   CreateAreaDto,
   CreateAreaReturn,
-  FindAllLocationReturn,
+  FindAllAreaReturn,
   FindOneReturn,
   AreaFindOneWithBookingReturn,
 } from '@desk-booking/data';
 import { Injectable } from '@nestjs/common';
-import dayjs from 'dayjs';
 import { PrismaService } from '../../shared/prisma/prisma.service';
 
 @Injectable()
@@ -23,7 +22,7 @@ export class AreasService {
     });
   }
 
-  async findAllByLocation(location: string): Promise<FindAllLocationReturn> {
+  async findAllByLocation(location: string): Promise<FindAllAreaReturn> {
     return this.prisma.area.findMany({
       where: {
         Location: {

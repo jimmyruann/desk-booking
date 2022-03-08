@@ -20,7 +20,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@User() user: Express.User, @Res() res: Response) {
+  login(@User() user: Express.User, @Res() res: Response) {
     // Issue refresh token and set in cookies
     return res
       .status(201)
@@ -37,7 +37,7 @@ export class AuthController {
 
   @UseGuards(RefreshJwtAuthGuard)
   @Post('refresh')
-  async refresh(@User() user: Express.User) {
+  refresh(@User() user: Express.User) {
     return {
       ...this.authService.generateAccessToken(user),
       user,
@@ -53,15 +53,14 @@ export class AuthController {
           secret: JWT_CONSTANT.refresh.secret,
         }
       );
+
       await this.authService.removeRefreshToken(cleanJWT(user));
     }
 
     return res
       .status(200)
-      .cookie(COOKIE_CONSTANT.refresh.name, null, {
-        ...COOKIE_CONSTANT.refresh.options,
+      .clearCookie(COOKIE_CONSTANT.refresh.name, {
         maxAge: 0,
-        expires: new Date(),
       })
       .json({
         message: 'You have logged out.',

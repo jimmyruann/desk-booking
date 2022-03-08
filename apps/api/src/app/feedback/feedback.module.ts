@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { FeedbackService } from './feedback.service';
 import { FeedbackController } from './feedback.controller';
-import { PrismaService } from '@api/src/shared/prisma/prisma.service';
+import { PrismaService } from '../../shared/prisma/prisma.service';
 
 @Module({
   controllers: [FeedbackController],

@@ -68,6 +68,7 @@ export function LoginForm({ form, handleLogin }: LoginFormProps) {
         <form
           onSubmit={form.onSubmit(handleFormSubmit)}
           style={{ position: 'relative' }}
+          name="loginForm"
         >
           <LoadingOverlay visible={loading} />
           <Group position="center" direction="column" spacing="xs">
@@ -76,6 +77,7 @@ export function LoginForm({ form, handleLogin }: LoginFormProps) {
                 icon={<HiFingerPrint size={18} />}
                 placeholder="Email"
                 type="email"
+                name="email"
                 required
                 {...form.getInputProps('email')}
               />
@@ -85,6 +87,7 @@ export function LoginForm({ form, handleLogin }: LoginFormProps) {
                 icon={<HiLockClosed size={18} />}
                 placeholder="Password"
                 required
+                name="password"
                 {...form.getInputProps('password')}
               />
             </InputWrapper>

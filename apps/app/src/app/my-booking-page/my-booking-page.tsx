@@ -1,4 +1,3 @@
-import { useApi } from '@app/src/shared/context/ApiClient';
 import { FindAllBookingReturn } from '@desk-booking/data';
 import { BookingTable } from '@desk-booking/ui';
 import { createStyles, Space, Text } from '@mantine/core';
@@ -7,6 +6,7 @@ import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
+import { useApi } from '../../shared/context/ApiClient';
 import './my-booking-page.module.css';
 
 /* eslint-disable-next-line */

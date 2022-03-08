@@ -1,10 +1,5 @@
-import { useApi } from '@app/src/shared/context/ApiClient';
-import { AreaFindOneWithBookingReturn } from '@desk-booking/data';
-import { useNotifications } from '@mantine/notifications';
-import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
-import React, { useState } from 'react';
-import { useQuery } from 'react-query';
+import React from 'react';
 
 interface BookingPageContextProps {
   date: Date;

@@ -1,8 +1,8 @@
-import { Roles } from '@api/src/auth/decorator/roles.decorator';
-import { User } from '@api/src/auth/decorator/user.decorator';
 import { CreateFeedbackDto } from '@desk-booking/data';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { Feedback, UserRole } from '@prisma/client';
+import { Roles } from '../../auth/decorator/roles.decorator';
+import { User } from '../../auth/decorator/user.decorator';
 import { FeedbackService } from './feedback.service';
 
 @Controller('feedback')

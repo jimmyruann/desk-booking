@@ -16,8 +16,6 @@
     "baseUrl": ".",
     "esModuleInterop": true,
     "paths": {
-      "@api/*": ["apps/api/*"],
-      "@app/*": ["apps/app/*"],
       "@desk-booking/data": ["libs/data/src/index.ts"],
       "@desk-booking/ui": ["libs/ui/src/index.ts"]
     }

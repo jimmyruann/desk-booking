@@ -62,7 +62,12 @@ export function BookingTimeList({
 
   return (
     <div {...props}>
-      <SimpleGrid spacing="sm" cols={2} className={classes.grid}>
+      <SimpleGrid
+        spacing="sm"
+        cols={2}
+        className={classes.grid}
+        id="availableTimeList"
+      >
         {bookingItems
           .slice(
             (activePage - 1) * pagination.numberPerPage,
@@ -86,6 +91,7 @@ export function BookingTimeList({
       {!!bookingItems.length && (
         <div className={classes.pagination}>
           <Pagination
+            id="availableTimeListPagination"
             page={activePage}
             onChange={setPage}
             total={Math.ceil(bookingItems.length / pagination.numberPerPage)}

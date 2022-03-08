@@ -7,7 +7,6 @@ const generateUser = (): [User, string] => {
   return [
     {
       id: faker.datatype.number(),
-      username: faker.internet.userName(),
       email: faker.internet.email(),
       password: bcrypt.hashSync(realPassword, 10),
       firstName: faker.name.firstName(),

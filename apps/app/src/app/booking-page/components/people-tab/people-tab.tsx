@@ -21,7 +21,7 @@ const useStyles = createStyles((theme) => ({
 export function PeopleTab({ data }: PeopleTabProps) {
   const { classes } = useStyles();
   return (
-    <Table>
+    <Table id="peopleBookedTable">
       <thead>
         <tr>
           <th>Booked By</th>

@@ -5,12 +5,13 @@ import {
   Map,
   BookingItem,
   BookingTimeListControl,
+  BookingTimeList,
 } from '@desk-booking/ui';
 import {
   CreateBookingReturn,
   AreaFindOneWithBookingReturn,
 } from '@desk-booking/data';
-import { createStyles, Grid, Tabs } from '@mantine/core';
+import { createStyles, Grid, Tabs, Text } from '@mantine/core';
 
 import { useEffect, useState } from 'react';
 import axios, { AxiosError } from 'axios';
@@ -26,7 +27,13 @@ import { environment } from '../../environments/environment';
 import { BookingPageContext } from './context/BookingPageContext';
 import TimeTab from './components/time-tab/time-tab';
 import PeopleTab from './components/people-tab/people-tab';
-import { useUserLocation } from '@app/src/shared/context/UserLocation';
+import { useUserLocation } from '../../shared/context/UserLocation';
+
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 /* eslint-disable-next-line */
 export interface BookingPageProps {}
@@ -38,6 +45,11 @@ const useStyles = createStyles((theme) => ({
     borderRadius: theme.radius.sm,
     boxShadow: theme.shadows.md,
   },
+  mapHeading: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginBottom: theme.spacing.md,
+  },
 }));
 
 export function BookingPage(props: BookingPageProps) {
@@ -47,8 +59,15 @@ export function BookingPage(props: BookingPageProps) {
   const queryClient = useQueryClient();
   const notifications = useNotifications();
   const userLocation = useUserLocation();
+  const currentLocation = userLocation.getLocation(userLocation.location);
 
-  const [date, setDate] = useState(dayjs().startOf('day').toDate());
+  const [date, setDate] = useState(
+    dayjs
+      .tz(new Date(), currentLocation.timeZone)
+      .startOf('day')
+      .utc(false)
+      .toDate()
+  );
   const [checked, setChecked] = useState<boolean[]>([]);
   const [currentHtmlId, setCurrentHtmlId] = useState('');
   const [availabilities, setAvailabilities] = useState<BookingItem[]>([]);
@@ -57,7 +76,7 @@ export function BookingPage(props: BookingPageProps) {
     setChecked([]);
     setCurrentHtmlId('');
     setAvailabilities([]);
-  }, [userLocation.location]);
+  }, [currentLocation.timeZone, userLocation.location]);
 
   const getArea = useQuery(
     [
@@ -76,8 +95,16 @@ export function BookingPage(props: BookingPageProps) {
         `/areas/${htmlId}/bookings`,
         {
           params: {
-            from: date,
-            to: dayjs(date).endOf('day').toDate(),
+            from: dayjs
+              .tz(date, currentLocation.timeZone)
+              .startOf('day')
+              .utc(false)
+              .toDate(),
+            to: dayjs
+              .tz(date, currentLocation.timeZone)
+              .endOf('day')
+              .utc(false)
+              .toDate(),
           },
         }
       );
@@ -87,10 +114,22 @@ export function BookingPage(props: BookingPageProps) {
 
     {
       onSuccess: (areaData) => {
+        console.log(date);
+
         if (areaData) {
           const ava = generateAvailableTime({
-            from: dayjs(date).startOf('day').add(8, 'hour').toDate(),
-            to: dayjs(date).endOf('day').subtract(4, 'hour').toDate(),
+            from: dayjs
+              .tz(date, currentLocation.timeZone)
+              .startOf('day')
+              .add(8, 'hour')
+              .utc(false)
+              .toDate(),
+            to: dayjs
+              .tz(date, currentLocation.timeZone)
+              .endOf('day')
+              .subtract(4, 'hour')
+              .utc(false)
+              .toDate(),
             intervalInMs: areaData.AreaType.interval,
             excludes: areaData.Booking,
             noPastTime: true,
@@ -199,19 +238,29 @@ export function BookingPage(props: BookingPageProps) {
       }}
     >
       <Grid grow>
-        <Grid.Col md={12} lg={7} xl={7}>
-          <Map
-            mapData={getFloorPlanMap.data}
-            viewBox={
-              getFloorPlanMap.data.attributes['viewBox'] &&
-              getFloorPlanMap.data.attributes['viewBox']
-                .split(' ')
-                .map((each) => parseInt(each) || 0)
-            }
-            currentHtmlId={currentHtmlId}
-            setCurrentHtmlId={setCurrentHtmlId}
-            className={classes.common}
-          />
+        <Grid.Col md={12} lg={7} xl={7} data-cy="svgMapContainer">
+          <div className={classes.common}>
+            <div className={classes.mapHeading}>
+              <Text transform="capitalize" data-cy="svgMapHeadingLocation">
+                Location: <b>{userLocation.location}</b>
+              </Text>
+              <Text data-cy="svgMapHeadingHtmlId">
+                Currently Selected: <b>{currentHtmlId || 'None'}</b>
+              </Text>
+            </div>
+            <Map
+              mapData={getFloorPlanMap.data}
+              viewBox={
+                getFloorPlanMap.data.attributes['viewBox'] &&
+                getFloorPlanMap.data.attributes['viewBox']
+                  .split(' ')
+                  .map((each) => parseInt(each) || 0)
+              }
+              currentHtmlId={currentHtmlId}
+              setCurrentHtmlId={setCurrentHtmlId}
+              data-cy={`svgMap-${userLocation.location}`}
+            />
+          </div>
         </Grid.Col>
         <Grid.Col md={12} lg={5} xl={5}>
           <div className={classes.common}>
@@ -225,10 +274,22 @@ export function BookingPage(props: BookingPageProps) {
               }
             />
             <Tabs grow>
-              <Tabs.Tab label="Booking" icon={<HiOutlineCalendar size={18} />}>
-                <TimeTab availabilities={availabilities} />
+              <Tabs.Tab
+                label="Booking"
+                icon={<HiOutlineCalendar size={18} id="bookingTab" />}
+              >
+                <BookingTimeList
+                  pagination={{ numberPerPage: 16 }}
+                  bookingItems={availabilities}
+                  style={{ display: 'relative' }}
+                  checkedItems={checked}
+                  setCheckedItems={setChecked}
+                />
               </Tabs.Tab>
-              <Tabs.Tab label="People" icon={<HiOutlineUserGroup size={18} />}>
+              <Tabs.Tab
+                label="People"
+                icon={<HiOutlineUserGroup size={18} id="peopleTab" />}
+              >
                 <PeopleTab data={getArea.data} />
               </Tabs.Tab>
             </Tabs>

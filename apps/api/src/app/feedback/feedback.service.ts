@@ -1,4 +1,3 @@
-import { PrismaService } from '@api/src/shared/prisma/prisma.service';
 import {
   CreateFeedbackDto,
   CreateFeedbackReturn,
@@ -6,6 +5,7 @@ import {
   FindOneFeedbackReturn,
 } from '@desk-booking/data';
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../shared/prisma/prisma.service';
 
 @Injectable()
 export class FeedbackService {

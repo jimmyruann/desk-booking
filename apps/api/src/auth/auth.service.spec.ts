@@ -2,7 +2,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { PrismaService } from '../shared/prisma/prisma.service';
-import { testDataHelper } from '@desk-booking/utils';
+import { testDataHelper } from '../shared/helper/testDataHelper';
 
 describe('AuthService', () => {
   let service: AuthService;

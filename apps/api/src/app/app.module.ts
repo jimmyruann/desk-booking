@@ -12,6 +12,7 @@ import { AreaTypesModule } from './area-types/area-types.module';
 import { AuthModule } from '../auth/auth.module';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { FeedbackModule } from './feedback/feedback.module';
+import { TestModule } from './test/test.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { FeedbackModule } from './feedback/feedback.module';
       ttl: 60,
       limit: 50,
     }),
+    TestModule,
   ],
   controllers: [AppController],
   providers: [

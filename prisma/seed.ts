@@ -3,25 +3,13 @@ import * as bcrypt from 'bcryptjs';
 import * as areas from './seed/area.json';
 import * as locations from './seed/location.json';
 import * as areaTypes from './seed/areaType.json';
+import { v4 as uuid } from 'uuid';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  const admin = await prisma.user.upsert({
-    where: { email: 'admin@example.com' },
-    update: {},
-    create: {
-      email: 'admin@example.com',
-      firstName: 'Admin',
-      lastName: 'Smith',
-      username: 'admin',
-      roles: [UserRole.MANAGER, UserRole.ADMIN],
-      password: bcrypt.hashSync('password', 10),
-    },
-  });
-
-  const areaType = areaTypes.map(async ({ id, ...rest }) => {
-    await prisma.areaType.upsert({
+  const locationType = locations.map(async ({ id, ...rest }) => {
+    await prisma.location.upsert({
       where: { id: id },
       update: rest,
       create: {
@@ -31,8 +19,38 @@ async function main() {
     });
   });
 
-  const locationType = locations.map(async ({ id, ...rest }) => {
-    await prisma.location.upsert({
+  const admin = await prisma.user.upsert({
+    where: { email: 'admin@example.com' },
+    update: {},
+    create: {
+      email: 'admin@example.com',
+      firstName: 'Admin',
+      lastName: 'Smith',
+      roles: [UserRole.MANAGER, UserRole.ADMIN],
+      password: bcrypt.hashSync(
+        process.env.ADMIN_INITIAL_PASSWORD || uuid(),
+        10
+      ),
+    },
+  });
+
+  const user = await prisma.user.upsert({
+    where: { email: 'user@example.com' },
+    update: {},
+    create: {
+      email: 'user@example.com',
+      firstName: 'User',
+      lastName: 'Smith',
+      roles: [],
+      password: bcrypt.hashSync(
+        process.env.ADMIN_INITIAL_PASSWORD || uuid(),
+        10
+      ),
+    },
+  });
+
+  const areaType = areaTypes.map(async ({ id, ...rest }) => {
+    await prisma.areaType.upsert({
       where: { id: id },
       update: rest,
       create: {

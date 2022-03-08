@@ -13,7 +13,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  async findMe(@User() user: Express.User) {
+  findMe(@User() user: Express.User) {
     return user;
   }
 

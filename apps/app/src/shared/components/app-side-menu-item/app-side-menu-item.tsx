@@ -114,7 +114,11 @@ export function AppSideMenuItem({
           )}
         </Group>
       </UnstyledButton>
-      {hasLinks ? <Collapse in={opened}>{items}</Collapse> : null}
+      {hasLinks ? (
+        <Collapse in={opened} data-cy="sideBarItemList">
+          {items}
+        </Collapse>
+      ) : null}
     </>
   );
 }

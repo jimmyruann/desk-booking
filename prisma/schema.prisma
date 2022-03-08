@@ -20,7 +20,6 @@ enum UserRole {
 model User {
   id        Int        @id @default(autoincrement())
   email     String     @unique
-  username  String     @unique
   password  String
   firstName String
   lastName  String
@@ -30,9 +29,15 @@ model User {
 }
 
 model Location {
-  id   Int    @id @default(autoincrement())
-  name String
-  Area Area[]
+  id               Int     @id @default(autoincrement())
+  name             String  @unique
+  displayName      String
+  timeZone         String
+  capacity         Int     @default(1)
+  allowBookingFrom Int     @default(0)
+  allowBookingTill Int     @default(86399)
+  allowBookings    Boolean @default(true)
+  Area             Area[]
 }
 
 model AreaType {

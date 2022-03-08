@@ -1,14 +1,23 @@
 [
   {
     "id": 1,
-    "name": "singapore"
+    "name": "singapore",
+    "displayName": "Singapore",
+    "timeZone": "Asia/Singapore",
+    "capacity": 1
   },
   {
     "id": 2,
-    "name": "sydney-lv16"
+    "name": "sydney-lv16",
+    "displayName": "Sydney Lv.16",
+    "timeZone": "Australia/Sydney",
+    "capacity": 1
   },
   {
     "id": 3,
-    "name": "sydney-lv18"
+    "name": "sydney-lv18",
+    "displayName": "Sydney Lv.18",
+    "timeZone": "Australia/Sydney",
+    "capacity": 1
   }
 ]
