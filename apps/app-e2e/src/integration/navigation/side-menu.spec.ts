@@ -8,6 +8,12 @@ describe('Side menu', () => {
     cy.saveLocalStorage();
   });
 
+  after(() => {
+    cy.logout();
+    cy.clearLocalStorageSnapshot();
+    cy.clearLocalStorage();
+  });
+
   beforeEach(() => {
     cy.restoreLocalStorage();
     cy.visit('/');
@@ -15,12 +21,6 @@ describe('Side menu', () => {
 
   afterEach(() => {
     cy.saveLocalStorage();
-  });
-
-  it('should be logged in', () => {
-    cy.getLocalStorage('email').then((email) => {
-      cy.get('body').should('contain', email);
-    });
   });
 
   it('side menu item should be able to open and close', () => {
@@ -41,6 +41,16 @@ describe('Side menu', () => {
       cy.get('[data-cy=userMenuButton]').click();
       cy.get('body').should('not.contain.html', '[data-cy=userMenu]');
     });
+  });
+
+  it('should not have admin nav items for users', () => {
+    cy.get('nav#navSideBar').should('not.contain', 'Admin');
+  });
+
+  it('should have admin anv item for admins', () => {
+    cy.login('admin', true);
+    cy.visit('/');
+    cy.get('nav#navSideBar button').should('contain', 'Admin');
   });
 
   it('should be able to logout', () => {

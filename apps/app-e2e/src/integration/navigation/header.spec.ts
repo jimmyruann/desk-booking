@@ -8,6 +8,12 @@ describe('Side menu', () => {
     cy.saveLocalStorage();
   });
 
+  after(() => {
+    cy.logout();
+    cy.clearLocalStorageSnapshot();
+    cy.clearLocalStorage();
+  });
+
   beforeEach(() => {
     cy.restoreLocalStorage();
     cy.visit('/');
@@ -15,12 +21,6 @@ describe('Side menu', () => {
 
   afterEach(() => {
     cy.saveLocalStorage();
-  });
-
-  it('should be logged in', () => {
-    cy.getLocalStorage('email').then((email) => {
-      cy.get('body').should('contain', email);
-    });
   });
 
   it('should be able to open location options', () => {
@@ -32,6 +32,6 @@ describe('Side menu', () => {
   it('should be able to change location', () => {
     cy.get('[data-cy=changeLocationButton]').click();
     cy.get('[data-cy=location-sydney-lv16]').click();
-    cy.get('[data-cy=svgMapHeadingLocation]').should('contain', 'sydney-lv16');
+    cy.get('[data-cy=svgMapHeadingLocation]').should('contain', 'Sydney Lv.16');
   });
 });

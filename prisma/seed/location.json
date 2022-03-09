@@ -4,6 +4,8 @@
     "name": "singapore",
     "displayName": "Singapore",
     "timeZone": "Asia/Singapore",
+    "allowBookingFrom": 420,
+    "allowBookingTill": 1260,
     "capacity": 1
   },
   {
@@ -11,6 +13,8 @@
     "name": "sydney-lv16",
     "displayName": "Sydney Lv.16",
     "timeZone": "Australia/Sydney",
+    "allowBookingFrom": 480,
+    "allowBookingTill": 1200,
     "capacity": 1
   },
   {
@@ -18,6 +22,8 @@
     "name": "sydney-lv18",
     "displayName": "Sydney Lv.18",
     "timeZone": "Australia/Sydney",
+    "allowBookingFrom": 420,
+    "allowBookingTill": 1200,
     "capacity": 1
   }
 ]

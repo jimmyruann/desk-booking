@@ -5,10 +5,16 @@ describe('Booking', () => {
     Cypress.Cookies.defaults({
       preserve: 'jid',
     });
-    // cy.deleteAllBooking();
+    cy.deleteAllBooking();
     cy.login('user', true);
 
     cy.saveLocalStorage();
+  });
+
+  after(() => {
+    cy.logout();
+    cy.clearLocalStorageSnapshot();
+    cy.clearLocalStorage();
   });
 
   beforeEach(() => {
@@ -204,7 +210,7 @@ describe('Booking', () => {
     cy.get('body').contains(/(?<=One )(.*)(?= at a time)/);
   });
 
-  it.only('should be able to show who booked at People Tab', () => {
+  it('should be able to show who booked at People Tab', () => {
     cy.get('input[name=date]')
       .clear()
       .type(
@@ -215,8 +221,6 @@ describe('Booking', () => {
           .format('MMMM D, YYYY')
       );
     cy.get('#singapore-room-7').click();
-
-    cy.get('#availableTimeList button:first').click();
 
     // Selected
     cy.get('#peopleTab')

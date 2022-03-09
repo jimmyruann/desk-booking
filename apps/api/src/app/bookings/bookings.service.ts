@@ -1,9 +1,9 @@
 import {
   CreateBookingDto,
-  CreateBookingReturn,
+  CreateBookingResponse,
   FindAllBookingDto,
-  FindAllBookingReturn,
-  FindOneBookingReturn,
+  FindAllBookingResponse,
+  FindOneBookingResponse,
 } from '@desk-booking/data';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../shared/prisma/prisma.service';
@@ -15,7 +15,7 @@ export class BookingsService {
   async create(
     userId: number,
     { htmlId, bookings }: CreateBookingDto
-  ): Promise<CreateBookingReturn> {
+  ): Promise<CreateBookingResponse> {
     //  prevent double booking
     const conflicts = await this.prisma.booking.count({
       where: {
@@ -101,11 +101,11 @@ export class BookingsService {
     });
   }
 
-  findAll(
+  async findAll(
     userId: number,
     { startTime, endTime, skip, take }: FindAllBookingDto
-  ): Promise<FindAllBookingReturn> {
-    return this.prisma.booking.findMany({
+  ): Promise<FindAllBookingResponse> {
+    return await this.prisma.booking.findMany({
       where: {
         userId: userId,
         startTime: {
@@ -131,7 +131,7 @@ export class BookingsService {
     });
   }
 
-  async findOne(userId: number, id: number): Promise<FindOneBookingReturn> {
+  async findOne(userId: number, id: number): Promise<FindOneBookingResponse> {
     return await this.prisma.booking.findFirst({
       where: { id, userId },
       include: {

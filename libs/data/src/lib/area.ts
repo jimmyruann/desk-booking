@@ -1,8 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Area, AreaType, Booking } from '@prisma/client';
+import { Area, AreaType, Booking, Location } from '@prisma/client';
 import { Type } from 'class-transformer';
 import { IsInt, IsNotEmpty, IsPositive, Validate } from 'class-validator';
-import dayjs from 'dayjs';
 import { IsBeforeConstraint } from './booking';
 
 export class CreateAreaDto implements Omit<Area, 'id'> {
@@ -39,15 +38,15 @@ export class FindOneWithBookingQuery {
   to: Date;
 }
 
-export type CreateAreaReturn = Area;
+export type CreateAreaResponse = Area;
 
-export type FindOneReturn = Area & {
+export type FindOneAreaResponse = Area & {
   AreaType: AreaType;
 };
 
-export type FindAllAreaReturn = Area[];
+export type FindAllAreaResponse = Area[];
 
-export type AreaFindOneWithBookingReturn = Area & {
+export type FindOneAreaWithBookingResponse = Area & {
   AreaType: AreaType;
   Booking: (Booking & {
     User: {
@@ -55,4 +54,5 @@ export type AreaFindOneWithBookingReturn = Area & {
       lastName: string;
     };
   })[];
+  Location: Location;
 };

@@ -5,7 +5,22 @@ import {
 } from '../support/login.po';
 
 describe('login', () => {
-  beforeEach(() => cy.visit('/auth/login'));
+  before(() => {
+    cy.logout();
+  });
+  beforeEach(() => {
+    cy.clearCookies();
+    cy.clearLocalStorage();
+    cy.clearLocalStorageSnapshot();
+
+    cy.visit('/auth/login');
+  });
+
+  it('should check if fields are empty', () => {
+    getLoginForm().submit();
+    getLoginForm().should('contain', 'Email is not valid');
+    getLoginForm().should('contain', 'Password is required.');
+  });
 
   it('should not login', () => {
     getLoginEmailField().type('admin@example.com');

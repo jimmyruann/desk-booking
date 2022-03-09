@@ -67,6 +67,7 @@ export function AppSideMenu({ opened }: AppSideMenuProps) {
         top: 60,
       }}
       zIndex={100}
+      id="navSideBar"
     >
       <Navbar.Section grow>
         {navRoute.map((each, key) => {

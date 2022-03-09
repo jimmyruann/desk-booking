@@ -1,12 +1,14 @@
-import { RefreshTokenReturn } from '@desk-booking/data';
-import axios, { AxiosInstance } from 'axios';
+import {
+  FindAllLocationReturn,
+  FindOneAreaWithBookingResponse,
+  RefreshTokenReturn,
+} from '@desk-booking/data';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
+import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
 import { TokenStorage } from '../utils/TokenStorage';
-
-// https://stackoverflow.com/questions/43002444/make-axios-send-cookies-in-its-requests-automatically
-
-// axios.defaults.withCredentials = true;
+import validator from 'validator';
 
 const client = axios.create({
   baseURL: '/api',
@@ -28,7 +30,7 @@ client.interceptors.request.use((request) => {
 });
 
 // Handle refresh
-createAuthRefreshInterceptor(client, (failedRequest: any) =>
+createAuthRefreshInterceptor(client, (failedRequest) =>
   axios
     .post<RefreshTokenReturn>(`/api/auth/refresh`)
     .then((tokenRefreshResponse) => {
@@ -40,46 +42,68 @@ createAuthRefreshInterceptor(client, (failedRequest: any) =>
     })
 );
 
-/**
- * https://stackoverflow.com/a/66238542
- */
-
+// Serialize Date
 client.interceptors.response.use((originalResponse) => {
-  handleDates(originalResponse.data);
+  // https://mariusschulz.com/blog/deserializing-json-strings-as-javascript-date-objects
+  originalResponse.data = JSON.parse(
+    JSON.stringify(originalResponse.data),
+    (key, value) => {
+      if (typeof value === 'string' && validator.isISO8601(value)) {
+        return dayjs(value).utc(false).toDate();
+      }
+      return value;
+    }
+  );
+
   return originalResponse;
 });
-
-function isIsoDateString(value: string): boolean {
-  const isoDateFormat =
-    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d*)?(?:[-+]\d{2}:?\d{2}|Z)?$/;
-  return value && typeof value === 'string' && isoDateFormat.test(value);
-}
-
-export function handleDates(body: any) {
-  if (body === null || body === undefined || typeof body !== 'object')
-    return body;
-
-  for (const key of Object.keys(body)) {
-    const value = body[key];
-    if (isIsoDateString(value)) body[key] = new Date(value);
-    else if (typeof value === 'object') handleDates(value);
-  }
-}
 
 interface ApiClientContext {
   client: AxiosInstance;
   getAccessToken: () => string | null;
   saveAccessToken: (token: string | null) => void;
+  make: {
+    area: {
+      findOne: (findOneParams: {
+        id: string;
+        from: Dayjs;
+        to: Dayjs;
+      }) => Promise<AxiosResponse<FindOneAreaWithBookingResponse, any>>;
+    };
+    location: {
+      findAll: () => Promise<AxiosResponse<FindAllLocationReturn, any>>;
+    };
+  };
 }
 
 interface ApiClientProvider {
   children: React.ReactChild;
 }
 
-const initialValue = {
+const initialValue: ApiClientContext = {
   client,
   getAccessToken,
   saveAccessToken,
+  make: {
+    area: {
+      findOne: ({ id, from, to }) => {
+        return client.get<FindOneAreaWithBookingResponse>(
+          `/areas/${id}/bookings`,
+          {
+            params: {
+              from: from.toDate(),
+              to: to.toDate(),
+            },
+          }
+        );
+      },
+    },
+    location: {
+      findAll: async () => {
+        return await client.get<FindAllLocationReturn>('/locations');
+      },
+    },
+  },
 };
 
 const ApiClientContext = React.createContext<ApiClientContext>(initialValue);

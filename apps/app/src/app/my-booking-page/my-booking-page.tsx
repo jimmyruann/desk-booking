@@ -1,4 +1,4 @@
-import { FindAllBookingReturn } from '@desk-booking/data';
+import { FindAllBookingResponse } from '@desk-booking/data';
 import { BookingTable } from '@desk-booking/ui';
 import { createStyles, Space, Text } from '@mantine/core';
 import { useNotifications } from '@mantine/notifications';
@@ -41,9 +41,12 @@ export function MyBookingPage(props: MyBookingPageProps) {
       const { startTime, endTime } = queryKey[1];
       if (!startTime || !endTime) return [];
 
-      const { data } = await api.client.get<FindAllBookingReturn>('/bookings', {
-        params: { startTime, endTime },
-      });
+      const { data } = await api.client.get<FindAllBookingResponse>(
+        '/bookings',
+        {
+          params: { startTime, endTime },
+        }
+      );
 
       return data;
     },

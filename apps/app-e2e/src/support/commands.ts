@@ -6,6 +6,7 @@ declare global {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Chainable<Subject> {
       login(type: 'user' | 'admin', loggedIn: boolean): void;
+      logout(): void;
       deleteAllBooking(): void;
     }
   }
@@ -21,6 +22,10 @@ Cypress.Commands.add('login', (type, loggedIn) => {
     window.localStorage.setItem('password', response.body.passwordRaw);
     window.localStorage.setItem('user', JSON.stringify(response.body.user));
   });
+});
+
+Cypress.Commands.add('logout', () => {
+  cy.request('GET', '/api/auth/logout');
 });
 
 Cypress.Commands.add('deleteAllBooking', () => {

@@ -1,5 +1,5 @@
 import './booking-table.module.css';
-import { FindAllBookingReturn } from '@desk-booking/data';
+import { FindAllBookingResponse } from '@desk-booking/data';
 import { ActionIcon, Table } from '@mantine/core';
 import { HiX } from 'react-icons/hi';
 import dayjs from 'dayjs';
@@ -9,7 +9,7 @@ dayjs.extend(relativeTime);
 
 /* eslint-disable-next-line */
 export interface BookingTableProps {
-  data: FindAllBookingReturn;
+  data: FindAllBookingResponse;
 }
 
 export function BookingTable({ data }: BookingTableProps) {

@@ -10,7 +10,7 @@ import {
 } from 'class-validator';
 import { Booking, Area, Location, AreaType } from '@prisma/client';
 
-export class BookingsTime {
+class BookingsTime {
   @ApiProperty()
   @IsNotEmpty()
   @Type(() => Date)
@@ -57,19 +57,24 @@ export class FindAllBookingDto extends BookingsTime {
   readonly take: number = 20;
 }
 
-export type CreateBookingReturn = Area & {
+export type CreateBookingResponse = Area & {
   readonly Location: Location;
   readonly Booking: Booking[];
 };
 
-export type FindOneBookingReturn = Booking & {
+export type FindOneBookingResponse = Booking & {
   Area: Area & {
     AreaType: AreaType;
     Location: Location;
   };
 };
 
-export type FindAllBookingReturn = FindOneBookingReturn[];
+export type FindAllBookingResponse = (Booking & {
+  Area: Area & {
+    AreaType: AreaType;
+    Location: Location;
+  };
+})[];
 
 export function IsBeforeConstraint(IsBeforeConstraint: any, arg1: string[]) {
   throw new Error('Function not implemented.');

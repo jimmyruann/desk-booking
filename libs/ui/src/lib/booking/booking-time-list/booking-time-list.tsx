@@ -10,6 +10,12 @@ import { useState } from 'react';
 import BookingTimeListItem from '../booking-time-list-item/booking-time-list-item';
 import './booking-time-list.module.css';
 
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 export interface BookingItem {
   startTime: Date;
   endTime: Date;
@@ -24,6 +30,7 @@ export interface BookingTimeListProps extends React.HTMLProps<HTMLDivElement> {
   bookingItems: BookingItem[];
   checkedItems: boolean[];
   setCheckedItems: (checkedItems: boolean[]) => void;
+  timeZone: string;
 }
 
 const useStyles = createStyles((theme) => ({
@@ -49,6 +56,7 @@ export function BookingTimeList({
   bookingItems,
   checkedItems,
   setCheckedItems,
+  timeZone,
   ...props
 }: BookingTimeListProps) {
   const { classes } = useStyles();
@@ -82,9 +90,9 @@ export function BookingTimeList({
                 handleChecked(i + (activePage - 1) * pagination.numberPerPage)
               }
             >
-              {`${dayjs(startTime).format('hh:mm A')} - ${dayjs(endTime).format(
-                'hh:mm A'
-              )}`}
+              {`${dayjs.tz(startTime, timeZone).format('hh:mm A')} - ${dayjs
+                .tz(endTime, timeZone)
+                .format('hh:mm A')}`}
             </BookingTimeListItem>
           ))}
       </SimpleGrid>

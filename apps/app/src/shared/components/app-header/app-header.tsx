@@ -35,7 +35,13 @@ export function AppHeader({ opened, setOpened }: AppHeaderProps) {
   const theme = useMantineTheme();
   const { classes } = useStyles();
   return (
-    <Header height={60} padding="md" fixed className={classes.header}>
+    <Header
+      height={60}
+      padding="md"
+      fixed
+      className={classes.header}
+      id="navHeader"
+    >
       <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
         <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
           <Burger
@@ -61,8 +67,12 @@ export function AppHeader({ opened, setOpened }: AppHeaderProps) {
           {userLocation.locations.map((each) => (
             <Menu.Item
               key={each.name}
-              className={userLocation.location === each.name && classes.active}
-              onClick={() => userLocation.setLocation(each.name)}
+              className={
+                userLocation.location.name === each.name && classes.active
+              }
+              onClick={() =>
+                userLocation.setLocation(userLocation.findLocation(each.name))
+              }
               data-cy={`location-${each.name}`}
             >
               {each.displayName}

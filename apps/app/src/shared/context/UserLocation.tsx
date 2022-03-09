@@ -6,17 +6,17 @@ import { useQuery } from 'react-query';
 import { useApi } from './ApiClient';
 
 interface UserLocationContext {
-  location: string;
-  setLocation: (location: string) => void;
-  readonly locations: FindAllLocationReturn;
-  getLocation: (name: string) => Location;
+  location: Location;
+  setLocation: (location: Location) => void;
+  locations: FindAllLocationReturn;
+  findLocation: (name: string) => Location;
 }
 
 const UserLocationContext = React.createContext<UserLocationContext>({
-  location: '',
-  setLocation: (location: string) => null,
+  location: null,
+  setLocation: (location: Location) => null,
   locations: [],
-  getLocation: (name: string) => null,
+  findLocation: (name: string) => null,
 });
 
 export const UserLocationProvider = ({
@@ -24,39 +24,39 @@ export const UserLocationProvider = ({
 }: {
   children: React.ReactChild;
 }) => {
+  const initialLocation = localStorage.getItem('location_name') || 'singapore';
+
   const api = useApi();
-  const [location, setLocation] = useState(
-    localStorage.getItem('location') || 'singapore'
-  );
-
-  const setLocationModified = (location: string) => {
-    localStorage.setItem('location', location);
-    setLocation(location);
-  };
-
-  const getLocation = (name: string): Location => {
-    return _.find(locations, { name });
-  };
-
-  const { data: locations, isLoading: locationsIsLoading } = useQuery(
+  const [location, setLocation] = useState<Location>(null);
+  const { data: locations, status } = useQuery(
     'GET_ALL_LOCATIONS',
     async () => {
-      const { data } = await api.client.get<FindAllLocationReturn>(
-        '/locations'
-      );
+      const { data } = await api.make.location.findAll();
       return data;
+    },
+    {
+      onSuccess: (data) => {
+        setLocation(_.find(data, { name: initialLocation }));
+      },
     }
   );
 
-  if (locationsIsLoading) return <div>Loading</div>;
+  const findLocation = (name: string) => {
+    return _.find(locations, { name });
+  };
+
+  if (status === 'loading') return <div>Loading</div>;
 
   return (
     <UserLocationContext.Provider
       value={{
         location,
-        setLocation: setLocationModified,
+        setLocation: (location: Location) => {
+          localStorage.setItem('location_name', location.name);
+          setLocation(location);
+        },
         locations,
-        getLocation,
+        findLocation,
       }}
     >
       {children}

@@ -35,7 +35,7 @@ model Location {
   timeZone         String
   capacity         Int     @default(1)
   allowBookingFrom Int     @default(0)
-  allowBookingTill Int     @default(86399)
+  allowBookingTill Int     @default(1439)
   allowBookings    Boolean @default(true)
   Area             Area[]
 }

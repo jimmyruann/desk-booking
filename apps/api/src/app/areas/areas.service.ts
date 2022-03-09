@@ -1,9 +1,9 @@
 import {
   CreateAreaDto,
-  CreateAreaReturn,
-  FindAllAreaReturn,
-  FindOneReturn,
-  AreaFindOneWithBookingReturn,
+  CreateAreaResponse,
+  FindAllAreaResponse,
+  FindOneAreaResponse,
+  FindOneAreaWithBookingResponse,
 } from '@desk-booking/data';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../shared/prisma/prisma.service';
@@ -16,13 +16,13 @@ export class AreasService {
     return /^-?\d+$/.test(id) ? { id: +id } : { htmlId: id };
   }
 
-  async create(createAreaDto: CreateAreaDto): Promise<CreateAreaReturn> {
+  async create(createAreaDto: CreateAreaDto): Promise<CreateAreaResponse> {
     return await this.prisma.area.create({
       data: createAreaDto,
     });
   }
 
-  async findAllByLocation(location: string): Promise<FindAllAreaReturn> {
+  async findAllByLocation(location: string): Promise<FindAllAreaResponse> {
     return this.prisma.area.findMany({
       where: {
         Location: {
@@ -32,7 +32,7 @@ export class AreasService {
     });
   }
 
-  async findOne(id: string): Promise<FindOneReturn> {
+  async findOne(id: string): Promise<FindOneAreaResponse> {
     // able to use id or htmlId
     const query = /^-?\d+$/.test(id) ? { id: +id } : { htmlId: id };
 
@@ -48,7 +48,7 @@ export class AreasService {
     id: string,
     from: Date,
     to: Date
-  ): Promise<AreaFindOneWithBookingReturn> {
+  ): Promise<FindOneAreaWithBookingResponse> {
     return await this.prisma.area.findUnique({
       where: this.idOrHtmlId(id),
       include: {
@@ -71,6 +71,7 @@ export class AreasService {
           },
         },
         AreaType: true,
+        Location: true,
       },
     });
   }

@@ -96,6 +96,7 @@ export function FeedbackPage(props: FeedbackPageProps) {
       <form
         onSubmit={form.onSubmit((values) => handleOnSubmit(values))}
         className="tw-py-8"
+        name="feedbackForm"
       >
         <Group direction="column" grow={true}>
           <NativeSelect
@@ -106,6 +107,7 @@ export function FeedbackPage(props: FeedbackPageProps) {
             placeholder="Feedback Type"
             label="Feedback Type"
             required
+            name="type"
             {...form.getInputProps('type')}
           />
 
@@ -113,12 +115,14 @@ export function FeedbackPage(props: FeedbackPageProps) {
             required
             label="Title"
             placeholder="Feedback Title"
+            name="title"
             {...form.getInputProps('title')}
           />
 
           <Textarea
             label="Description"
             required
+            name="description"
             {...form.getInputProps('message')}
           />
 

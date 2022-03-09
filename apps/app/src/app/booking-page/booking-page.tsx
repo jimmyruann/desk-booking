@@ -6,12 +6,18 @@ import {
   BookingItem,
   BookingTimeListControl,
   BookingTimeList,
+  DigitalTime,
 } from '@desk-booking/ui';
+import { CreateBookingResponse } from '@desk-booking/data';
 import {
-  CreateBookingReturn,
-  AreaFindOneWithBookingReturn,
-} from '@desk-booking/data';
-import { createStyles, Grid, Tabs, Text } from '@mantine/core';
+  createStyles,
+  Divider,
+  Grid,
+  Group,
+  Space,
+  Tabs,
+  Text,
+} from '@mantine/core';
 
 import { useEffect, useState } from 'react';
 import axios, { AxiosError } from 'axios';
@@ -21,7 +27,7 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useApi } from '../../shared/context/ApiClient';
 import { generateAvailableTime } from '../../shared/utils/generateAvailableTime';
 import { useNotifications } from '@mantine/notifications';
-import { mergeTime } from '../../shared/utils/time';
+import { isTimeOverlapped, mergeTime } from '../../shared/utils/time';
 import { HiOutlineCalendar, HiOutlineUserGroup } from 'react-icons/hi';
 import { environment } from '../../environments/environment';
 import { BookingPageContext } from './context/BookingPageContext';
@@ -31,6 +37,7 @@ import { useUserLocation } from '../../shared/context/UserLocation';
 
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import RRule from 'rrule';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -59,83 +66,99 @@ export function BookingPage(props: BookingPageProps) {
   const queryClient = useQueryClient();
   const notifications = useNotifications();
   const userLocation = useUserLocation();
-  const currentLocation = userLocation.getLocation(userLocation.location);
 
-  const [date, setDate] = useState(
-    dayjs
-      .tz(new Date(), currentLocation.timeZone)
-      .startOf('day')
-      .utc(false)
-      .toDate()
-  );
+  const [date, setDate] = useState(new Date());
   const [checked, setChecked] = useState<boolean[]>([]);
   const [currentHtmlId, setCurrentHtmlId] = useState('');
   const [availabilities, setAvailabilities] = useState<BookingItem[]>([]);
 
   useEffect(() => {
+    setDate(new Date());
     setChecked([]);
     setCurrentHtmlId('');
     setAvailabilities([]);
-  }, [currentLocation.timeZone, userLocation.location]);
+  }, [userLocation.location.name]);
 
   const getArea = useQuery(
     [
       'GET_AREA_BOOKING_DATA',
       {
-        htmlId: currentHtmlId,
+        id: currentHtmlId,
         date,
       },
     ] as const,
     async ({ queryKey }) => {
-      const { date, htmlId } = queryKey[1];
-      if (!date || !htmlId) return null;
+      const { date, id } = queryKey[1];
+      if (!date || !id) return null;
 
-      // Fetching
-      const { data } = await api.client.get<AreaFindOneWithBookingReturn>(
-        `/areas/${htmlId}/bookings`,
-        {
-          params: {
-            from: dayjs
-              .tz(date, currentLocation.timeZone)
-              .startOf('day')
-              .utc(false)
-              .toDate(),
-            to: dayjs
-              .tz(date, currentLocation.timeZone)
-              .endOf('day')
-              .utc(false)
-              .toDate(),
-          },
-        }
+      const dayjsCurrentTimeZone = dayjs(date).tz(
+        userLocation.location.timeZone
       );
+
+      const { data } = await api.make.area.findOne({
+        id,
+        from: dayjsCurrentTimeZone.startOf('day'),
+        to: dayjsCurrentTimeZone.endOf('day'),
+      });
 
       return data;
     },
-
     {
       onSuccess: (areaData) => {
-        console.log(date);
-
         if (areaData) {
-          const ava = generateAvailableTime({
-            from: dayjs
-              .tz(date, currentLocation.timeZone)
+          const allTimes = new RRule({
+            freq: RRule.SECONDLY,
+            interval: areaData.AreaType.interval / 1000,
+            dtstart: dayjs
+              .tz(date, userLocation.location.timeZone)
               .startOf('day')
-              .add(8, 'hour')
+              .add(areaData.Location.allowBookingFrom, 'minute')
               .utc(false)
               .toDate(),
-            to: dayjs
-              .tz(date, currentLocation.timeZone)
-              .endOf('day')
-              .subtract(4, 'hour')
+            until: dayjs
+              .tz(date, userLocation.location.timeZone)
+              .startOf('day')
+              .add(areaData.Location.allowBookingTill, 'minute')
               .utc(false)
               .toDate(),
-            intervalInMs: areaData.AreaType.interval,
-            excludes: areaData.Booking,
-            noPastTime: true,
+          }).all(
+            (date) =>
+              date <
+              dayjs
+                .tz(date, userLocation.location.timeZone)
+                .startOf('day')
+                .add(areaData.Location.allowBookingTill, 'minute')
+                .utc(false)
+                .toDate()
+          );
+
+          const result = allTimes.map((curr, i) => {
+            const startTime = curr;
+            const endTime = dayjs(curr)
+              .add(areaData.AreaType.interval, 'millisecond')
+              .toDate();
+            return {
+              startTime,
+              endTime,
+              disabled: areaData.Booking
+                ? areaData.Booking.some((curr) =>
+                    isTimeOverlapped(
+                      {
+                        startTime,
+                        endTime,
+                      },
+                      {
+                        startTime: curr.startTime,
+                        endTime: curr.endTime,
+                      }
+                    )
+                  )
+                : false,
+            };
           });
-          setAvailabilities(ava);
-          setChecked(new Array(ava.length).fill(false));
+
+          setAvailabilities(result);
+          setChecked(new Array(result.length).fill(false));
         }
       },
       onError: (error: AxiosError) => {
@@ -148,7 +171,7 @@ export function BookingPage(props: BookingPageProps) {
   );
 
   const getFloorPlanMap = useQuery(
-    ['GET_FLOOR_PLAN', userLocation.location] as const,
+    ['GET_FLOOR_PLAN', userLocation.location.name] as const,
     async ({ queryKey }) => {
       const { data } = await axios.get<Node>(
         `${environment.floorPlanUrl}/${queryKey[1]}.json`
@@ -181,7 +204,7 @@ export function BookingPage(props: BookingPageProps) {
       htmlId: string;
       bookings: { startTime: Date; endTime: Date }[];
     }) => {
-      return api.client.post<CreateBookingReturn>('/bookings', data);
+      return api.client.post<CreateBookingResponse>('/bookings', data);
     },
     {
       onSuccess: ({ data }) => {
@@ -204,18 +227,19 @@ export function BookingPage(props: BookingPageProps) {
   );
 
   const handleConfirmAndBook = () => {
-    const bookings = mergeTime(
-      checked
-        .map((curr, i) => {
-          return (
-            curr && {
-              startTime: availabilities[i].startTime,
-              endTime: availabilities[i].endTime,
-            }
-          );
-        })
-        .filter((curr) => !!curr)
-    );
+    const checkedTime = checked
+      .map(
+        (curr, i) =>
+          curr && {
+            startTime: availabilities[i].startTime,
+            endTime: availabilities[i].endTime,
+          }
+      )
+      .filter((curr) => !!curr);
+
+    const bookings = mergeTime(checkedTime);
+
+    console.log(JSON.stringify(checkedTime), JSON.stringify(bookings));
 
     createBookingMutation.mutate({
       htmlId: currentHtmlId,
@@ -229,8 +253,6 @@ export function BookingPage(props: BookingPageProps) {
   return (
     <BookingPageContext.Provider
       value={{
-        date,
-        setDate,
         checked,
         setChecked,
         currentHtmlId,
@@ -240,14 +262,6 @@ export function BookingPage(props: BookingPageProps) {
       <Grid grow>
         <Grid.Col md={12} lg={7} xl={7} data-cy="svgMapContainer">
           <div className={classes.common}>
-            <div className={classes.mapHeading}>
-              <Text transform="capitalize" data-cy="svgMapHeadingLocation">
-                Location: <b>{userLocation.location}</b>
-              </Text>
-              <Text data-cy="svgMapHeadingHtmlId">
-                Currently Selected: <b>{currentHtmlId || 'None'}</b>
-              </Text>
-            </div>
             <Map
               mapData={getFloorPlanMap.data}
               viewBox={
@@ -258,11 +272,37 @@ export function BookingPage(props: BookingPageProps) {
               }
               currentHtmlId={currentHtmlId}
               setCurrentHtmlId={setCurrentHtmlId}
-              data-cy={`svgMap-${userLocation.location}`}
+              data-cy={`svgMap-${userLocation.location.name}`}
             />
           </div>
         </Grid.Col>
+
         <Grid.Col md={12} lg={5} xl={5}>
+          <Group direction="column" className={classes.common}>
+            <section>
+              <Text data-cy="svgMapHeadingLocation">
+                Location: <b>{userLocation.location.displayName}</b>
+              </Text>
+              <Text data-cy="svgMapHeadingHtmlId">
+                Area: <b>{currentHtmlId || '-'}</b>
+              </Text>
+            </section>
+            <section>
+              <Text weight={500} size="md" color="orange">
+                Note*
+              </Text>
+              <Text data-cy="currentLocationTimeZone">
+                Timezone: <b>{userLocation.location.timeZone}</b>.
+              </Text>
+              <Text data-cy="currentLocationTime">
+                Time:{' '}
+                <b>
+                  <DigitalTime timeZone={userLocation.location.timeZone} />
+                </b>
+              </Text>
+            </section>
+          </Group>
+          <Space h="md" />
           <div className={classes.common}>
             <BookingTimeListControl
               date={date}
@@ -278,19 +318,19 @@ export function BookingPage(props: BookingPageProps) {
                 label="Booking"
                 icon={<HiOutlineCalendar size={18} id="bookingTab" />}
               >
-                <BookingTimeList
-                  pagination={{ numberPerPage: 16 }}
-                  bookingItems={availabilities}
-                  style={{ display: 'relative' }}
-                  checkedItems={checked}
-                  setCheckedItems={setChecked}
+                <TimeTab
+                  availabilities={availabilities}
+                  timeZone={userLocation.location.timeZone}
                 />
               </Tabs.Tab>
               <Tabs.Tab
                 label="People"
                 icon={<HiOutlineUserGroup size={18} id="peopleTab" />}
               >
-                <PeopleTab data={getArea.data} />
+                <PeopleTab
+                  data={getArea.data}
+                  timeZone={userLocation.location.timeZone}
+                />
               </Tabs.Tab>
             </Tabs>
           </div>
