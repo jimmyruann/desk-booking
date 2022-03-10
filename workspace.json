@@ -5,6 +5,7 @@
     "app": "apps/app",
     "app-e2e": "apps/app-e2e",
     "data": "libs/data",
-    "ui": "libs/ui"
+    "ui": "libs/ui",
+    "prisma": "prisma"
   }
 }

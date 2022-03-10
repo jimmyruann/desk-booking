@@ -3,6 +3,16 @@
   "sourceRoot": "apps/api/src",
   "projectType": "application",
   "targets": {
+    "deploy": {
+      "builder": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "nx build api --prod",
+          "docker build -f ./apps/api/Dockerfile . -t desk_booking_api"
+        ],
+        "parallel": false
+      }
+    },
     "build": {
       "executor": "@nrwl/node:build",
       "outputs": ["{options.outputPath}"],
