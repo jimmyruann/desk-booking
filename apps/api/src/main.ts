@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 
 import { AppModule } from './app/app.module';
+import { environment } from './environments/environment';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,20 +21,22 @@ async function bootstrap() {
     })
   );
 
-  // Swagger
-  const swaggerDocumentConfigs = new DocumentBuilder()
-    .setTitle('Desk Booking Rest API')
-    .setVersion('1.0')
-    .addBearerAuth(
-      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
-      'access-token'
-    )
-    .build();
-  const swaggerDocument = SwaggerModule.createDocument(
-    app,
-    swaggerDocumentConfigs
-  );
-  SwaggerModule.setup('api', app, swaggerDocument);
+  if (!environment.production) {
+    // Swagger
+    const swaggerDocumentConfigs = new DocumentBuilder()
+      .setTitle('Desk Booking Rest API')
+      .setVersion('1.0')
+      .addBearerAuth(
+        { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+        'access-token'
+      )
+      .build();
+    const swaggerDocument = SwaggerModule.createDocument(
+      app,
+      swaggerDocumentConfigs
+    );
+    SwaggerModule.setup('api', app, swaggerDocument);
+  }
 
   // Express middleware
   app.use(helmet());
