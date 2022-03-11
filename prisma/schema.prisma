@@ -7,11 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// // Please follow the below convention // //
-// Capital when refer to another object
-// camelCase when refer to Enum and other
-// Enum value must all in CAPITAL
-
 enum UserRole {
   MANAGER
   ADMIN
@@ -26,17 +21,19 @@ model User {
   roles     UserRole[]
   Booking   Booking[]
   Feedback  Feedback[]
+  createAt  DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 model Location {
-  id               Int     @id @default(autoincrement())
-  name             String  @unique
+  id               Int    @id @default(autoincrement())
+  name             String @unique
   displayName      String
   timeZone         String
-  capacity         Int     @default(1)
-  allowBookingFrom Int     @default(0)
-  allowBookingTill Int     @default(1439)
-  allowBookings    Boolean @default(true)
+  mapUrl           String
+  capacity         Int    @default(1)
+  allowBookingFrom Int    @default(0)
+  allowBookingTill Int    @default(1439)
   Area             Area[]
 }
 
@@ -48,14 +45,15 @@ model AreaType {
 }
 
 model Area {
-  id         Int       @id @default(autoincrement())
-  htmlId     String    @unique
-  name       String    @default("")
-  locationId Int
-  areaTypeId Int
-  Location   Location  @relation(fields: [locationId], references: [id])
-  AreaType   AreaType  @relation(fields: [areaTypeId], references: [id])
-  Booking    Booking[]
+  id           Int       @id @default(autoincrement())
+  htmlId       String    @unique
+  displayName  String    @default("")
+  locationId   Int
+  areaTypeId   Int
+  allowBooking Boolean   @default(true)
+  Location     Location  @relation(fields: [locationId], references: [id])
+  AreaType     AreaType  @relation(fields: [areaTypeId], references: [id])
+  Booking      Booking[]
 }
 
 model Booking {
@@ -66,14 +64,17 @@ model Booking {
   User      User     @relation(fields: [userId], references: [id])
   startTime DateTime
   endTime   DateTime
-
+  createAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Feedback {
-  id      Int    @id @default(autoincrement())
-  userId  Int
-  User    User   @relation(fields: [userId], references: [id])
-  type    String
-  title   String
-  message String
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  User      User     @relation(fields: [userId], references: [id])
+  type      String
+  title     String
+  message   String
+  createAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

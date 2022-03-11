@@ -31,14 +31,20 @@ export function MapBox(props: MapBoxProps) {
   const notifications = useNotifications();
 
   const { data, status } = useQuery(
-    ['GET_FLOOR_PLAN', userLocation.location.name] as const,
+    ['GET_FLOOR_PLAN', userLocation.location.mapUrl] as const,
     async ({ queryKey }) => {
       const { data } = await axios.get<Node>(
-        `${environment.floorPlanUrl}/${queryKey[1]}.json`
+        `${environment.floorPlanUrl}/${queryKey[1]}`
       );
       return data;
     },
     {
+      onSuccess: () => {
+        bookingPage.setDate(new Date());
+        bookingPage.setChecked([]);
+        bookingPage.setCurrentHtmlId('');
+        bookingPage.setAvailabilities([]);
+      },
       onError: (error: AxiosError) => {
         notifications.showNotification({
           title: 'Unable to load map',

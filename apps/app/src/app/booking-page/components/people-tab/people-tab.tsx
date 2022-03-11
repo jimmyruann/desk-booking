@@ -1,13 +1,18 @@
-import { FindOneAreaWithBookingResponse } from '@desk-booking/data';
 import { createStyles, Table } from '@mantine/core';
 import { useUserLocation } from '../../../../shared/context/UserLocation';
 import dayjs from 'dayjs';
 
 import './people-tab.module.css';
+import { useNotifications } from '@mantine/notifications';
+import { useBookingPage } from '../../context/BookingPageContext';
+import { useApi } from '../../../../shared/context/ApiClient';
+import { useQuery } from 'react-query';
+import { AxiosError } from 'axios';
+import { Loading } from '@desk-booking/ui';
 
 /* eslint-disable-next-line */
 export interface PeopleTabProps {
-  data: FindOneAreaWithBookingResponse;
+  // data: FindOneAreaWithBookingResponse;
 }
 
 const useStyles = createStyles((theme) => ({
@@ -19,9 +24,50 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export function PeopleTab({ data }: PeopleTabProps) {
+export function PeopleTab(props: PeopleTabProps) {
   const { classes } = useStyles();
+  const api = useApi();
+  const bookingPage = useBookingPage();
+  const notifications = useNotifications();
   const userLocation = useUserLocation();
+
+  const { data, status } = useQuery(
+    [
+      'GET_AREA_BOOKING_DATA',
+      {
+        id: bookingPage.currentHtmlId,
+        date: bookingPage.currentHtmlId,
+      },
+    ] as const,
+    async ({ queryKey }) => {
+      const { date, id } = queryKey[1];
+      if (!date || !id) return null;
+
+      const dayjsInUserTimeZone = dayjs(date).tz(
+        userLocation.location.timeZone
+      );
+
+      const { data } = await api.make.area.findOne({
+        id,
+        from: dayjsInUserTimeZone.startOf('day'),
+        to: dayjsInUserTimeZone.endOf('day'),
+      });
+
+      return data;
+    },
+    {
+      onError: (error: AxiosError) => {
+        notifications.showNotification({
+          title: error.response.data.title || error.name,
+          message: error.response.data.message || error.message,
+        });
+      },
+    }
+  );
+
+  if (status === 'loading') return <Loading />;
+  if (status === 'error') return <div>Something went wrong</div>;
+
   return (
     <Table id="peopleBookedTable">
       <thead>

@@ -6,7 +6,8 @@
     "timeZone": "Asia/Singapore",
     "allowBookingFrom": 420,
     "allowBookingTill": 1260,
-    "capacity": 1
+    "capacity": 1,
+    "mapUrl": "/singapore.json"
   },
   {
     "id": 2,
@@ -15,7 +16,8 @@
     "timeZone": "Australia/Sydney",
     "allowBookingFrom": 480,
     "allowBookingTill": 1200,
-    "capacity": 1
+    "capacity": 1,
+    "mapUrl": "/sydney-lv16.json"
   },
   {
     "id": 3,
@@ -24,6 +26,7 @@
     "timeZone": "Australia/Sydney",
     "allowBookingFrom": 420,
     "allowBookingTill": 1200,
-    "capacity": 1
+    "capacity": 1,
+    "mapUrl": "/sydney-lv18.json"
   }
 ]

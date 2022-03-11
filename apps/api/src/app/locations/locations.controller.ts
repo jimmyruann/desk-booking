@@ -14,6 +14,6 @@ export class LocationsController {
 
   @Get()
   findAll(@User() user: Express.User) {
-    return this.locationsService.findAll(true);
+    return this.locationsService.findAll();
   }
 }

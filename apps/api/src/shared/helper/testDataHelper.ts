@@ -12,6 +12,8 @@ const generateUser = (): [User, string] => {
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName(),
       roles: [],
+      createAt: new Date(),
+      updatedAt: new Date(),
     },
     realPassword,
   ];

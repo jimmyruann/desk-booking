@@ -19,11 +19,8 @@ export class LocationsService {
     });
   }
 
-  async findAll(allowBookings: boolean): Promise<FindAllLocationReturn> {
+  async findAll(): Promise<FindAllLocationReturn> {
     return await this.prismaService.location.findMany({
-      where: {
-        allowBookings,
-      },
       orderBy: {
         name: 'asc',
       },

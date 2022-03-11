@@ -1,7 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Area, AreaType, Booking, Location } from '@prisma/client';
 import { Type } from 'class-transformer';
-import { IsInt, IsNotEmpty, IsPositive, Validate } from 'class-validator';
+import {
+  IsBoolean,
+  IsInt,
+  IsNotEmpty,
+  IsPositive,
+  Validate,
+} from 'class-validator';
 import { IsBeforeConstraint } from './booking';
 
 export class CreateAreaDto implements Omit<Area, 'id'> {
@@ -9,8 +15,8 @@ export class CreateAreaDto implements Omit<Area, 'id'> {
   @IsNotEmpty()
   htmlId: string;
 
-  @ApiPropertyOptional()
-  name: string;
+  @ApiProperty()
+  displayName: string;
 
   @ApiProperty()
   @Type(() => Number)
@@ -23,6 +29,12 @@ export class CreateAreaDto implements Omit<Area, 'id'> {
   @IsInt()
   @IsPositive()
   areaTypeId: number;
+
+  @ApiPropertyOptional({
+    default: true,
+  })
+  @IsBoolean()
+  allowBooking: boolean;
 }
 
 export class FindOneWithBookingQuery {
