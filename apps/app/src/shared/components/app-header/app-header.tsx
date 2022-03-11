@@ -64,20 +64,21 @@ export function AppHeader({ opened, setOpened }: AppHeaderProps) {
           }
         >
           <Menu.Label data-cy="locationMenuLabel">Location</Menu.Label>
-          {userLocation.locations.map((each) => (
-            <Menu.Item
-              key={each.name}
-              className={
-                userLocation.location.name === each.name && classes.active
-              }
-              onClick={() =>
-                userLocation.setLocation(userLocation.findLocation(each.name))
-              }
-              data-cy={`location-${each.name}`}
-            >
-              {each.displayName}
-            </Menu.Item>
-          ))}
+          {userLocation.locations.length &&
+            userLocation.locations.map((each) => (
+              <Menu.Item
+                key={each.name}
+                className={
+                  userLocation.location.name === each.name && classes.active
+                }
+                onClick={() =>
+                  userLocation.setLocation(userLocation.findLocation(each.name))
+                }
+                data-cy={`location-${each.name}`}
+              >
+                {each.displayName}
+              </Menu.Item>
+            ))}
         </Menu>
       </div>
     </Header>

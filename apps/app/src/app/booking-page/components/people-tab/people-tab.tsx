@@ -1,5 +1,6 @@
 import { FindOneAreaWithBookingResponse } from '@desk-booking/data';
 import { createStyles, Table } from '@mantine/core';
+import { useUserLocation } from '../../../../shared/context/UserLocation';
 import dayjs from 'dayjs';
 
 import './people-tab.module.css';
@@ -7,7 +8,6 @@ import './people-tab.module.css';
 /* eslint-disable-next-line */
 export interface PeopleTabProps {
   data: FindOneAreaWithBookingResponse;
-  timeZone: string;
 }
 
 const useStyles = createStyles((theme) => ({
@@ -19,8 +19,9 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export function PeopleTab({ data, timeZone }: PeopleTabProps) {
+export function PeopleTab({ data }: PeopleTabProps) {
   const { classes } = useStyles();
+  const userLocation = useUserLocation();
   return (
     <Table id="peopleBookedTable">
       <thead>
@@ -34,8 +35,12 @@ export function PeopleTab({ data, timeZone }: PeopleTabProps) {
       <tbody>
         {data &&
           data.Booking.map((unavailability, i) => {
-            const start = dayjs(unavailability.startTime).tz(timeZone);
-            const end = dayjs(unavailability.endTime).tz(timeZone);
+            const start = dayjs(unavailability.startTime).tz(
+              userLocation.location.timeZone
+            );
+            const end = dayjs(unavailability.endTime).tz(
+              userLocation.location.timeZone
+            );
 
             return (
               <tr key={i}>
@@ -44,7 +49,7 @@ export function PeopleTab({ data, timeZone }: PeopleTabProps) {
                 <td>{end.format('hh:mm A')}</td>
                 <td
                   className={` ${
-                    end > dayjs().tz(timeZone)
+                    end > dayjs().tz(userLocation.location.timeZone)
                       ? classes.greenText
                       : classes.redText
                   }`}
