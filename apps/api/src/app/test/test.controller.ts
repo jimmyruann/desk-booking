@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Query, Req, Res } from '@nestjs/common';
+import { Controller, Post, Query, Res, UseGuards } from '@nestjs/common';
 import { UserRole } from '@prisma/client';
 import { Response } from 'express';
 import { PrismaService } from '../../shared/prisma/prisma.service';
@@ -9,8 +9,10 @@ import { COOKIE_CONSTANT } from '../../constants/cookie';
 import { AuthService } from '../../auth/auth.service';
 import { Public } from '../../auth/decorator/public.decorator';
 import { v4 as uuid } from 'uuid';
+import { TestGuard } from '../../auth/guards/test.guard';
 
 @Public()
+@UseGuards(TestGuard)
 @Controller('test')
 export class TestController {
   constructor(

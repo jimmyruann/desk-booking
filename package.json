@@ -6,8 +6,7 @@
   "scripts": {
     "start": "nx serve",
     "build": "nx build",
-    "test": "nx test",
-    "build:db:migration": "docker build -f ./prisma/Dockerfile . -t desk_booking_prisma_migration"
+    "test": "nx test"
   },
   "prisma": {
     "seed": "node prisma/seed.js"

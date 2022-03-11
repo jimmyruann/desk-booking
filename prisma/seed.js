@@ -62,6 +62,10 @@ async function main() {
     })
     .then(() => {
       // Please change the password asap
+      if (!process.env.ADMIN_INITIAL_PASSWORD) {
+        throw new Error('process.env.ADMIN_INITIAL_PASSWORD is missing');
+      }
+
       return prisma.user.upsert({
         where: { email: 'admin@example.com' },
         update: {},
@@ -70,10 +74,7 @@ async function main() {
           firstName: 'Admin',
           lastName: 'Smith',
           roles: [UserRole.MANAGER, UserRole.ADMIN],
-          password: bcrypt.hashSync(
-            process.env.ADMIN_INITIAL_PASSWORD || 'password',
-            10
-          ),
+          password: bcrypt.hashSync(process.env.ADMIN_INITIAL_PASSWORD, 10),
         },
       });
     })
