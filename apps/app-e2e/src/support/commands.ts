@@ -1,33 +1,33 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
+import 'cypress-localstorage-commands';
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
-declare namespace Cypress {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  interface Chainable<Subject> {
-    login(email: string, password: string): void;
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Cypress {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    interface Chainable<Subject> {
+      login(type: 'user' | 'admin', loggedIn: boolean): void;
+      logout(): void;
+      deleteAllBooking(): void;
+    }
   }
 }
-//
-// -- This is a parent command --
-Cypress.Commands.add('login', (email, password) => {
-  console.log('Custom command example: Login', email, password);
+
+Cypress.Commands.add('login', (type, loggedIn) => {
+  cy.request(
+    'POST',
+    `/api/test/login?type=${type}&loggedIn=${loggedIn}`,
+    null
+  ).then((response) => {
+    window.localStorage.setItem('email', response.body.user.email);
+    window.localStorage.setItem('password', response.body.passwordRaw);
+    window.localStorage.setItem('user', JSON.stringify(response.body.user));
+  });
 });
-//
-// -- This is a child command --
-// Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add("dismiss", { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('logout', () => {
+  cy.request('GET', '/api/auth/logout');
+});
+
+Cypress.Commands.add('deleteAllBooking', () => {
+  cy.request('POST', '/api/test/delete/all_bookings');
+});

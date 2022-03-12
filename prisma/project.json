@@ -1,0 +1,15 @@
+{
+  "root": "prisma",
+  "sourceRoot": "prisma",
+  "targets": {
+    "deploy": {
+      "builder": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "docker build -f ./prisma/Dockerfile . -t desk_booking_prisma_migration"
+        ],
+        "parallel": false
+      }
+    }
+  }
+}

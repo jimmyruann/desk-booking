@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  MANAGER
+  ADMIN
+}
+
+model User {
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
+  password  String
+  firstName String
+  lastName  String
+  roles     UserRole[]
+  Booking   Booking[]
+  Feedback  Feedback[]
+  createAt  DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Location {
+  id               Int    @id @default(autoincrement())
+  name             String @unique
+  displayName      String
+  timeZone         String
+  mapUrl           String
+  capacity         Int    @default(1)
+  allowBookingFrom Int    @default(0)
+  allowBookingTill Int    @default(1439)
+  Area             Area[]
+}
+
+model AreaType {
+  id       Int    @id @default(autoincrement())
+  name     String
+  interval Int
+  Area     Area[]
+}
+
+model Area {
+  id           Int       @id @default(autoincrement())
+  htmlId       String    @unique
+  displayName  String    @default("")
+  locationId   Int
+  areaTypeId   Int
+  allowBooking Boolean   @default(true)
+  Location     Location  @relation(fields: [locationId], references: [id])
+  AreaType     AreaType  @relation(fields: [areaTypeId], references: [id])
+  Booking      Booking[]
+}
+
+model Booking {
+  id        Int      @id @default(autoincrement())
+  areaId    Int
+  userId    Int
+  Area      Area     @relation(fields: [areaId], references: [id])
+  User      User     @relation(fields: [userId], references: [id])
+  startTime DateTime
+  endTime   DateTime
+  createAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Feedback {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  User      User     @relation(fields: [userId], references: [id])
+  type      String
+  title     String
+  message   String
+  createAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

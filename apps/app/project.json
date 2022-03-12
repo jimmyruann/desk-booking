@@ -3,6 +3,16 @@
   "sourceRoot": "apps/app/src",
   "projectType": "application",
   "targets": {
+    "deploy": {
+      "builder": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "nx build app --prod",
+          "docker build -f ./apps/app/Dockerfile . -t desk_booking_app"
+        ],
+        "parallel": false
+      }
+    },
     "build": {
       "executor": "@nrwl/web:webpack",
       "outputs": ["{options.outputPath}"],
