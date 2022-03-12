@@ -1,20 +1,11 @@
 describe('Feedback', () => {
   before(() => {
-    Cypress.Cookies.defaults({
-      preserve: 'jid',
-    });
     cy.login('user', true);
-
     cy.saveLocalStorage();
   });
 
-  after(() => {
-    cy.logout();
-    cy.clearLocalStorageSnapshot();
-    cy.clearLocalStorage();
-  });
-
   beforeEach(() => {
+    Cypress.Cookies.preserveOnce('jid');
     cy.restoreLocalStorage();
   });
 

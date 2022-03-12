@@ -14,7 +14,6 @@ import MyBookingPage from './my-booking-page/my-booking-page';
 import FeedbackPage from './feedback-page/feedback-page';
 import { MantineProvider } from '@mantine/core';
 import { NotificationsProvider } from '@mantine/notifications';
-import { UserLocationProvider } from '../shared/context/UserLocation';
 
 const appRoutes: RouteObject[] = [
   {
@@ -60,9 +59,7 @@ export function App() {
         <AuthenticationProvider>
           <GlobalMessageProvider>
             <MantineProvider withNormalizeCSS withGlobalStyles>
-              <NotificationsProvider>
-                <UserLocationProvider>{routes}</UserLocationProvider>
-              </NotificationsProvider>
+              <NotificationsProvider>{routes}</NotificationsProvider>
             </MantineProvider>
           </GlobalMessageProvider>
         </AuthenticationProvider>
