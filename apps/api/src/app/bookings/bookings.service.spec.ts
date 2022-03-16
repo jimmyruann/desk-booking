@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { HttpException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
 import dayjs from 'dayjs';
-import { BookingsService } from './bookings.service';
 import { PrismaService } from '../../shared/prisma/prisma.service';
+import { BookingsService } from './bookings.service';
 
 describe('BookingService', () => {
   let service: BookingsService;

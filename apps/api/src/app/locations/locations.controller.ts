@@ -1,5 +1,4 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { UserRole } from '@prisma/client';
 import { User } from '../../auth/decorator/user.decorator';
 import { LocationsService } from './locations.service';
 

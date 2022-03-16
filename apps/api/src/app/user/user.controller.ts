@@ -1,11 +1,9 @@
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
-
-import { UserService } from './user.service';
-
 import { UserRole } from '@prisma/client';
-import { RolesGuard } from '../../auth/guards/role.guard';
-import { User } from '../../auth/decorator/user.decorator';
 import { Roles } from '../../auth/decorator/roles.decorator';
+import { User } from '../../auth/decorator/user.decorator';
+import { RolesGuard } from '../../auth/guards/role.guard';
+import { UserService } from './user.service';
 
 @UseGuards(RolesGuard)
 @Controller('user')

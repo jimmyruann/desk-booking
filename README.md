@@ -39,6 +39,8 @@ yarn nx serve api
 yarn nx serve app
 ```
 
+API documentation (only available on development environment): [Swagger](http://localhost:4200/api)
+
 ### Production
 
 ```

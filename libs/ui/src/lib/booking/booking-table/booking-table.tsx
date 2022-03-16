@@ -1,9 +1,9 @@
-import './booking-table.module.css';
 import { FindAllBookingResponse } from '@desk-booking/data';
 import { ActionIcon, Table } from '@mantine/core';
-import { HiX } from 'react-icons/hi';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { HiX } from 'react-icons/hi';
+import './booking-table.module.css';
 
 dayjs.extend(relativeTime);
 

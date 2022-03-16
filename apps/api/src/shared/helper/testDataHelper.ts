@@ -1,5 +1,5 @@
-import { User, UserRole } from '@prisma/client';
 import { faker } from '@faker-js/faker';
+import { User } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
 const generateUser = (): [User, string] => {

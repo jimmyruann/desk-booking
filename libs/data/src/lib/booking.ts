@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Area, AreaType, Booking, Location } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
   ArrayMinSize,
@@ -8,7 +9,6 @@ import {
   Min,
   Validate,
 } from 'class-validator';
-import { Booking, Area, Location, AreaType } from '@prisma/client';
 
 class BookingsTime {
   @ApiProperty()
@@ -79,3 +79,5 @@ export type FindAllBookingResponse = (Booking & {
 export function IsBeforeConstraint(IsBeforeConstraint: any, arg1: string[]) {
   throw new Error('Function not implemented.');
 }
+
+export type DeleteBookingResponse = Booking;

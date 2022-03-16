@@ -1,10 +1,4 @@
-import {
-  createStyles,
-  Divider,
-  Pagination,
-  SimpleGrid,
-  Space,
-} from '@mantine/core';
+import { createStyles, Pagination, SimpleGrid } from '@mantine/core';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import BookingTimeListItem from '../booking-time-list-item/booking-time-list-item';
@@ -19,7 +13,8 @@ dayjs.extend(timezone);
 export interface BookingItem {
   startTime: Date;
   endTime: Date;
-  disabled: boolean;
+  booked: boolean;
+  checked: boolean;
 }
 
 /* eslint-disable-next-line */
@@ -81,10 +76,10 @@ export function BookingTimeList({
             (activePage - 1) * pagination.numberPerPage,
             activePage * pagination.numberPerPage
           )
-          .map(({ startTime, endTime, disabled }, i) => (
+          .map(({ startTime, endTime, booked }, i) => (
             <BookingTimeListItem
               key={i}
-              disabled={disabled}
+              disabled={booked}
               checked={checkedItems[i]}
               onClick={() =>
                 handleChecked(i + (activePage - 1) * pagination.numberPerPage)

@@ -10,11 +10,10 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
-
+import { UseForm } from '@mantine/hooks/lib/use-form/use-form';
+import { useState } from 'react';
 import { HiFingerPrint, HiLockClosed, HiOutlineLogin } from 'react-icons/hi';
 import './login-form.module.css';
-import { useState } from 'react';
-import { UseForm } from '@mantine/hooks/lib/use-form/use-form';
 
 /* eslint-disable-next-line */
 interface LoginCred {
@@ -60,7 +59,7 @@ export function LoginForm({ form, handleLogin }: LoginFormProps) {
 
   return (
     <Container className={classes.container}>
-      <Card shadow="sm" padding="xl" withBorder className={classes.card}>
+      <Card shadow="sm" p="xl" withBorder className={classes.card}>
         <Text size="xl" weight={400} align="center">
           DESK BOOKING SERVICE
         </Text>

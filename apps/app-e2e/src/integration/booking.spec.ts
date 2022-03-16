@@ -1,8 +1,7 @@
-import dayjs from 'dayjs';
+import { getAvailabilities } from '../support/booking.po';
 
 describe('Booking', () => {
   before(() => {
-    cy.deleteAllBooking();
     cy.login('user', true);
     cy.saveLocalStorage();
   });
@@ -10,6 +9,7 @@ describe('Booking', () => {
   beforeEach(() => {
     Cypress.Cookies.preserveOnce('jid');
     cy.restoreLocalStorage();
+    cy.deleteAllBooking();
     cy.visit('/');
   });
 
@@ -32,192 +32,116 @@ describe('Booking', () => {
   });
 
   it('should be able to show available time', () => {
-    cy.get('input[name=date]')
-      .clear()
-      .type(
-        dayjs()
-          .add(1, 'week')
-          .startOf('week')
-          .add(2, 'day')
-          .format('MMMM D, YYYY')
-      );
-    cy.get('#singapore-room-7').click();
-    cy.get('#availableTimeList').should('contain.html', 'button');
+    getAvailabilities('#singapore-room-7');
+    cy.get('#availabilityTable tbody').should('not.to.match', ':empty');
   });
 
-  it('should be able to paginate available time', () => {
-    cy.get('input[name=date]')
-      .clear()
-      .type(
-        dayjs()
-          .add(1, 'week')
-          .startOf('week')
-          .add(2, 'day')
-          .format('MMMM D, YYYY')
-      );
-    cy.get('#singapore-room-7').click();
+  it('should be able to select all and unselect all', () => {
+    getAvailabilities('#singapore-room-7');
 
-    cy.get('#availableTimeList button:first').then((curr) => {
-      // Change page
-      cy.get('#availableTimeListPagination button:first').next().next().click();
-      cy.get('#availableTimeList button:first').should(
-        'not.contain.html',
-        curr.html
-      );
-    });
-  });
+    // first availability and last should be checked
+    cy.get('#availabilityTable input[type=checkbox]:first').check();
+    cy.get('#availabilityTable tbody input[type=checkbox]:first').should(
+      'be.checked'
+    );
+    cy.get('#availabilityTable tbody input[type=checkbox]:last').should(
+      'be.checked'
+    );
 
-  it('should be able to check available time', () => {
-    cy.get('input[name=date]')
-      .clear()
-      .type(
-        dayjs()
-          .add(1, 'week')
-          .startOf('week')
-          .add(2, 'day')
-          .format('MMMM D, YYYY')
-      );
-    cy.get('#singapore-room-7').click();
-
-    cy.get('#availableTimeList button:first').then((prev) => {
-      cy.get('#availableTimeList button:first')
-        .click()
-        .should('not.contain.html', prev.html)
-        .should('have.css', 'background-color', 'rgb(211, 249, 216)');
-    });
+    // uncheck
+    cy.get('#availabilityTable input[type=checkbox]:first').uncheck();
+    cy.get('#availabilityTable tbody input[type=checkbox]:first').should(
+      'not.be.checked'
+    );
+    cy.get('#availabilityTable tbody input[type=checkbox]:last').should(
+      'not.be.checked'
+    );
   });
 
   it('should be able to check multiple available time', () => {
-    cy.get('input[name=date]')
-      .clear()
-      .type(
-        dayjs()
-          .add(1, 'week')
-          .startOf('week')
-          .add(2, 'day')
-          .format('MMMM D, YYYY')
-      );
-    cy.get('#singapore-room-7').click();
+    getAvailabilities('#singapore-room-7');
 
-    cy.get('#availableTimeList button:first').then((prev) => {
-      cy.get('#availableTimeList button:first')
-        .click()
-        .should('not.contain.html', prev.html)
-        .should('have.css', 'background-color', 'rgb(211, 249, 216)');
-    });
-    cy.get('#availableTimeList button:first')
-      .next()
-      .then((prev) => {
-        cy.get('#availableTimeList button:first')
-          .next()
-          .click()
-          .should('not.contain.html', prev.html)
-          .should('have.css', 'background-color', 'rgb(211, 249, 216)');
-      });
-    cy.get('#availableTimeList button:first')
-      .next()
-      .next()
-      .then((prev) => {
-        cy.get('#availableTimeList button:first')
-          .next()
-          .next()
-          .click()
-          .should('not.contain.html', prev.html)
-          .should('have.css', 'background-color', 'rgb(211, 249, 216)');
-      });
-
-    cy.get('#availableTimeList button:first')
-      .next()
-      .next()
-      .next()
-      .then((prev) => {
-        cy.get('#availableTimeList button:first')
-          .next()
-          .next()
-          .next()
-          .click()
-          .should('not.contain.html', prev.html)
-          .should('have.css', 'background-color', 'rgb(211, 249, 216)');
-      });
+    cy.get('#availabilityTable tbody input[type=checkbox]')
+      .first()
+      .check()
+      .should('be.checked');
+    cy.get('#availabilityTable tbody input[type=checkbox]')
+      .eq(1)
+      .check()
+      .should('be.checked');
+    cy.get('#availabilityTable tbody input[type=checkbox]')
+      .eq(2)
+      .check()
+      .should('be.checked');
+    cy.get('#availabilityTable tbody input[type=checkbox]')
+      .eq(3)
+      .check()
+      .should('be.checked');
+    cy.get('#availabilityTable tbody input[type=checkbox]')
+      .eq(4)
+      .check()
+      .should('be.checked');
   });
 
   it('should disabled/not disabled button', () => {
     cy.get('#submitBookings').should('be.disabled');
-    cy.get('input[name=date]')
-      .clear()
-      .type(
-        dayjs()
-          .add(1, 'week')
-          .startOf('week')
-          .add(2, 'day')
-          .format('MMMM D, YYYY')
-      );
-    cy.get('#singapore-room-7').click();
+    getAvailabilities('#singapore-room-7');
 
-    cy.get('#availableTimeList button:first').then((prev) => {
-      cy.get('#availableTimeList button:first')
-        .click()
-        .should('not.contain.html', prev.html)
-        .should('have.css', 'background-color', 'rgb(211, 249, 216)');
-    });
+    cy.get('#availabilityTable tbody input[type=checkbox]')
+      .first()
+      .check()
+      .should('be.checked');
     cy.get('#submitBookings').should('not.be.disabled');
   });
 
   it('should submit booking and disabled selected time', () => {
-    cy.get('input[name=date]')
-      .clear()
-      .type(
-        dayjs()
-          .add(1, 'week')
-          .startOf('week')
-          .add(2, 'day')
-          .format('MMMM D, YYYY')
-      );
-    cy.get('#singapore-room-7').click();
+    getAvailabilities('#singapore-room-7');
 
-    cy.get('#availableTimeList button:first').click();
+    cy.get('#availabilityTable tbody input[type=checkbox]')
+      .first()
+      .check()
+      .should('be.checked');
     cy.get('#submitBookings').click();
 
-    cy.get('#availableTimeList button:first').should('be.disabled');
+    cy.get('#availabilityTable tbody input[type=checkbox]')
+      .first()
+      .should('be.disabled');
 
     // Notification
-    cy.get('body').contains('You have booked singapore-room-7.');
+    cy.get('body').contains('You have booked');
   });
 
   it('should not be able to book the same area type at the same time', () => {
-    cy.get('input[name=date]')
-      .clear()
-      .type(
-        dayjs()
-          .add(1, 'week')
-          .startOf('week')
-          .add(2, 'day')
-          .format('MMMM D, YYYY')
-      );
-    cy.get('#singapore-room-6').click();
-    cy.get('#availableTimeList button:first').click();
+    getAvailabilities('#singapore-room-7');
+    cy.get('#availabilityTable tbody input[type=checkbox]')
+      .first()
+      .check()
+      .should('be.checked');
+    cy.get('#submitBookings').click();
+
+    getAvailabilities('#singapore-room-6');
+    cy.get('#availabilityTable tbody input[type=checkbox]')
+      .first()
+      .check()
+      .should('be.checked');
     cy.get('#submitBookings').click();
 
     cy.get('body').contains(/(?<=One )(.*)(?= at a time)/);
   });
 
   it('should be able to show who booked at People Tab', () => {
-    cy.get('input[name=date]')
-      .clear()
-      .type(
-        dayjs()
-          .add(1, 'week')
-          .startOf('week')
-          .add(2, 'day')
-          .format('MMMM D, YYYY')
-      );
-    cy.get('#singapore-room-7').click();
+    getAvailabilities('#singapore-room-7');
+    cy.get('#availabilityTable tbody input[type=checkbox]')
+      .first()
+      .check()
+      .should('be.checked');
+    cy.get('#submitBookings').click();
 
     // Selected
     cy.get('#peopleTab')
       .click()
       .should('have.css', 'color', 'rgb(28, 126, 214)');
 
-    cy.get('#peopleBookedTable tbody').should('not.be.null');
+    cy.get('#peopleBookedTable tbody').should('contain.html', 'tr');
   });
 });

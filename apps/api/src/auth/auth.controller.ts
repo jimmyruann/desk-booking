@@ -1,14 +1,14 @@
 import { All, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { Request, Response } from 'express';
-import { User } from './decorator/user.decorator';
-import { LocalAuthGuard } from './guards/local.guard';
-import { COOKIE_CONSTANT } from '../constants/cookie';
-import { RefreshJwtAuthGuard } from './guards/refresh-jwt.guard';
-import { Public } from './decorator/public.decorator';
 import { JwtService } from '@nestjs/jwt';
+import { Request, Response } from 'express';
+import { COOKIE_CONSTANT } from '../constants/cookie';
 import { JWT_CONSTANT } from '../constants/jwt';
 import { cleanJWT } from '../shared/helper/cleanJwt';
+import { AuthService } from './auth.service';
+import { Public } from './decorator/public.decorator';
+import { User } from './decorator/user.decorator';
+import { LocalAuthGuard } from './guards/local.guard';
+import { RefreshJwtAuthGuard } from './guards/refresh-jwt.guard';
 
 @Controller('auth')
 @Public()

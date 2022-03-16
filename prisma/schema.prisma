@@ -47,7 +47,7 @@ model AreaType {
 model Area {
   id           Int       @id @default(autoincrement())
   htmlId       String    @unique
-  displayName  String    @default("")
+  displayName  String
   locationId   Int
   areaTypeId   Int
   allowBooking Boolean   @default(true)

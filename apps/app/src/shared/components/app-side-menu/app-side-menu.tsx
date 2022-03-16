@@ -1,15 +1,14 @@
 import { NavUserItem } from '@desk-booking/ui';
-import { createStyles, Divider, Menu, Navbar, ScrollArea } from '@mantine/core';
+import { Menu, Navbar } from '@mantine/core';
 import { UserRole } from '@prisma/client';
 import { HiOutlineCalendar } from 'react-icons/hi';
-import { RiFeedbackLine, RiAdminLine } from 'react-icons/ri';
+import { MdLogout } from 'react-icons/md';
+import { RiAdminLine, RiFeedbackLine } from 'react-icons/ri';
 import { useAuth } from '../../context/Authentication';
 import AppSideMenuItem, {
   AppSideMenuItemProps,
 } from '../app-side-menu-item/app-side-menu-item';
 import './app-side-menu.module.css';
-import { MdLogout } from 'react-icons/md';
-import { FaRegUser } from 'react-icons/fa';
 
 /* eslint-disable-next-line */
 export interface AppSideMenuProps {
@@ -55,7 +54,7 @@ export function AppSideMenu({ opened }: AppSideMenuProps) {
   return (
     <Navbar
       height="calc(100vh - 60px)"
-      padding="md"
+      p="md"
       hiddenBreakpoint="sm"
       hidden={!opened}
       width={{

@@ -1,6 +1,7 @@
 import {
   CreateBookingDto,
   CreateBookingResponse,
+  DeleteBookingResponse,
   FindAllBookingDto,
   FindAllBookingResponse,
   FindOneBookingResponse,
@@ -157,12 +158,24 @@ export class BookingsService {
   //   );
   // }
 
-  remove(userId: number, id: number) {
-    return this.prisma.booking.deleteMany({
+  async remove(userId: number, id: number): Promise<DeleteBookingResponse> {
+    const exist = await this.prisma.booking.count({
       where: {
-        id,
         userId,
+        id,
       },
     });
+
+    if (!exist)
+      throw new HttpException(
+        `Booking ID ${id} not found in your record.`,
+        HttpStatus.NOT_FOUND
+      );
+
+    const deleted = await this.prisma.booking.delete({
+      where: { id },
+    });
+
+    return deleted;
   }
 }

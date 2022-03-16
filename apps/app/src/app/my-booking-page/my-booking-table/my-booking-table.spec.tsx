@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react';
 
-import DigitalTime from './digital-time';
+import MyBookingTable from './my-booking-table';
 
-describe('DigitalTime', () => {
+describe('MyBookingTable', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<DigitalTime />);
+    const { baseElement } = render(<MyBookingTable />);
     expect(baseElement).toBeTruthy();
   });
 });

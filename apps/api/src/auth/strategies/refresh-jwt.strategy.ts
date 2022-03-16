@@ -1,12 +1,12 @@
-import { Strategy } from 'passport-jwt';
-import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { RefreshAuthPayLoad } from '../auth.type';
+import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
-import { PrismaService } from '../../shared/prisma/prisma.service';
+import { Strategy } from 'passport-jwt';
 import { COOKIE_CONSTANT } from '../../constants/cookie';
 import { JWT_CONSTANT } from '../../constants/jwt';
 import { cleanJWT } from '../../shared/helper/cleanJwt';
+import { PrismaService } from '../../shared/prisma/prisma.service';
+import { RefreshAuthPayLoad } from '../auth.type';
 
 @Injectable()
 export class RefreshJwtStrategy extends PassportStrategy(

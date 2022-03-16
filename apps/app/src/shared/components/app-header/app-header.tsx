@@ -9,9 +9,8 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { MdOutlineMyLocation } from 'react-icons/md';
-
-import './app-header.module.css';
 import { useUserLocation } from '../../context/UserLocation';
+import './app-header.module.css';
 
 /* eslint-disable-next-line */
 export interface AppHeaderProps {
@@ -26,7 +25,7 @@ const useStyles = createStyles((theme) => ({
     alignItems: 'center',
   },
   active: {
-    backgroundColor: theme.colors.teal[2],
+    backgroundColor: theme.colors['teal'][2],
   },
 }));
 
@@ -35,13 +34,7 @@ export function AppHeader({ opened, setOpened }: AppHeaderProps) {
   const theme = useMantineTheme();
   const { classes } = useStyles();
   return (
-    <Header
-      height={60}
-      padding="md"
-      fixed
-      className={classes.header}
-      id="navHeader"
-    >
+    <Header height={60} p="md" fixed className={classes.header} id="navHeader">
       <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
         <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
           <Burger
@@ -69,7 +62,9 @@ export function AppHeader({ opened, setOpened }: AppHeaderProps) {
               <Menu.Item
                 key={each.name}
                 className={
-                  userLocation.location.name === each.name && classes.active
+                  userLocation.location &&
+                  userLocation.location.name === each.name &&
+                  classes.active
                 }
                 onClick={() =>
                   userLocation.setLocation(userLocation.findLocation(each.name))

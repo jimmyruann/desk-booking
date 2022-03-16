@@ -33,33 +33,46 @@ const AuthenticationContext = React.createContext<AuthenticationContext>({
 export const useAuth = () => React.useContext(AuthenticationContext);
 export const AuthenticationProvider = ({
   children,
-}: AuthenticationProvider) => {
+}: {
+  children: React.ReactNode;
+}) => {
+  const api = useApi();
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<Omit<User, 'password'> | null>(null);
-  const api = useApi();
+
+  const refreshSession = useMutation(
+    () => {
+      return api.client.post<RefreshTokenReturn>('/auth/refresh', null, {
+        skipAuthRefresh: true,
+      } as AxiosAuthRefreshRequestConfig);
+    },
+    {
+      onSuccess: ({ data }) => {
+        api.saveAccessToken(data.access_token);
+        setUser(data.user);
+      },
+      onMutate: () => {
+        setIsLoading(true);
+      },
+      onSettled: () => {
+        setIsLoading(false);
+      },
+    }
+  );
 
   useEffect(() => {
-    const init = async () => {
-      try {
-        const response = await api.client.post<RefreshTokenReturn>(
-          '/auth/refresh',
-          null,
-          {
-            skipAuthRefresh: true,
-          } as AxiosAuthRefreshRequestConfig
-        );
-        if (response.data) {
-          api.saveAccessToken(response.data.access_token);
-          setUser(response.data.user);
-        }
-      } catch (error) {
-        return;
-      } finally {
-        setIsLoading(false);
-      }
+    // https://dev.to/jexperton/how-to-fix-the-react-memory-leak-warning-d4i
+    let cancel = false;
+
+    if (!user || cancel) {
+      refreshSession.mutate();
+    }
+
+    return () => {
+      cancel = true;
     };
-    init();
-  }, [api]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const loginMutation = useMutation(
     (data: { email: string; password: string }) => {
@@ -71,7 +84,6 @@ export const AuthenticationProvider = ({
       onSuccess: (response) => {
         api.saveAccessToken(response.data.access_token);
         setUser(response.data.user);
-        // setIsLoggedIn(true);
       },
     }
   );
@@ -84,8 +96,8 @@ export const AuthenticationProvider = ({
     },
     {
       onSettled: () => {
-        setUser(null);
         api.saveAccessToken(null);
+        setUser(null);
         setIsLoading(false);
       },
     }
@@ -108,8 +120,6 @@ export const AuthenticationProvider = ({
     <AuthenticationContext.Provider
       value={{
         isLoading,
-        // isLoggedIn,
-        // setIsLoggedIn,
         user,
         setUser,
         login,

@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { TestService } from './test.service';
-import { TestController } from './test.controller';
+import { JwtModule } from '@nestjs/jwt';
+import { AuthService } from '../../auth/auth.service';
 import { PrismaService } from '../../shared/prisma/prisma.service';
 import { UserService } from '../user/user.service';
-import { AuthService } from '../../auth/auth.service';
-import { JwtModule } from '@nestjs/jwt';
+import { TestController } from './test.controller';
+import { TestService } from './test.service';
 
 @Module({
   imports: [JwtModule.register({})],

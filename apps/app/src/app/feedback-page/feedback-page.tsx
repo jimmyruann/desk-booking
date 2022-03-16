@@ -1,14 +1,14 @@
 import { CreateFeedbackDto, CreateFeedbackReturn } from '@desk-booking/data';
 import {
   Button,
+  createStyles,
   Group,
   NativeSelect,
-  Textarea,
-  Title,
-  Text,
-  createStyles,
-  TextInput,
   Space,
+  Text,
+  Textarea,
+  TextInput,
+  Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
 import { useNotifications } from '@mantine/notifications';
@@ -107,7 +107,7 @@ export function FeedbackPage(props: FeedbackPageProps) {
             placeholder="Feedback Type"
             label="Feedback Type"
             required
-            name="type"
+            name="feedbackType"
             {...form.getInputProps('type')}
           />
 

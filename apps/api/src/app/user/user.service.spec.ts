@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UserService } from './user.service';
-import bcrypt from 'bcryptjs';
 import { HttpException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import bcrypt from 'bcryptjs';
 import { PrismaService } from '../../shared/prisma/prisma.service';
+import { UserService } from './user.service';
 
 describe('UserService', () => {
   let service: UserService;

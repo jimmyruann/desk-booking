@@ -1,5 +1,7 @@
 import {
+  DeleteBookingResponse,
   FindAllLocationReturn,
+  FindAreaAvailabilitiesResponse,
   FindOneAreaWithBookingResponse,
   RefreshTokenReturn,
 } from '@desk-booking/data';
@@ -7,8 +9,8 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
-import { TokenStorage } from '../utils/TokenStorage';
 import validator from 'validator';
+import { TokenStorage } from '../utils/TokenStorage';
 
 const client = axios.create({
   baseURL: '/api',
@@ -68,51 +70,77 @@ interface ApiClientContext {
         id: string;
         from: Dayjs;
         to: Dayjs;
-      }) => Promise<AxiosResponse<FindOneAreaWithBookingResponse, any>>;
+      }) => Promise<AxiosResponse<FindOneAreaWithBookingResponse>>;
+      findAvailabilities: (findAvailabilitiesParams: {
+        id: string;
+        date: Dayjs;
+      }) => Promise<AxiosResponse<FindAreaAvailabilitiesResponse>>;
     };
     location: {
-      findAll: () => Promise<AxiosResponse<FindAllLocationReturn, any>>;
+      findAll: () => Promise<AxiosResponse<FindAllLocationReturn>>;
+    };
+    booking: {
+      deleteBooking: (deleteParams: {
+        id: number;
+      }) => Promise<AxiosResponse<DeleteBookingResponse>>;
     };
   };
 }
 
-interface ApiClientProvider {
-  children: React.ReactChild;
-}
-
-const initialValue: ApiClientContext = {
-  client,
-  getAccessToken,
-  saveAccessToken,
-  make: {
-    area: {
-      findOne: ({ id, from, to }) => {
-        return client.get<FindOneAreaWithBookingResponse>(
-          `/areas/${id}/bookings`,
-          {
-            params: {
-              from: from.toDate(),
-              to: to.toDate(),
-            },
-          }
-        );
-      },
-    },
-    location: {
-      findAll: async () => {
-        return await client.get<FindAllLocationReturn>('/locations');
-      },
-    },
-  },
-};
-
-const ApiClientContext = React.createContext<ApiClientContext>(initialValue);
+const ApiClientContext = React.createContext<ApiClientContext>(null);
 
 // hook
 export const useApi = () => React.useContext(ApiClientContext);
 
-export const ApiClientProvider = ({ children }: ApiClientProvider) => (
-  <ApiClientContext.Provider value={initialValue}>
+export const ApiClientProvider = ({
+  children,
+}: {
+  children: React.ReactChild;
+}) => (
+  <ApiClientContext.Provider
+    value={{
+      client,
+      getAccessToken,
+      saveAccessToken,
+      make: {
+        area: {
+          findOne: ({ id, from, to }) => {
+            return client.get<FindOneAreaWithBookingResponse>(
+              `/areas/${id}/bookings`,
+              {
+                params: {
+                  from: from.toDate(),
+                  to: to.toDate(),
+                },
+              }
+            );
+          },
+          findAvailabilities: ({ id, date }) => {
+            return client.get<FindAreaAvailabilitiesResponse>(
+              `/areas/${id}/availabilities`,
+              {
+                params: {
+                  date: date.toDate(),
+                },
+              }
+            );
+          },
+        },
+        location: {
+          findAll: async () => {
+            return await client.get<FindAllLocationReturn>('/locations');
+          },
+        },
+        booking: {
+          deleteBooking: async ({ id }) => {
+            return await client.delete<DeleteBookingResponse>(
+              `/bookings/${id}`
+            );
+          },
+        },
+      },
+    }}
+  >
     {children}
   </ApiClientContext.Provider>
 );

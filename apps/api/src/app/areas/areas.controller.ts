@@ -40,6 +40,15 @@ export class AreasController {
     return this.areasService.findOneWithBookings(idOrHtmlId, from, to);
   }
 
+  @Get(':idOrHtmlId/availabilities')
+  findAvailabilities(
+    @Param('idOrHtmlId') idOrHtmlId: string,
+    @Query('date') date: Date
+  ) {
+    // Keep everything in UTC to be simple
+    return this.areasService.findAvailabilities(idOrHtmlId, date);
+  }
+
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Delete(':idOrHtmlId')
   remove(@Param('idOrHtmlId') idOrHtmlId: string) {

@@ -68,3 +68,19 @@ export type FindOneAreaWithBookingResponse = Area & {
   })[];
   Location: Location;
 };
+
+export type AreaAvailability = {
+  startTime: Date;
+  endTime: Date;
+  booked: boolean;
+};
+
+export type FindAreaAvailabilitiesResponse = {
+  availabilities: AreaAvailability[];
+  Booking: (Booking & {
+    User: {
+      firstName: string;
+      lastName: string;
+    };
+  })[];
+};
