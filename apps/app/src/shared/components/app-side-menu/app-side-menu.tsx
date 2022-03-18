@@ -24,7 +24,7 @@ const admin: AppSideMenuItemProps = {
   initiallyOpened: false,
   links: [
     { label: 'Dashboard', link: '/admin' },
-    { label: 'Create', link: '/admin/create' },
+    { label: 'Location Settings', link: '/admin/settings/location' },
   ],
 };
 

@@ -22,7 +22,7 @@ export function InfoBox({ htmlId }: InfoBoxProps) {
   const userLocation = useUserLocation();
 
   return (
-    <Group direction="column" className={classes.common}>
+    <Group direction="column">
       <section>
         <Text data-cy="svgMapHeadingLocation">
           Location: <b>{userLocation.location.displayName}</b>

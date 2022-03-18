@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
-import SVGNode from './svgnode';
+import SVGNode from './svg-node';
 
-describe('SVGNode', () => {
+describe('SVGNode Component', () => {
   it('should render successfully', () => {
     const svgJson = {
       type: 'element',

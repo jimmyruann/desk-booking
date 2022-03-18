@@ -1,15 +1,14 @@
+import { AreaAvailability } from '@desk-booking/data';
 import { Checkbox, createStyles, ScrollArea, Table } from '@mantine/core';
+import { UseListState } from '@mantine/hooks/lib/use-list-state/use-list-state';
+import { Location } from '@prisma/client';
 import dayjs from 'dayjs';
-import QueryStateHandler, {
-  QueryHandlerProps,
-} from '../../../../shared/components/query-state-handler/query-state-handler';
-import { useUserLocation } from '../../../../shared/context/UserLocation';
-import { wrapUseListState } from '../../types/index.type';
 import './time-tab.module.css';
 
 /* eslint-disable-next-line */
-export interface TimeTabProps extends QueryHandlerProps {
-  availabilityHook: ReturnType<typeof wrapUseListState>;
+export interface TimeTabProps {
+  availabilityHook: UseListState<AreaAvailability & { checked: boolean }>;
+  location: Location;
 }
 
 const useStyles = createStyles((theme) => ({
@@ -19,13 +18,13 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export function TimeTab({ availabilityHook, status, error }: TimeTabProps) {
+export function TimeTab({ availabilityHook, location }: TimeTabProps) {
   const { classes } = useStyles();
-  const userLocation = useUserLocation();
 
   const [availability, availabilityHandler] = availabilityHook;
 
   const checkAll = availability.every((value) => value.checked);
+
   const indeterminate =
     availability.some((value) => value.checked) && !checkAll;
 
@@ -47,46 +46,36 @@ export function TimeTab({ availabilityHook, status, error }: TimeTabProps) {
             }
           />
         </td>
-        <td>
-          {dayjs
-            .tz(item.startTime, userLocation.location.timeZone)
-            .format('hh:mm A')}
-        </td>
-        <td>
-          {dayjs
-            .tz(item.endTime, userLocation.location.timeZone)
-            .format('hh:mm A')}
-        </td>
+        <td>{dayjs.tz(item.startTime, location.timeZone).format('hh:mm A')}</td>
+        <td>{dayjs.tz(item.endTime, location.timeZone).format('hh:mm A')}</td>
       </tr>
     );
   });
 
   return (
-    <QueryStateHandler status={status} error={error}>
-      <ScrollArea style={{ height: 300 }} offsetScrollbars>
-        <Table id="availabilityTable">
-          <thead>
-            <tr>
-              <th style={{ width: 40 }}>
-                <Checkbox
-                  checked={checkAll}
-                  indeterminate={indeterminate}
-                  transitionDuration={0}
-                  onChange={() =>
-                    availabilityHandler.setState((current) =>
-                      current.map((value) => ({ ...value, checked: !checkAll }))
-                    )
-                  }
-                />
-              </th>
-              <th>Start Time</th>
-              <th>End Time</th>
-            </tr>
-          </thead>
-          <tbody>{items}</tbody>
-        </Table>
-      </ScrollArea>
-    </QueryStateHandler>
+    <ScrollArea style={{ height: 300 }} offsetScrollbars>
+      <Table id="availabilityTable">
+        <thead>
+          <tr>
+            <th style={{ width: 40 }}>
+              <Checkbox
+                checked={checkAll}
+                indeterminate={indeterminate}
+                transitionDuration={0}
+                onChange={() =>
+                  availabilityHandler.setState((current) =>
+                    current.map((value) => ({ ...value, checked: !checkAll }))
+                  )
+                }
+              />
+            </th>
+            <th>Start Time</th>
+            <th>End Time</th>
+          </tr>
+        </thead>
+        <tbody>{items}</tbody>
+      </Table>
+    </ScrollArea>
   );
 }
 

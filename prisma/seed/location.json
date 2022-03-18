@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "name": "singapore",
+    "locationId": "singapore",
     "displayName": "Singapore",
     "timeZone": "Asia/Singapore",
     "allowBookingFrom": 420,
@@ -11,7 +11,7 @@
   },
   {
     "id": 2,
-    "name": "sydney-lv16",
+    "locationId": "sydney-lv16",
     "displayName": "Sydney Lv.16",
     "timeZone": "Australia/Sydney",
     "allowBookingFrom": 480,
@@ -21,7 +21,7 @@
   },
   {
     "id": 3,
-    "name": "sydney-lv18",
+    "locationId": "sydney-lv18",
     "displayName": "Sydney Lv.18",
     "timeZone": "Australia/Sydney",
     "allowBookingFrom": 420,

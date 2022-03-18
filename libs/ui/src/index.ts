@@ -6,7 +6,4 @@ export * from './lib/booking/booking-time-list/booking-time-list';
 export * from './lib/common/loading/loading';
 export * from './lib/common/notification/notification';
 export * from './lib/error/not-found/not-found';
-export * from './lib/floorplan/map/map';
-export * from './lib/floorplan/svgnode-area/svgnode-area';
-export * from './lib/floorplan/svgnode/svgnode';
 export * from './lib/nav/nav-user-item/nav-user-item';

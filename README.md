@@ -65,4 +65,4 @@ yarn run deploy
 Note
 
 - Preferably Database to be hosted on a fully managed DB service (AWS RDS, or EC2).
--
+- Use d3 v6.7.0 because test will fail. Jest currently not support d3 v7 ECMAScript.

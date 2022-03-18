@@ -1,6 +1,5 @@
-import React from 'react';
 import { translate } from 'html-attribute-react';
-import './svgnode.module.css';
+import React from 'react';
 
 export interface Node {
   name: string;

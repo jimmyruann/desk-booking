@@ -27,7 +27,7 @@ model User {
 
 model Location {
   id               Int    @id @default(autoincrement())
-  name             String @unique
+  locationId       String @unique
   displayName      String
   timeZone         String
   mapUrl           String

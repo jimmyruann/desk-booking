@@ -36,7 +36,9 @@ export function BookingTable({ data }: BookingTableProps) {
             const endDayJs = dayjs(each.endTime);
             return (
               <tr key={each.id}>
-                <td className="tw-capitalize">{each.Area.Location.name}</td>
+                <td className="tw-capitalize">
+                  {each.Area.Location.locationId}
+                </td>
                 <td>{each.Area.htmlId}</td>
                 <td>{startDayJs.format('ddd MMM DD YYYY')}</td>
                 <td>{startDayJs.format('hh:mm A')}</td>

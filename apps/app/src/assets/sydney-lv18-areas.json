@@ -1,0 +1,1031 @@
+{
+  "name": "g",
+  "type": "element",
+  "value": "",
+  "attributes": { "id": "areas" },
+  "children": [
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-hot-5",
+        "points": "1494 114.9 1488.9 86 1550.6 75.1 1555.9 104 1494 114.9",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-hot-4",
+        "points": "469.4 74.6 464.3 103.8 526.7 114.7 531.5 85.6 469.4 74.6",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-hot-3",
+        "points": "369 1025.2 434.7 1036.9 428.7 1067.7 363.4 1056.3 369 1025.2",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-hot-2",
+        "points": "411.4 1163.8 479 1175.6 473.9 1204.8 406.5 1192.9 411.4 1163.8",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-hot-1",
+        "points": "281 1139.6 275.8 1169.8 338.2 1180.8 343.5 1150.5 281 1139.6",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-76",
+        "points": "479.7 1175.7 554.8 1189 549.7 1218.1 474.6 1204.9 479.7 1175.7",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-75",
+        "points": "571.7 1092.5 504.9 1080.9 510 1050.3 577.1 1062.2 571.7 1092.5",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-74",
+        "points": "504 1080.7 429.7 1067.8 434.7 1036.9 509.1 1050.1 504 1080.7",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-73",
+        "points": "1636.6 539 1641.9 569.5 1716.9 556.3 1711.6 525.8 1636.6 539",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-72",
+        "points": "1787.5 512.4 1712.6 525.6 1717.9 556.1 1792.6 542.9 1787.5 512.4",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-71",
+        "points": "1863.5 499.1 1868.8 529.5 1793.6 542.7 1788.5 512.3 1863.5 499.1",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-70",
+        "points": "1630.5 505.2 1635.9 535.8 1710.8 522.5 1705.6 492.1 1630.5 505.2",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-69",
+        "points": "1781.5 478.7 1706.6 491.9 1711.8 522.4 1786.6 509.2 1781.5 478.7",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-68",
+        "points": "1857.5 465.4 1862.8 495.7 1787.6 509 1782.5 478.5 1857.5 465.4",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-67",
+        "points": "1608 382.6 1613.4 413.1 1688.3 399.9 1683 369.4 1608 382.6",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-66",
+        "points": "1759 356 1684 369.2 1689.3 399.7 1764.1 386.5 1759 356",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-65",
+        "points": "1835 342.7 1840.3 373.1 1765.1 386.3 1760 355.9 1835 342.7",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-64",
+        "points": "1602 348.8 1607.4 379.4 1682.3 366.1 1677 335.7 1602 348.8",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-63",
+        "points": "1753 322.3 1678 335.5 1683.3 366 1758 352.8 1753 322.3",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-62",
+        "points": "1829 309 1834.2 339.3 1759 352.6 1753.9 322.1 1829 309",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-61",
+        "points": "1580 224.4 1585.4 254.9 1660.3 241.7 1655 211.2 1580 224.4",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-60",
+        "points": "1731 197.9 1656 211 1661.3 241.5 1736.1 228.3 1731 197.9",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-59",
+        "points": "1807 184.5 1812.3 214.9 1737.1 228.2 1732 197.7 1807 184.5",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-58",
+        "points": "1574 190.7 1579.4 221.2 1654.3 208 1649 177.5 1574 190.7",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-57",
+        "points": "1725 164.2 1650 177.3 1655.3 207.8 1730 194.6 1725 164.2",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-56",
+        "points": "1801 150.8 1806.2 181.2 1731 194.5 1726 164 1801 150.8",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-55",
+        "points": "1778.7 34.8 1783.6 63.9 1708.8 77.1 1703.5 48.1 1778.7 34.8",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-54",
+        "points": "1707.8 77.3 1632.6 90.5 1627.8 61.5 1702.6 48.3 1707.8 77.3",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-53",
+        "points": "1559.2 103.4 1554 74.5 1626.8 61.6 1631.6 90.7 1559.2 103.4",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-52",
+        "points": "1343.8 107.6 1357.1 182.7 1326 188.2 1312.8 113.1 1343.8 107.6",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-51",
+        "points": "1292.3 194.1 1279 119 1310 113.5 1323.3 188.6 1292.3 194.1",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-50",
+        "points": "1207.3 209.1 1194.1 134 1163 139.5 1176.2 214.6 1207.3 209.1",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-49",
+        "points": "1129.3 145.5 1142.5 220.5 1173.5 215 1160.3 140 1129.3 145.5",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-48",
+        "points": "1012.7 242.5 1044.1 242.5 1044.1 160.5 1012.7 166 1012.7 242.5",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-47",
+        "points": "978.4 242.5 1010.5 242.5 1009.8 166 978.4 160.4 978.4 242.5",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-46",
+        "points": "849 215 880 220.5 893.2 145.4 862.2 139.9 849 215",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-45",
+        "points": "815.3 209.1 828.5 134 859.5 139.4 846.3 214.6 815.3 209.1",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-44",
+        "points": "699.1 188.6 730.1 194 743.4 118.9 712.4 113.4 699.1 188.6",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-43",
+        "points": "665.5 182.7 696.4 188.2 709.7 113 678.7 107.6 665.5 182.7",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-42",
+        "points": "393.5 61.3 468.8 74.6 463.7 103.7 388.3 90.4 393.5 61.3",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-41",
+        "points": "317.6 47.9 392.9 61.2 387.8 90.3 312.4 77.1 317.6 47.9",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-40",
+        "points": "241.6 34.5 316.9 47.7 311.8 76.8 236.4 63.6 241.6 34.5",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-39",
+        "points": "443.2 220.8 448.5 190.6 373.5 177.3 368.1 207.6 443.2 220.8",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-38",
+        "points": "367.2 207.6 292.4 194.2 297.5 163.5 372.4 177.1 367.2 207.6",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-37",
+        "points": "216.2 181 221.4 150.5 296.5 163.9 291.4 194.2 216.2 181",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-36",
+        "points": "437.2 254.5 442.5 224.5 367.5 211.2 362.1 241.4 437.2 254.5",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-35",
+        "points": "361.2 241.3 286.1 228 291.2 197.7 366.5 211.1 361.2 241.3",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-34",
+        "points": "210.3 214.7 215.5 184.4 290.3 197.7 285.2 227.9 210.3 214.7",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-33",
+        "points": "415.4 378.1 420.7 348.1 345.7 334.9 340.3 365 415.4 378.1",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-32",
+        "points": "339.3 365.4 264.5 352 269.6 321.3 344.5 334.9 339.3 365.4",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-31",
+        "points": "188.3 338.5 193.5 308 268.5 321.4 263.3 351.7 188.3 338.5",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-30",
+        "points": "409.2 412 414.5 382 339.5 368.7 334.1 398.9 409.2 412",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-29",
+        "points": "333.1 398.9 258.1 385.6 263.2 355.2 338.3 368.7 333.1 398.9",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-28",
+        "points": "182.3 372.3 187.5 341.8 262.4 355.2 257.3 385.6 182.3 372.3",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-27",
+        "points": "386.9 537.2 392.1 507.1 317.1 493.8 311.8 524.1 386.9 537.2",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-26",
+        "points": "310.9 524.1 236.1 510.7 241.2 480 316.1 493.6 310.9 524.1",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-25",
+        "points": "159.9 497.5 165.1 467 240.2 480.4 235 510.7 159.9 497.5",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-24",
+        "points": "380.9 571 386.1 541 311.1 527.7 305.8 557.9 380.9 571",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-23",
+        "points": "304.9 557.8 229.8 544.5 234.9 514.2 310.2 527.6 304.9 557.8",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-22",
+        "points": "154 531.2 159.2 500.9 234 514.2 228.9 544.4 154 531.2",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-21",
+        "points": "359.9 694.7 365.2 664.6 290.2 651.4 284.8 681.5 359.9 694.7",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-20",
+        "points": "283.8 681.9 209 668.5 214.1 637.8 289 651.4 283.8 681.9",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-19",
+        "points": "132.8 655 138 624.5 213 637.9 207.8 668.2 132.8 655",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-18",
+        "points": "353.7 728.5 359 698.5 284 685.2 278.6 715.4 353.7 728.5",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-17",
+        "points": "277.6 715.4 202.6 702.1 207.7 671.7 282.8 685.2 277.6 715.4",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-16",
+        "points": "126.8 688.8 132 658.3 206.9 671.7 201.8 702.1 126.8 688.8",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-14",
+        "points": "255.6 840 180.4 826.7 185.6 796.4 260.9 809.9 255.6 840",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-13",
+        "points": "104.6 813.5 109.9 783 184.9 796.4 179.8 826.7 104.6 813.5",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-12",
+        "points": "325.3 887 330.6 857 255.6 843.7 250.3 873.9 325.3 887",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-11",
+        "points": "249.6 873.9 174.2 860.6 179.4 830.2 254.9 843.7 249.6 873.9",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-10",
+        "points": "98.4 847.3 103.7 816.9 179.4 830.2 174.2 860.6 98.4 847.3",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-9",
+        "points": "304 1010.2 309.2 980.1 234.2 966.9 228.9 997 304 1010.2",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-8",
+        "points": "228.9 997 152.9 983.7 158 953.4 234.2 966.9 228.9 997",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-7",
+        "points": "77.1 970.5 82.4 940 158 953.4 152.9 983.7 77.1 970.5",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-6",
+        "points": "297.8 1044 303 1014 228 1000.7 222.7 1030.9 297.8 1044",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-5",
+        "points": "222.7 1030.9 146.7 1017.6 151.8 987.2 228 1000.7 222.7 1030.9",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-4",
+        "points": "70.9 1004.3 76.2 973.9 151.8 987.2 146.7 1017.6 70.9 1004.3",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-3",
+        "points": "52.9 1099.6 47.7 1130.2 123.6 1143.6 128.7 1112.8 52.9 1099.6",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-2",
+        "points": "205 1126.5 199.9 1156.5 123.6 1143.6 128.7 1112.8 205 1126.5",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-desk-1",
+        "points": "275.8 1169.8 281 1139.6 205 1126.5 199.1 1157.4 275.8 1169.8",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-room-13",
+        "points": "1459.6 532.3 1478.1 637.6 1373.1 656.1 1355.7 550.6 1459.6 532.3",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-room-12",
+        "points": "1361.4 1237.7 1315.6 975.9 1504.1 943.2 1549 1204.7 1361.4 1237.7",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-room-11",
+        "points": "1697.7 908.5 1743.8 1170.3 1684.3 1181.9 1678.8 1153.5 1609.6 1165.7 1613.8 1193.3 1554.1 1203.8 1507.9 942.3 1697.7 908.5",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-room-10",
+        "points": "1688.7 826.6 1749.1 1169.4 1999.1 1125.3 1980.2 1017.9 1969.9 1019.1 1928.5 784.3 1688.7 826.6",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-room-9",
+        "points": "1769.5 627.5 1787.6 730.1 1915 707.7 1896.9 604.9 1769.5 627.5",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-room-8",
+        "points": "1764.3 628.2 1781.7 731.2 1659.1 752.8 1641.5 651 1764.3 628.2",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-room-7",
+        "points": "1386 254.7 1408.3 380.4 1507.3 362.7 1484.7 237 1386 254.7",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-room-6",
+        "points": "1305.7 268.6 1381.2 255.7 1402.8 381.2 1327.8 394.1 1305.7 268.6",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-room-5",
+        "points": "618.2 251.4 596.8 372.6 695.6 390 717 268.6 618.2 251.4",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-room-4",
+        "points": "513.9 232.7 613.1 250.1 591.7 371.5 492.5 354.7 513.9 232.7",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-room-3",
+        "points": "445.8 620.2 511 630.8 534.7 495.8 469.8 484.3 445.8 620.2",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-room-2",
+        "points": "485.7 1038.2 507.6 914.2 396.5 894.5 374.7 1018.6 485.7 1038.2",
+        "fill": "none"
+      },
+      "children": []
+    },
+    {
+      "name": "polygon",
+      "type": "element",
+      "value": "",
+      "attributes": {
+        "id": "sydney-lv18-room-1",
+        "points": "578.5 1054.6 600.3 930.7 512.3 916.5 490.9 1039.1 578.5 1054.6",
+        "fill": "none"
+      },
+      "children": []
+    }
+  ]
+}

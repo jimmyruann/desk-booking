@@ -112,6 +112,7 @@ export function MyBookingPage(props: MyBookingPageProps) {
           closeCalendarOnChange={false}
         />
       </div>
+      <Space h="sm" />
       <div className={classes.common}>
         <Text className={classes.title}>My Bookings</Text>
         <Space h="md" />

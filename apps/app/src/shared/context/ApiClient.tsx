@@ -4,6 +4,8 @@ import {
   FindAreaAvailabilitiesResponse,
   FindOneAreaWithBookingResponse,
   RefreshTokenReturn,
+  UpdateLocationDto,
+  UpdateLocationResponse,
 } from '@desk-booking/data';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
@@ -78,6 +80,10 @@ interface ApiClientContext {
     };
     location: {
       findAll: () => Promise<AxiosResponse<FindAllLocationReturn>>;
+      updateLocation: (data: {
+        id: number;
+        data: UpdateLocationDto;
+      }) => Promise<AxiosResponse<UpdateLocationResponse>>;
     };
     booking: {
       deleteBooking: (deleteParams: {
@@ -129,6 +135,12 @@ export const ApiClientProvider = ({
         location: {
           findAll: async () => {
             return await client.get<FindAllLocationReturn>('/locations');
+          },
+          updateLocation: async ({ id, data }) => {
+            return await client.patch<UpdateLocationResponse>(
+              `/locations/${id}`,
+              data
+            );
           },
         },
         booking: {

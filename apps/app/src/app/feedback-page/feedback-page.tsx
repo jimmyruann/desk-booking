@@ -1,21 +1,13 @@
 import { CreateFeedbackDto, CreateFeedbackReturn } from '@desk-booking/data';
-import {
-  Button,
-  createStyles,
-  Group,
-  NativeSelect,
-  Space,
-  Text,
-  Textarea,
-  TextInput,
-  Title,
-} from '@mantine/core';
+import { createStyles } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
 import { useNotifications } from '@mantine/notifications';
 import { AxiosError } from 'axios';
 import { useMutation } from 'react-query';
 import validator from 'validator';
 import { useApi } from '../../shared/context/ApiClient';
+import FeedbackForm from './component/feedback-form';
+import FeedbackHeader from './component/feedback-header';
 import './feedback-page.module.css';
 
 const useStyles = createStyles((theme) => ({
@@ -76,61 +68,19 @@ export function FeedbackPage(props: FeedbackPageProps) {
           message: error.response.data.message || error.message,
         });
       },
+      onMutate: () => {
+        form.reset();
+      },
     }
   );
 
-  const handleOnSubmit = (values: typeof form['values']) => {
-    form.reset();
-    feedbackMutation.mutate(values);
-  };
-
   return (
     <div className={classes.common}>
-      <Group direction="column">
-        <Title order={3}>We need feedbacks</Title>
-        <Text size="md">
-          Your feedback is needed for us to continue improving the application.
-        </Text>
-      </Group>
-      <Space h="md" />
-      <form
-        onSubmit={form.onSubmit((values) => handleOnSubmit(values))}
-        className="tw-py-8"
-        name="feedbackForm"
-      >
-        <Group direction="column" grow={true}>
-          <NativeSelect
-            data={[
-              { value: 'idea', label: 'Idea' },
-              { value: 'issue', label: 'Issues' },
-            ]}
-            placeholder="Feedback Type"
-            label="Feedback Type"
-            required
-            name="feedbackType"
-            {...form.getInputProps('type')}
-          />
-
-          <TextInput
-            required
-            label="Title"
-            placeholder="Feedback Title"
-            name="title"
-            {...form.getInputProps('title')}
-          />
-
-          <Textarea
-            label="Description"
-            required
-            name="description"
-            {...form.getInputProps('message')}
-          />
-
-          <Button type="submit" fullWidth>
-            Submit
-          </Button>
-        </Group>
-      </form>
+      <FeedbackHeader />
+      <FeedbackForm
+        form={form}
+        handleSubmit={(values) => feedbackMutation.mutate(values)}
+      />
     </div>
   );
 }

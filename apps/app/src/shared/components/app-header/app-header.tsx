@@ -60,16 +60,18 @@ export function AppHeader({ opened, setOpened }: AppHeaderProps) {
           {userLocation.locations.length &&
             userLocation.locations.map((each) => (
               <Menu.Item
-                key={each.name}
+                key={each.locationId}
                 className={
                   userLocation.location &&
-                  userLocation.location.name === each.name &&
+                  userLocation.location.locationId === each.locationId &&
                   classes.active
                 }
                 onClick={() =>
-                  userLocation.setLocation(userLocation.findLocation(each.name))
+                  userLocation.setLocation(
+                    userLocation.findLocation(each.locationId)
+                  )
                 }
-                data-cy={`location-${each.name}`}
+                data-cy={`location-${each.locationId}`}
               >
                 {each.displayName}
               </Menu.Item>

@@ -28,6 +28,7 @@ export const UserLocationProvider = ({
 
   const api = useApi();
   const [location, setLocation] = useState<Location>(null);
+
   const { data: locations, status } = useQuery(
     'GET_ALL_LOCATIONS',
     async () => {
@@ -36,13 +37,17 @@ export const UserLocationProvider = ({
     },
     {
       onSuccess: (data) => {
-        setLocation(_.find(data, { name: initialLocation }));
+        setLocation(
+          _.find(data, {
+            locationId: location ? location.locationId : initialLocation,
+          })
+        );
       },
     }
   );
 
-  const findLocation = (name: string) => {
-    return _.find(locations, { name });
+  const findLocation = (locationId: string) => {
+    return _.find(locations, { locationId });
   };
 
   if (status === 'loading') return <div>Loading</div>;
@@ -52,7 +57,7 @@ export const UserLocationProvider = ({
       value={{
         location,
         setLocation: (location: Location) => {
-          localStorage.setItem('location_name', location.name);
+          localStorage.setItem('location_name', location.locationId);
           setLocation(location);
         },
         locations: locations || [],

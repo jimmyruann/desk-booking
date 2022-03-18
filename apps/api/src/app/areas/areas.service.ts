@@ -32,11 +32,11 @@ export class AreasService {
     });
   }
 
-  async findAllByLocation(location: string): Promise<FindAllAreaResponse> {
+  async findAllByLocation(locationId: string): Promise<FindAllAreaResponse> {
     return this.prisma.area.findMany({
       where: {
         Location: {
-          name: location,
+          locationId,
         },
       },
     });

@@ -1,15 +1,13 @@
 import { FindAreaAvailabilitiesResponse } from '@desk-booking/data';
 import { createStyles, Table } from '@mantine/core';
+import { Location } from '@prisma/client';
 import dayjs from 'dayjs';
-import QueryStateHandler, {
-  QueryHandlerProps,
-} from '../../../../shared/components/query-state-handler/query-state-handler';
-import { useUserLocation } from '../../../../shared/context/UserLocation';
 import './people-tab.module.css';
 
 /* eslint-disable-next-line */
-export interface PeopleTabProps extends QueryHandlerProps {
+export interface PeopleTabProps {
   data: FindAreaAvailabilitiesResponse;
+  location: Location;
 }
 
 const useStyles = createStyles((theme) => ({
@@ -21,19 +19,14 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export function PeopleTab({ data, status, error }: PeopleTabProps) {
+export function PeopleTab({ data, location }: PeopleTabProps) {
   const { classes } = useStyles();
-  const userLocation = useUserLocation();
 
   const items =
     data &&
     data.Booking.map((unavailability, i) => {
-      const start = dayjs(unavailability.startTime).tz(
-        userLocation.location.timeZone
-      );
-      const end = dayjs(unavailability.endTime).tz(
-        userLocation.location.timeZone
-      );
+      const start = dayjs(unavailability.startTime).tz(location.timeZone);
+      const end = dayjs(unavailability.endTime).tz(location.timeZone);
 
       return (
         <tr key={i}>
@@ -42,7 +35,7 @@ export function PeopleTab({ data, status, error }: PeopleTabProps) {
           <td>{end.format('hh:mm A')}</td>
           <td
             className={` ${
-              end > dayjs().tz(userLocation.location.timeZone)
+              end > dayjs().tz(location.timeZone)
                 ? classes.greenText
                 : classes.redText
             }`}
@@ -54,19 +47,17 @@ export function PeopleTab({ data, status, error }: PeopleTabProps) {
     });
 
   return (
-    <QueryStateHandler status={status} error={error}>
-      <Table id="peopleBookedTable">
-        <thead>
-          <tr>
-            <th>Booked By</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>When</th>
-          </tr>
-        </thead>
-        <tbody>{items}</tbody>
-      </Table>
-    </QueryStateHandler>
+    <Table id="peopleBookedTable">
+      <thead>
+        <tr>
+          <th>Booked By</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>When</th>
+        </tr>
+      </thead>
+      <tbody>{items}</tbody>
+    </Table>
   );
 }
 

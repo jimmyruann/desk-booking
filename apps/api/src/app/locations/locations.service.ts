@@ -1,6 +1,8 @@
 import {
   FindAllLocationReturn,
   FindOneLocationReturn,
+  UpdateLocationDto,
+  UpdateLocationResponse,
 } from '@desk-booking/data';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../shared/prisma/prisma.service';
@@ -22,8 +24,18 @@ export class LocationsService {
   async findAll(): Promise<FindAllLocationReturn> {
     return await this.prismaService.location.findMany({
       orderBy: {
-        name: 'asc',
+        displayName: 'asc',
       },
+    });
+  }
+
+  async updateLocation(
+    id: number,
+    data: UpdateLocationDto
+  ): Promise<UpdateLocationResponse> {
+    return await this.prismaService.location.update({
+      where: { id },
+      data,
     });
   }
 }
