@@ -3,7 +3,6 @@ import { ActionIcon, Table } from '@mantine/core';
 import dayjs from 'dayjs';
 import { HiX } from 'react-icons/hi';
 import { useUserLocation } from '../../../shared/context/UserLocation';
-import './my-booking-table.module.css';
 
 /* eslint-disable-next-line */
 export interface MyBookingTableProps {

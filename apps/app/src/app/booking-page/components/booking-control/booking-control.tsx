@@ -1,6 +1,5 @@
 import { Button, createStyles, SimpleGrid } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
-import './booking-control.module.css';
 
 const useStyles = createStyles((theme) => ({
   datePicker: {

@@ -4,7 +4,6 @@ import { Outlet } from 'react-router';
 import { UserLocationProvider } from '../../context/UserLocation';
 import AppHeader from '../app-header/app-header';
 import AppSideMenu from '../app-side-menu/app-side-menu';
-import './app-layout.module.css';
 
 /* eslint-disable-next-line */
 export interface AppLayoutProps {}

@@ -5,7 +5,6 @@ import _ from 'lodash';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useApi } from '../../../shared/context/ApiClient';
-import './admin-location-setting-page.module.css';
 import { LocationSettingFormWrapper } from './components/location-settings-form-wrapper/LocationSettingFormWrapper';
 import LocationSettingFormWrapperSkeleton from './components/location-settings-form-wrapper/LocationSettingFormWrapperSkeleton';
 import LocationSettingHeader from './components/location-settings-header/LocationSettingHeader';

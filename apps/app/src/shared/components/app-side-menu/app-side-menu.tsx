@@ -8,7 +8,6 @@ import { useAuth } from '../../context/Authentication';
 import AppSideMenuItem, {
   AppSideMenuItemProps,
 } from '../app-side-menu-item/app-side-menu-item';
-import './app-side-menu.module.css';
 
 /* eslint-disable-next-line */
 export interface AppSideMenuProps {

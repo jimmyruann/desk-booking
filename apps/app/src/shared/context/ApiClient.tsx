@@ -101,7 +101,7 @@ export const useApi = () => React.useContext(ApiClientContext);
 export const ApiClientProvider = ({
   children,
 }: {
-  children: React.ReactChild;
+  children: React.ReactNode;
 }) => (
   <ApiClientContext.Provider
     value={{

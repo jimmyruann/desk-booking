@@ -1,4 +1,5 @@
 import { FindAllBookingResponse } from '@desk-booking/data';
+import { Loading } from '@desk-booking/ui';
 import { createStyles, Space, Text } from '@mantine/core';
 import { DateRangePicker } from '@mantine/dates';
 import { useNotifications } from '@mantine/notifications';
@@ -6,9 +7,8 @@ import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import QueryStateHandler from '../../shared/components/query-state-handler/query-state-handler';
+import { ServerError } from '../../shared/components/errors/ServerError';
 import { useApi } from '../../shared/context/ApiClient';
-import './my-booking-page.module.css';
 import MyBookingTable from './my-booking-table/my-booking-table';
 
 /* eslint-disable-next-line */
@@ -98,11 +98,11 @@ export function MyBookingPage(props: MyBookingPageProps) {
     }
   };
 
+  if (myBookingsQuery.status === 'loading') return <Loading fullscreen />;
+  if (myBookingsQuery.status === 'error') return <ServerError />;
+
   return (
-    <QueryStateHandler
-      status={myBookingsQuery.status}
-      error={myBookingsQuery.error}
-    >
+    <>
       <div className={classes.common}>
         <DateRangePicker
           label="Find your Bookings"
@@ -123,7 +123,7 @@ export function MyBookingPage(props: MyBookingPageProps) {
           />
         )}
       </div>
-    </QueryStateHandler>
+    </>
   );
 }
 

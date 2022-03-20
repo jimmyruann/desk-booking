@@ -2,7 +2,6 @@ import { FindAreaAvailabilitiesResponse } from '@desk-booking/data';
 import { createStyles, Table } from '@mantine/core';
 import { Location } from '@prisma/client';
 import dayjs from 'dayjs';
-import './people-tab.module.css';
 
 /* eslint-disable-next-line */
 export interface PeopleTabProps {

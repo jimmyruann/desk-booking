@@ -1,6 +1,5 @@
 import { createStyles, Group, Text } from '@mantine/core';
 import { useUserLocation } from '../../../../shared/context/UserLocation';
-import './info-box.module.css';
 
 const useStyles = createStyles((theme) => ({
   common: {

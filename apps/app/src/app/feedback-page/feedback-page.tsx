@@ -8,7 +8,6 @@ import validator from 'validator';
 import { useApi } from '../../shared/context/ApiClient';
 import FeedbackForm from './component/feedback-form';
 import FeedbackHeader from './component/feedback-header';
-import './feedback-page.module.css';
 
 const useStyles = createStyles((theme) => ({
   common: {

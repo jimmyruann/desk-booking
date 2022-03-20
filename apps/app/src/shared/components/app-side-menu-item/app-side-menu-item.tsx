@@ -11,7 +11,6 @@ import { useState } from 'react';
 import { IconType } from 'react-icons';
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
-import './app-side-menu-item.module.css';
 
 /* eslint-disable-next-line */
 export interface AppSideMenuItemProps {

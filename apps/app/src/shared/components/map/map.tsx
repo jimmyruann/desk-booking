@@ -17,7 +17,7 @@ export interface MapBoxProps {
   className?: string;
 }
 
-const assetBaseUrl = '/asset/floorplan';
+const assetBaseUrl = '/assets/floorplan';
 
 export function MapBox({
   htmlIdHook,
@@ -31,15 +31,16 @@ export function MapBox({
   const getSvgMapAreas = useQuery(
     ['GET_SVG_MAP_AREAS', locationId],
     async ({ queryKey }) => {
-      const locationId = queryKey[0];
+      const locationId = queryKey[1];
       const { data } = await axios
         .create({ baseURL: assetBaseUrl })
         .get<Node>(`/${locationId}/areas.json`);
+
       return data.children || [];
     }
   );
 
-  const renderMap = (
+  const renderMap = getSvgMapAreas.status === 'success' && (
     <MapArea
       nodeChildren={getSvgMapAreas.data}
       handleClick={setCurrentId}

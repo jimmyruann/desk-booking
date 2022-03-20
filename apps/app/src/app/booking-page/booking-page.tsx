@@ -12,7 +12,6 @@ import MapBox from '../../shared/components/map/map';
 import { useApi } from '../../shared/context/ApiClient';
 import { useUserLocation } from '../../shared/context/UserLocation';
 import { mergeTime } from '../../shared/utils/time';
-import './booking-page.module.css';
 import BookingControl from './components/booking-control/booking-control';
 import InfoBox from './components/info-box/info-box';
 import TabContainer from './components/tab-container/tab-container';

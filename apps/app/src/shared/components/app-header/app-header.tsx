@@ -10,7 +10,6 @@ import {
 } from '@mantine/core';
 import { MdOutlineMyLocation } from 'react-icons/md';
 import { useUserLocation } from '../../context/UserLocation';
-import './app-header.module.css';
 
 /* eslint-disable-next-line */
 export interface AppHeaderProps {
