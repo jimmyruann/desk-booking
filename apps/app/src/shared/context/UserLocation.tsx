@@ -3,6 +3,7 @@ import { Location } from '@prisma/client';
 import _ from 'lodash';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
+import { ServerError } from '../components/errors/ServerError';
 import { useApi } from './ApiClient';
 
 interface UserLocationContext {
@@ -12,12 +13,7 @@ interface UserLocationContext {
   findLocation: (name: string) => Location;
 }
 
-const UserLocationContext = React.createContext<UserLocationContext>({
-  location: null,
-  setLocation: (location: Location) => null,
-  locations: [],
-  findLocation: (name: string) => null,
-});
+const UserLocationContext = React.createContext<UserLocationContext>(null);
 
 export const UserLocationProvider = ({
   children,
@@ -51,6 +47,7 @@ export const UserLocationProvider = ({
   };
 
   if (status === 'loading') return <div>Loading</div>;
+  if (status === 'error') return <ServerError />;
 
   return (
     <UserLocationContext.Provider

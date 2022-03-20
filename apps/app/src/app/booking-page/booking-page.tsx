@@ -8,7 +8,6 @@ import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { ReactNode, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import SvgLv16Area from '../../assets/sydney-lv16-areas.json';
 import MapBox from '../../shared/components/map/map';
 import { useApi } from '../../shared/context/ApiClient';
 import { useUserLocation } from '../../shared/context/UserLocation';
@@ -118,9 +117,8 @@ function BookingPage(props: BookingPageProps) {
         className={classes.common}
       >
         <MapBox
-          mapUrl={userLocation.location.mapUrl}
           htmlIdHook={[htmlId, setHtmlId]}
-          mapAreaChildren={SvgLv16Area.children}
+          locationId={userLocation.location.locationId}
         />
       </Grid.Col>
 

@@ -21,14 +21,7 @@ interface AuthenticationProvider {
   children: React.ReactChild;
 }
 
-const AuthenticationContext = React.createContext<AuthenticationContext>({
-  isLoading: true,
-  user: null,
-  setUser: (user: User) => null,
-  login: async (loginCred: { email: string; password: string }) =>
-    new Promise((resolve) => resolve([false, null])),
-  logout: () => null,
-});
+const AuthenticationContext = React.createContext<AuthenticationContext>(null);
 
 export const useAuth = () => React.useContext(AuthenticationContext);
 export const AuthenticationProvider = ({

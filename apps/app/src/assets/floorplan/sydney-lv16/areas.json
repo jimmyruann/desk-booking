@@ -2,7 +2,9 @@
   "name": "g",
   "type": "element",
   "value": "",
-  "attributes": { "id": "areas" },
+  "attributes": {
+    "id": "areas"
+  },
   "children": [
     {
       "name": "polygon",

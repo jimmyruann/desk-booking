@@ -1,6 +1,8 @@
 import { Loading } from '@desk-booking/ui';
+import axios from 'axios';
 import * as d3 from 'd3';
 import ReactDOM from 'react-dom';
+import { useQuery } from 'react-query';
 import { ReactSVG } from 'react-svg';
 import MapArea from './map-area';
 import { Node } from './svg-node';
@@ -8,25 +10,38 @@ import { Node } from './svg-node';
 /* eslint-disable-next-line */
 export interface MapBoxProps {
   htmlIdHook: [string, (htmlId: string) => void];
-  mapUrl: string;
-  mapAreaChildren?: Node[];
+  // mapUrl: string;
+  // mapAreaChildren?: Node[];
+  locationId: string;
   httpRequestWithCredentials?: boolean;
   className?: string;
 }
 
+const assetBaseUrl = '/asset/floorplan';
+
 export function MapBox({
   htmlIdHook,
-  mapUrl,
-  mapAreaChildren,
+  // mapUrl,
+  // mapAreaChildren,
+  locationId,
   ...props
 }: MapBoxProps) {
   const [currentId, setCurrentId] = htmlIdHook;
 
+  const getSvgMapAreas = useQuery(
+    ['GET_SVG_MAP_AREAS', locationId],
+    async ({ queryKey }) => {
+      const locationId = queryKey[0];
+      const { data } = await axios
+        .create({ baseURL: assetBaseUrl })
+        .get<Node>(`/${locationId}/areas.json`);
+      return data.children || [];
+    }
+  );
+
   const renderMap = (
     <MapArea
-      nodeChildren={
-        mapAreaChildren && mapAreaChildren.length ? mapAreaChildren : []
-      }
+      nodeChildren={getSvgMapAreas.data}
       handleClick={setCurrentId}
       currentId={currentId}
       unavailable={['sydney-lv16-room-13']}
@@ -61,7 +76,7 @@ export function MapBox({
 
   return (
     <ReactSVG
-      src={mapUrl}
+      src={`${assetBaseUrl}/${locationId}/map.svg`}
       beforeInjection={beforeInjection}
       loading={() => <Loading />}
       fallback={() => <div>Unable to load map</div>}
