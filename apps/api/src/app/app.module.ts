@@ -10,7 +10,7 @@ import { AreasModule } from './areas/areas.module';
 import { BookingsModule } from './bookings/bookings.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { LocationsModule } from './locations/locations.module';
-import { TestModule } from './test/test.module';
+// import { TestModule } from './test/test.module';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -26,7 +26,7 @@ import { UserModule } from './user/user.module';
       ttl: 60,
       limit: 50,
     }),
-    TestModule,
+    // TestModule,
   ],
   controllers: [AppController],
   providers: [
