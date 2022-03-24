@@ -16,13 +16,13 @@ ENV JWT_REFRESH_SECRET ${JWT_REFRESH_SECRET}
 
 EXPOSE ${PORT}
 
-COPY package.json ./
+COPY package.json yarn.lock ./
 
 COPY prisma ./prisma/
 
 RUN npm install -g prisma
 
-RUN npm install --production
+RUN yarn install --production
 
 COPY ./dist/apps/api .
 

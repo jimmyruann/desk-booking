@@ -1,8 +1,5 @@
-import './info-box.module.css';
-import { DigitalTime } from '@desk-booking/ui';
 import { createStyles, Group, Text } from '@mantine/core';
 import { useUserLocation } from '../../../../shared/context/UserLocation';
-import { useBookingPage } from '../../context/BookingPageContext';
 
 const useStyles = createStyles((theme) => ({
   common: {
@@ -14,22 +11,23 @@ const useStyles = createStyles((theme) => ({
 }));
 
 /* eslint-disable-next-line */
-export interface InfoBoxProps {}
+export interface InfoBoxProps {
+  htmlId: string;
+}
 
-export function InfoBox(props: InfoBoxProps) {
+export function InfoBox({ htmlId }: InfoBoxProps) {
   const { classes } = useStyles();
 
   const userLocation = useUserLocation();
-  const bookingPage = useBookingPage();
 
   return (
-    <Group direction="column" className={classes.common}>
+    <Group direction="column">
       <section>
         <Text data-cy="svgMapHeadingLocation">
           Location: <b>{userLocation.location.displayName}</b>
         </Text>
         <Text data-cy="svgMapHeadingHtmlId">
-          Area: <b>{bookingPage.currentHtmlId || '-'}</b>
+          Area: <b>{htmlId || '-'}</b>
         </Text>
       </section>
       <section>
@@ -38,12 +36,6 @@ export function InfoBox(props: InfoBoxProps) {
         </Text>
         <Text data-cy="currentLocationTimeZone">
           Timezone: <b>{userLocation.location.timeZone}</b>.
-        </Text>
-        <Text data-cy="currentLocationTime">
-          Time:{' '}
-          <b>
-            <DigitalTime timeZone={userLocation.location.timeZone} />
-          </b>
         </Text>
       </section>
     </Group>

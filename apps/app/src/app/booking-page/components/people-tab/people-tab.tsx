@@ -1,18 +1,17 @@
 import { createStyles, Table } from '@mantine/core';
-import { useUserLocation } from '../../../../shared/context/UserLocation';
+import { Location } from '@prisma/client';
 import dayjs from 'dayjs';
-
-import './people-tab.module.css';
-import { useNotifications } from '@mantine/notifications';
-import { useBookingPage } from '../../context/BookingPageContext';
-import { useApi } from '../../../../shared/context/ApiClient';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { useQuery } from 'react-query';
-import { AxiosError } from 'axios';
-import { Loading } from '@desk-booking/ui';
+import Loading from '../../../../shared/components/loading/loading';
+import { useApi } from '../../../../shared/context/ApiClient';
+dayjs.extend(relativeTime);
 
 /* eslint-disable-next-line */
 export interface PeopleTabProps {
-  // data: FindOneAreaWithBookingResponse;
+  location: Location;
+  htmlId: string;
+  date: Date;
 }
 
 const useStyles = createStyles((theme) => ({
@@ -24,49 +23,51 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export function PeopleTab(props: PeopleTabProps) {
+export function PeopleTab({ location, htmlId, date }: PeopleTabProps) {
   const { classes } = useStyles();
   const api = useApi();
-  const bookingPage = useBookingPage();
-  const notifications = useNotifications();
-  const userLocation = useUserLocation();
 
   const { data, status } = useQuery(
-    [
-      'GET_AREA_BOOKING_DATA',
-      {
-        id: bookingPage.currentHtmlId,
-        date: bookingPage.currentHtmlId,
-      },
-    ] as const,
+    ['GET_BOOKED_DATA', { htmlId, date }] as const,
     async ({ queryKey }) => {
-      const { date, id } = queryKey[1];
-      if (!date || !id) return null;
+      const { date, htmlId } = queryKey[1];
+      if (!date || !htmlId) return [];
 
-      const dayjsInUserTimeZone = dayjs(date).tz(
-        userLocation.location.timeZone
-      );
-
-      const { data } = await api.make.area.findOne({
-        id,
-        from: dayjsInUserTimeZone.startOf('day'),
-        to: dayjsInUserTimeZone.endOf('day'),
+      const { data } = await api.client.get(`/areas/${htmlId}/bookings`, {
+        params: {
+          date: dayjs(date).tz(location.timeZone).toDate(),
+        },
       });
 
       return data;
-    },
-    {
-      onError: (error: AxiosError) => {
-        notifications.showNotification({
-          title: error.response.data.title || error.name,
-          message: error.response.data.message || error.message,
-        });
-      },
     }
   );
 
   if (status === 'loading') return <Loading />;
-  if (status === 'error') return <div>Something went wrong</div>;
+  if (status === 'error')
+    return <div>Something went wrong while loading People Data</div>;
+
+  const items = data.map((unavailability, i) => {
+    const start = dayjs(unavailability.startTime).tz(location.timeZone);
+    const end = dayjs(unavailability.endTime).tz(location.timeZone);
+
+    return (
+      <tr key={i}>
+        <td>{`${unavailability.User.firstName} ${unavailability.User.lastName}`}</td>
+        <td>{start.format('hh:mm A')}</td>
+        <td>{end.format('hh:mm A')}</td>
+        <td
+          className={` ${
+            end > dayjs().tz(location.timeZone)
+              ? classes.greenText
+              : classes.redText
+          }`}
+        >
+          {start.fromNow()}
+        </td>
+      </tr>
+    );
+  });
 
   return (
     <Table id="peopleBookedTable">
@@ -78,34 +79,7 @@ export function PeopleTab(props: PeopleTabProps) {
           <th>When</th>
         </tr>
       </thead>
-      <tbody>
-        {data &&
-          data.Booking.map((unavailability, i) => {
-            const start = dayjs(unavailability.startTime).tz(
-              userLocation.location.timeZone
-            );
-            const end = dayjs(unavailability.endTime).tz(
-              userLocation.location.timeZone
-            );
-
-            return (
-              <tr key={i}>
-                <td>{`${unavailability.User.firstName} ${unavailability.User.lastName}`}</td>
-                <td>{start.format('hh:mm A')}</td>
-                <td>{end.format('hh:mm A')}</td>
-                <td
-                  className={` ${
-                    end > dayjs().tz(userLocation.location.timeZone)
-                      ? classes.greenText
-                      : classes.redText
-                  }`}
-                >
-                  {start.fromNow()}
-                </td>
-              </tr>
-            );
-          })}
-      </tbody>
+      <tbody>{items}</tbody>
     </Table>
   );
 }

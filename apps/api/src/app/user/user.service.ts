@@ -5,11 +5,8 @@ import { PrismaService } from '../../shared/prisma/prisma.service';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  findAll(take: number, skip: number) {
-    return this.prisma.user.findMany({
-      take,
-      skip,
-    });
+  findAll() {
+    return this.prisma.user.findMany();
   }
 
   async findOne(id: number) {

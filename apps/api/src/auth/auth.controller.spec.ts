@@ -1,13 +1,12 @@
+import { getMockReq, getMockRes } from '@jest-mock/express';
+import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+import { COOKIE_CONSTANT } from '../constants/cookie';
+import { testDataHelper } from '../shared/helper/testDataHelper';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-
-import { JwtService } from '@nestjs/jwt';
-import { testDataHelper } from '../shared/helper/testDataHelper';
 import { LocalAuthGuard } from './guards/local.guard';
 import { RefreshJwtAuthGuard } from './guards/refresh-jwt.guard';
-import { COOKIE_CONSTANT } from '../constants/cookie';
-import { getMockReq, getMockRes } from '@jest-mock/express';
 
 describe('AuthController', () => {
   let controller: AuthController;

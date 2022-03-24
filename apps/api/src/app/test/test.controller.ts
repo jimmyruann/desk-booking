@@ -1,15 +1,15 @@
 import { Controller, Post, Query, Res, UseGuards } from '@nestjs/common';
 import { UserRole } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 import { Response } from 'express';
+import { v4 as uuid } from 'uuid';
+import { AuthService } from '../../auth/auth.service';
+import { Public } from '../../auth/decorator/public.decorator';
+import { TestGuard } from '../../auth/guards/test.guard';
+import { COOKIE_CONSTANT } from '../../constants/cookie';
 import { PrismaService } from '../../shared/prisma/prisma.service';
 import { UserService } from '../user/user.service';
 import { TestService } from './test.service';
-import bcrypt from 'bcryptjs';
-import { COOKIE_CONSTANT } from '../../constants/cookie';
-import { AuthService } from '../../auth/auth.service';
-import { Public } from '../../auth/decorator/public.decorator';
-import { v4 as uuid } from 'uuid';
-import { TestGuard } from '../../auth/guards/test.guard';
 
 @Public()
 @UseGuards(TestGuard)

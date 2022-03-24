@@ -1,9 +1,7 @@
-import './login-page.module.css';
-
-import { LoginForm } from '@desk-booking/ui';
-import { useAuth } from '../../../shared/context/Authentication';
 import { useForm } from '@mantine/hooks';
 import validator from 'validator';
+import { useAuth } from '../../../shared/context/Authentication';
+import { LoginForm } from './components/login-form';
 
 /* eslint-disable-next-line */
 export interface LoginPageProps {}

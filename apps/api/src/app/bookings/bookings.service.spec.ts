@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { HttpException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
 import dayjs from 'dayjs';
-import { BookingsService } from './bookings.service';
 import { PrismaService } from '../../shared/prisma/prisma.service';
+import { BookingsService } from './bookings.service';
 
 describe('BookingService', () => {
   let service: BookingsService;
@@ -40,7 +40,7 @@ describe('BookingService', () => {
       prisma.area.update = jest.fn().mockReturnValueOnce(newB);
 
       expect(
-        await service.create(1, {
+        await service.createWithUser(1, {
           htmlId: 'test-1',
           bookings: [
             {
@@ -56,7 +56,7 @@ describe('BookingService', () => {
       prisma.booking.count = jest.fn().mockReturnValueOnce(1);
 
       try {
-        await service.create(1, {
+        await service.createWithUser(1, {
           htmlId: 'test-1',
           bookings: [
             {

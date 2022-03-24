@@ -1,9 +1,4 @@
-import {
-  CreateFeedbackDto,
-  CreateFeedbackReturn,
-  FindAllFeedbackReturn,
-  FindOneFeedbackReturn,
-} from '@desk-booking/data';
+import { CreateFeedbackDto } from '@desk-booking/data';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../shared/prisma/prisma.service';
 
@@ -11,10 +6,7 @@ import { PrismaService } from '../../shared/prisma/prisma.service';
 export class FeedbackService {
   constructor(private prisma: PrismaService) {}
 
-  async create(
-    userId: number,
-    createFeedbackDto: CreateFeedbackDto
-  ): Promise<CreateFeedbackReturn> {
+  async create(userId: number, createFeedbackDto: CreateFeedbackDto) {
     return await this.prisma.feedback.create({
       data: {
         userId,
@@ -23,7 +15,7 @@ export class FeedbackService {
     });
   }
 
-  async findOne(id: number): Promise<FindOneFeedbackReturn> {
+  async findOne(id: number) {
     return await this.prisma.feedback.findUnique({
       where: { id },
       include: {
@@ -32,7 +24,7 @@ export class FeedbackService {
     });
   }
 
-  async findAll(): Promise<FindAllFeedbackReturn> {
+  async findAll() {
     return await this.prisma.feedback.findMany({
       include: {
         User: true,

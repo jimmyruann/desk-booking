@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { v4 as uuid } from 'uuid';
 import bcrypt from 'bcryptjs';
-import { PrismaService } from '../shared/prisma/prisma.service';
+import { v4 as uuid } from 'uuid';
 import { JWT_CONSTANT } from '../constants/jwt';
+import { PrismaService } from '../shared/prisma/prisma.service';
 import { RefreshAuthPayLoad } from './auth.type';
 
 @Injectable()

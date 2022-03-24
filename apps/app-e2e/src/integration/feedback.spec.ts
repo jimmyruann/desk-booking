@@ -24,13 +24,21 @@ describe('Feedback', () => {
 
   it('should be able to submit a feedback', () => {
     cy.visit('/feedback');
-    cy.get('form[name=feedbackForm]').get('select').select('Issues');
-    cy.get('form[name=feedbackForm]');
-    cy.get('input[name=title]').type('This is an example Title');
-    cy.get('textarea[name=description]').type(
-      'Ut imperdiet quam arcu, sit amet gravida felis consectetur non.'
+    cy.get('form[name=feedbackForm] select[name=feedbackType]').select(
+      'Issues'
+    );
+    cy.get('form[name=feedbackForm] input[name=title]').type(
+      'This is an example Title'
+    );
+    cy.get('form[name=feedbackForm] textarea[name=description]').type(
+      'This is an example description'
     );
     cy.get('form[name=feedbackForm]').submit();
     cy.get('body').should('contain', 'We received your feedback');
+
+    cy.get('form[name=feedbackForm] input[name=title]').should('be.empty');
+    cy.get('form[name=feedbackForm] textarea[name=description]').should(
+      'be.empty'
+    );
   });
 });

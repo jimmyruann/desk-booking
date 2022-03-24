@@ -1,16 +1,15 @@
-import './app-side-menu-item.module.css';
-import { IconType } from 'react-icons';
 import {
-  ThemeIconProps,
-  createStyles,
-  UnstyledButton,
-  Group,
-  ThemeIcon,
   Box,
   Collapse,
+  createStyles,
+  Group,
+  ThemeIcon,
+  ThemeIconProps,
+  UnstyledButton,
 } from '@mantine/core';
-import { HiOutlineChevronLeft, HiOutlineChevronRight } from 'react-icons/hi';
 import { useState } from 'react';
+import { IconType } from 'react-icons';
+import { HiOutlineChevronLeft, HiOutlineChevronRight } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 
 /* eslint-disable-next-line */

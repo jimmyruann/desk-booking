@@ -9,8 +9,6 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { MdOutlineMyLocation } from 'react-icons/md';
-
-import './app-header.module.css';
 import { useUserLocation } from '../../context/UserLocation';
 
 /* eslint-disable-next-line */
@@ -26,7 +24,7 @@ const useStyles = createStyles((theme) => ({
     alignItems: 'center',
   },
   active: {
-    backgroundColor: theme.colors.teal[2],
+    backgroundColor: theme.colors['teal'][2],
   },
 }));
 
@@ -34,14 +32,28 @@ export function AppHeader({ opened, setOpened }: AppHeaderProps) {
   const userLocation = useUserLocation();
   const theme = useMantineTheme();
   const { classes } = useStyles();
+
+  const renderLocations =
+    userLocation.locations.length &&
+    userLocation.locations.map((each) => (
+      <Menu.Item
+        key={each.locationId}
+        className={
+          userLocation.location &&
+          userLocation.location.locationId === each.locationId &&
+          classes.active
+        }
+        onClick={() =>
+          userLocation.setLocation(userLocation.findLocation(each.locationId))
+        }
+        data-cy={`location-${each.locationId}`}
+      >
+        {each.displayName}
+      </Menu.Item>
+    ));
+
   return (
-    <Header
-      height={60}
-      padding="md"
-      fixed
-      className={classes.header}
-      id="navHeader"
-    >
+    <Header height={60} p="md" fixed className={classes.header} id="navHeader">
       <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
         <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
           <Burger
@@ -64,21 +76,7 @@ export function AppHeader({ opened, setOpened }: AppHeaderProps) {
           }
         >
           <Menu.Label data-cy="locationMenuLabel">Location</Menu.Label>
-          {userLocation.locations.length &&
-            userLocation.locations.map((each) => (
-              <Menu.Item
-                key={each.name}
-                className={
-                  userLocation.location.name === each.name && classes.active
-                }
-                onClick={() =>
-                  userLocation.setLocation(userLocation.findLocation(each.name))
-                }
-                data-cy={`location-${each.name}`}
-              >
-                {each.displayName}
-              </Menu.Item>
-            ))}
+          {renderLocations}
         </Menu>
       </div>
     </Header>
