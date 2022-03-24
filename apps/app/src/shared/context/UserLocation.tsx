@@ -57,7 +57,7 @@ export const UserLocationProvider = ({
           localStorage.setItem('location_name', location.locationId);
           setLocation(location);
         },
-        locations: locations || [],
+        locations,
         findLocation,
       }}
     >

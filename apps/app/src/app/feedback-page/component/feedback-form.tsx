@@ -25,7 +25,7 @@ export const FeedbackForm = ({ form, handleSubmit }: FeedbackFormProps) => {
       className="tw-py-8"
       name="feedbackForm"
     >
-      <Group direction="column" grow={true}>
+      <Group direction="column" grow>
         <NativeSelect
           data={[
             { value: 'idea', label: 'Idea' },
