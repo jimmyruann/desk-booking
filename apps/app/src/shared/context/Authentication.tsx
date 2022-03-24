@@ -1,4 +1,3 @@
-import { LoginReturn, RefreshTokenReturn } from '@desk-booking/data';
 import { User } from '@prisma/client';
 import { AxiosError } from 'axios';
 import { AxiosAuthRefreshRequestConfig } from 'axios-auth-refresh';
@@ -35,7 +34,8 @@ export const AuthenticationProvider = ({
 
   const refreshSession = useMutation(
     () => {
-      return api.client.post<RefreshTokenReturn>('/auth/refresh', null, {
+      // <RefreshTokenResponse>
+      return api.client.post('/auth/refresh', null, {
         skipAuthRefresh: true,
       } as AxiosAuthRefreshRequestConfig);
     },
@@ -69,7 +69,8 @@ export const AuthenticationProvider = ({
 
   const loginMutation = useMutation(
     (data: { email: string; password: string }) => {
-      return api.client.post<LoginReturn>('/auth/login', data, {
+      // <LoginResponse>
+      return api.client.post('/auth/login', data, {
         skipAuthRefresh: true,
       } as AxiosAuthRefreshRequestConfig);
     },

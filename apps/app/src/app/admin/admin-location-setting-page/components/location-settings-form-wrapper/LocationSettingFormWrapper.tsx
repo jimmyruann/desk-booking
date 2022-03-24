@@ -70,10 +70,7 @@ export function LocationSettingFormWrapper({
           allowBookingBetween[1].getMinutes(),
       };
 
-      return api.make.location.updateLocation({
-        id,
-        data: updateData,
-      });
+      return api.client.patch(`/locations/${id}`, updateData);
     },
     {
       onSuccess: ({ data }) => {

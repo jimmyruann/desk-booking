@@ -1,19 +1,39 @@
+import { LocationEntity } from '@desk-booking/data';
 import { Grid, NativeSelect, Text } from '@mantine/core';
 import { Location } from '@prisma/client';
 import _ from 'lodash';
+import { useQuery } from 'react-query';
+import Loading from '../../../../../shared/components/loading/loading';
+import { useApi } from '../../../../../shared/context/ApiClient';
 
 /* eslint-disable-next-line */
 export interface HeaderProps {
-  locations: Location[];
   handleLocationChange: (location: Location) => void;
 }
 
 export const LocationSettingHeader = ({
-  locations,
   handleLocationChange,
 }: HeaderProps) => {
+  const api = useApi();
+
+  const { data: locations, status } = useQuery(
+    'GET_ALL_LOCATIONS',
+    async () => {
+      const { data } = await api.client.get<LocationEntity[]>('/locations');
+      return data;
+    },
+    {
+      onSuccess: (data) => {
+        handleLocationChange(data[0]);
+      },
+    }
+  );
+
+  if (status === 'loading') return <Loading />;
+  if (status === 'error') return <div>Something went wrong</div>;
+
   return (
-    <Grid grow>
+    <Grid grow align="center">
       <Grid.Col span={6}>
         <Text>Location Settings</Text>
       </Grid.Col>

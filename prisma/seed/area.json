@@ -873,5 +873,663 @@
     "locationId": 2,
     "areaTypeId": 1,
     "displayName": "Desk 72"
+  },
+  {
+    "id": 126,
+    "htmlId": "sydney-lv18-desk-1",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 1"
+  },
+  {
+    "id": 127,
+    "htmlId": "sydney-lv18-desk-2",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 2"
+  },
+  {
+    "id": 128,
+    "htmlId": "sydney-lv18-desk-3",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 3"
+  },
+  {
+    "id": 129,
+    "htmlId": "sydney-lv18-desk-4",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 4"
+  },
+  {
+    "id": 130,
+    "htmlId": "sydney-lv18-desk-5",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 5"
+  },
+  {
+    "id": 131,
+    "htmlId": "sydney-lv18-desk-6",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 6"
+  },
+  {
+    "id": 132,
+    "htmlId": "sydney-lv18-desk-7",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 7"
+  },
+  {
+    "id": 133,
+    "htmlId": "sydney-lv18-desk-8",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 8"
+  },
+  {
+    "id": 134,
+    "htmlId": "sydney-lv18-desk-9",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 9"
+  },
+  {
+    "id": 135,
+    "htmlId": "sydney-lv18-desk-10",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 10"
+  },
+  {
+    "id": 136,
+    "htmlId": "sydney-lv18-desk-11",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 11"
+  },
+  {
+    "id": 137,
+    "htmlId": "sydney-lv18-desk-12",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 12"
+  },
+  {
+    "id": 138,
+    "htmlId": "sydney-lv18-desk-13",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 13"
+  },
+  {
+    "id": 139,
+    "htmlId": "sydney-lv18-desk-14",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 14"
+  },
+  {
+    "id": 140,
+    "htmlId": "sydney-lv18-desk-15",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 15"
+  },
+  {
+    "id": 141,
+    "htmlId": "sydney-lv18-desk-16",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 16"
+  },
+  {
+    "id": 142,
+    "htmlId": "sydney-lv18-desk-17",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 17"
+  },
+  {
+    "id": 143,
+    "htmlId": "sydney-lv18-desk-18",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 18"
+  },
+  {
+    "id": 144,
+    "htmlId": "sydney-lv18-desk-19",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 19"
+  },
+  {
+    "id": 145,
+    "htmlId": "sydney-lv18-desk-20",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 20"
+  },
+  {
+    "id": 146,
+    "htmlId": "sydney-lv18-desk-21",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 21"
+  },
+  {
+    "id": 147,
+    "htmlId": "sydney-lv18-desk-22",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 22"
+  },
+  {
+    "id": 148,
+    "htmlId": "sydney-lv18-desk-23",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 23"
+  },
+  {
+    "id": 149,
+    "htmlId": "sydney-lv18-desk-24",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 24"
+  },
+  {
+    "id": 150,
+    "htmlId": "sydney-lv18-desk-25",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 25"
+  },
+  {
+    "id": 151,
+    "htmlId": "sydney-lv18-desk-26",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 26"
+  },
+  {
+    "id": 152,
+    "htmlId": "sydney-lv18-desk-27",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 27"
+  },
+  {
+    "id": 153,
+    "htmlId": "sydney-lv18-desk-28",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 28"
+  },
+  {
+    "id": 154,
+    "htmlId": "sydney-lv18-desk-29",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 29"
+  },
+  {
+    "id": 155,
+    "htmlId": "sydney-lv18-desk-30",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 30"
+  },
+  {
+    "id": 156,
+    "htmlId": "sydney-lv18-desk-31",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 31"
+  },
+  {
+    "id": 157,
+    "htmlId": "sydney-lv18-desk-32",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 32"
+  },
+  {
+    "id": 158,
+    "htmlId": "sydney-lv18-desk-33",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 33"
+  },
+  {
+    "id": 159,
+    "htmlId": "sydney-lv18-desk-34",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 34"
+  },
+  {
+    "id": 160,
+    "htmlId": "sydney-lv18-desk-35",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 35"
+  },
+  {
+    "id": 161,
+    "htmlId": "sydney-lv18-desk-36",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 36"
+  },
+  {
+    "id": 162,
+    "htmlId": "sydney-lv18-desk-37",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 37"
+  },
+  {
+    "id": 163,
+    "htmlId": "sydney-lv18-desk-38",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 38"
+  },
+  {
+    "id": 164,
+    "htmlId": "sydney-lv18-desk-39",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 39"
+  },
+  {
+    "id": 165,
+    "htmlId": "sydney-lv18-desk-40",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 40"
+  },
+  {
+    "id": 166,
+    "htmlId": "sydney-lv18-desk-41",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 41"
+  },
+  {
+    "id": 167,
+    "htmlId": "sydney-lv18-desk-42",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 42"
+  },
+  {
+    "id": 168,
+    "htmlId": "sydney-lv18-desk-43",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 43"
+  },
+  {
+    "id": 169,
+    "htmlId": "sydney-lv18-desk-44",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 44"
+  },
+  {
+    "id": 170,
+    "htmlId": "sydney-lv18-desk-45",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 45"
+  },
+  {
+    "id": 171,
+    "htmlId": "sydney-lv18-desk-46",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 46"
+  },
+  {
+    "id": 172,
+    "htmlId": "sydney-lv18-desk-47",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 47"
+  },
+  {
+    "id": 173,
+    "htmlId": "sydney-lv18-desk-48",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 48"
+  },
+  {
+    "id": 174,
+    "htmlId": "sydney-lv18-desk-49",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 49"
+  },
+  {
+    "id": 175,
+    "htmlId": "sydney-lv18-desk-50",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 50"
+  },
+  {
+    "id": 176,
+    "htmlId": "sydney-lv18-desk-51",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 51"
+  },
+  {
+    "id": 177,
+    "htmlId": "sydney-lv18-desk-52",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 52"
+  },
+  {
+    "id": 178,
+    "htmlId": "sydney-lv18-desk-53",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 53"
+  },
+  {
+    "id": 179,
+    "htmlId": "sydney-lv18-desk-54",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 54"
+  },
+  {
+    "id": 180,
+    "htmlId": "sydney-lv18-desk-55",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 55"
+  },
+  {
+    "id": 181,
+    "htmlId": "sydney-lv18-desk-56",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 56"
+  },
+  {
+    "id": 182,
+    "htmlId": "sydney-lv18-desk-57",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 57"
+  },
+  {
+    "id": 183,
+    "htmlId": "sydney-lv18-desk-58",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 58"
+  },
+  {
+    "id": 184,
+    "htmlId": "sydney-lv18-desk-59",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 59"
+  },
+  {
+    "id": 185,
+    "htmlId": "sydney-lv18-desk-60",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 60"
+  },
+  {
+    "id": 186,
+    "htmlId": "sydney-lv18-desk-61",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 61"
+  },
+  {
+    "id": 187,
+    "htmlId": "sydney-lv18-desk-62",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 62"
+  },
+  {
+    "id": 188,
+    "htmlId": "sydney-lv18-desk-63",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 63"
+  },
+  {
+    "id": 189,
+    "htmlId": "sydney-lv18-desk-64",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 64"
+  },
+  {
+    "id": 190,
+    "htmlId": "sydney-lv18-desk-65",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 65"
+  },
+  {
+    "id": 191,
+    "htmlId": "sydney-lv18-desk-66",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 66"
+  },
+  {
+    "id": 192,
+    "htmlId": "sydney-lv18-desk-67",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 67"
+  },
+  {
+    "id": 193,
+    "htmlId": "sydney-lv18-desk-68",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 68"
+  },
+  {
+    "id": 194,
+    "htmlId": "sydney-lv18-desk-69",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 69"
+  },
+  {
+    "id": 195,
+    "htmlId": "sydney-lv18-desk-70",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 70"
+  },
+  {
+    "id": 196,
+    "htmlId": "sydney-lv18-desk-71",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 71"
+  },
+  {
+    "id": 197,
+    "htmlId": "sydney-lv18-desk-72",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 72"
+  },
+  {
+    "id": 198,
+    "htmlId": "sydney-lv18-desk-73",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 73"
+  },
+  {
+    "id": 199,
+    "htmlId": "sydney-lv18-desk-74",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 74"
+  },
+  {
+    "id": 200,
+    "htmlId": "sydney-lv18-desk-75",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 75"
+  },
+  {
+    "id": 201,
+    "htmlId": "sydney-lv18-desk-76",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Desk 76"
+  },
+  {
+    "id": 202,
+    "htmlId": "sydney-lv18-desk-hot-1",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Hot Desk 1"
+  },
+  {
+    "id": 203,
+    "htmlId": "sydney-lv18-desk-hot-2",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Hot Desk 2"
+  },
+  {
+    "id": 204,
+    "htmlId": "sydney-lv18-desk-hot-3",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Hot Desk 3"
+  },
+  {
+    "id": 205,
+    "htmlId": "sydney-lv18-desk-hot-4",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Hot Desk 4"
+  },
+  {
+    "id": 206,
+    "htmlId": "sydney-lv18-desk-hot-5",
+    "locationId": 3,
+    "areaTypeId": 1,
+    "displayName": "Hot Desk 5"
+  },
+  {
+    "id": 207,
+    "htmlId": "sydney-lv18-room-1",
+    "locationId": 3,
+    "areaTypeId": 2,
+    "displayName": "Room 1"
+  },
+  {
+    "id": 208,
+    "htmlId": "sydney-lv18-room-2",
+    "locationId": 3,
+    "areaTypeId": 2,
+    "displayName": "Room 2"
+  },
+  {
+    "id": 209,
+    "htmlId": "sydney-lv18-room-3",
+    "locationId": 3,
+    "areaTypeId": 2,
+    "displayName": "Room 3"
+  },
+  {
+    "id": 210,
+    "htmlId": "sydney-lv18-room-4",
+    "locationId": 3,
+    "areaTypeId": 2,
+    "displayName": "Room 4"
+  },
+  {
+    "id": 211,
+    "htmlId": "sydney-lv18-room-5",
+    "locationId": 3,
+    "areaTypeId": 2,
+    "displayName": "Room 5"
+  },
+  {
+    "id": 212,
+    "htmlId": "sydney-lv18-room-6",
+    "locationId": 3,
+    "areaTypeId": 2,
+    "displayName": "Room 6"
+  },
+  {
+    "id": 213,
+    "htmlId": "sydney-lv18-room-7",
+    "locationId": 3,
+    "areaTypeId": 2,
+    "displayName": "Room 7"
+  },
+  {
+    "id": 214,
+    "htmlId": "sydney-lv18-room-8",
+    "locationId": 3,
+    "areaTypeId": 2,
+    "displayName": "Room 8"
+  },
+  {
+    "id": 215,
+    "htmlId": "sydney-lv18-room-9",
+    "locationId": 3,
+    "areaTypeId": 2,
+    "displayName": "Room 9"
+  },
+  {
+    "id": 216,
+    "htmlId": "sydney-lv18-room-10",
+    "locationId": 3,
+    "areaTypeId": 2,
+    "displayName": "Room 10"
+  },
+  {
+    "id": 217,
+    "htmlId": "sydney-lv18-room-11",
+    "locationId": 3,
+    "areaTypeId": 2,
+    "displayName": "Room 11"
+  },
+  {
+    "id": 218,
+    "htmlId": "sydney-lv18-room-12",
+    "locationId": 3,
+    "areaTypeId": 2,
+    "displayName": "Room 12"
+  },
+  {
+    "id": 219,
+    "htmlId": "sydney-lv18-room-13",
+    "locationId": 3,
+    "areaTypeId": 2,
+    "displayName": "Room 13"
   }
 ]

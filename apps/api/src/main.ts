@@ -1,10 +1,11 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
+import { PrismaClientExceptionFilter } from './shared/prisma/prisma-client-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,15 +20,15 @@ async function bootstrap() {
     })
   );
 
+  const { httpAdapter } = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
+
   if (!environment.production) {
     // Swagger
     const swaggerDocumentConfigs = new DocumentBuilder()
       .setTitle('Desk Booking Rest API')
       .setVersion('1.0')
-      .addBearerAuth(
-        { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
-        'access-token'
-      )
+      .addBearerAuth()
       .build();
     const swaggerDocument = SwaggerModule.createDocument(
       app,

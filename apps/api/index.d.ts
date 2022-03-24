@@ -1,4 +1,3 @@
-import { ExpressUser } from '@desk-booking/data';
 import { UserRole } from '@prisma/client';
 
 declare global {

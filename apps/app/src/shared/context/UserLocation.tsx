@@ -1,15 +1,15 @@
-import { FindAllLocationReturn } from '@desk-booking/data';
+import { LocationEntity } from '@desk-booking/data';
 import { Location } from '@prisma/client';
 import _ from 'lodash';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
-import { ServerError } from '../components/errors/ServerError';
+import { ServerError } from '../components/errors/server-error';
 import { useApi } from './ApiClient';
 
 interface UserLocationContext {
   location: Location;
   setLocation: (location: Location) => void;
-  locations: FindAllLocationReturn;
+  locations: LocationEntity[];
   findLocation: (name: string) => Location;
 }
 
@@ -28,7 +28,7 @@ export const UserLocationProvider = ({
   const { data: locations, status } = useQuery(
     'GET_ALL_LOCATIONS',
     async () => {
-      const { data } = await api.make.location.findAll();
+      const { data } = await api.client.get<LocationEntity[]>('/locations');
       return data;
     },
     {

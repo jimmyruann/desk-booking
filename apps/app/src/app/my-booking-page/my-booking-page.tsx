@@ -1,5 +1,4 @@
-import { FindAllBookingResponse } from '@desk-booking/data';
-import { Loading } from '@desk-booking/ui';
+import { BookingEntity, BookingWithAreaEntity } from '@desk-booking/data';
 import { createStyles, Space, Text } from '@mantine/core';
 import { DateRangePicker } from '@mantine/dates';
 import { useNotifications } from '@mantine/notifications';
@@ -7,7 +6,8 @@ import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { ServerError } from '../../shared/components/errors/ServerError';
+import { ServerError } from '../../shared/components/errors/server-error';
+import Loading from '../../shared/components/loading/loading';
 import { useApi } from '../../shared/context/ApiClient';
 import MyBookingTable from './my-booking-table/my-booking-table';
 
@@ -45,8 +45,8 @@ export function MyBookingPage(props: MyBookingPageProps) {
       const { startTime, endTime } = queryKey[1];
       if (!startTime || !endTime) return [];
 
-      const { data } = await api.client.get<FindAllBookingResponse>(
-        '/bookings',
+      const { data } = await api.client.get<BookingWithAreaEntity[]>(
+        '/bookings/user/withArea',
         {
           params: { startTime, endTime },
         }
@@ -66,7 +66,7 @@ export function MyBookingPage(props: MyBookingPageProps) {
 
   const deleteBookingMutation = useMutation(
     (data: { id: number }) => {
-      return api.make.booking.deleteBooking(data);
+      return api.client.delete<BookingEntity>(`/bookings/${data.id}`);
     },
     {
       onSuccess: ({ data }) => {

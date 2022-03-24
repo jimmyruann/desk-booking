@@ -1,9 +1,4 @@
-import {
-  FindAllLocationReturn,
-  FindOneLocationReturn,
-  UpdateLocationDto,
-  UpdateLocationResponse,
-} from '@desk-booking/data';
+import { CreateLocationDto, UpdateLocationDto } from '@desk-booking/data';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../shared/prisma/prisma.service';
 
@@ -11,17 +6,23 @@ import { PrismaService } from '../../shared/prisma/prisma.service';
 export class LocationsService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  private idOrLocationName(id: string) {
-    return /^-?\d+$/.test(id) ? { id: +id } : { name: id };
+  private idOrLocationId(id: string) {
+    return /^-?\d+$/.test(id) ? { id: +id } : { locationId: id };
   }
 
-  async findOne(id: string): Promise<FindOneLocationReturn> {
-    return await this.prismaService.location.findUnique({
-      where: this.idOrLocationName(id),
+  async create(createLocationDto: CreateLocationDto) {
+    return await this.prismaService.location.create({
+      data: createLocationDto,
     });
   }
 
-  async findAll(): Promise<FindAllLocationReturn> {
+  async findOne(id: string) {
+    return await this.prismaService.location.findUnique({
+      where: this.idOrLocationId(id),
+    });
+  }
+
+  async findAll() {
     return await this.prismaService.location.findMany({
       orderBy: {
         displayName: 'asc',
@@ -29,13 +30,16 @@ export class LocationsService {
     });
   }
 
-  async updateLocation(
-    id: number,
-    data: UpdateLocationDto
-  ): Promise<UpdateLocationResponse> {
+  async update(id: string, updateLocationDto: UpdateLocationDto) {
     return await this.prismaService.location.update({
-      where: { id },
-      data,
+      where: this.idOrLocationId(id),
+      data: updateLocationDto,
+    });
+  }
+
+  async delete(id: string) {
+    return await this.prismaService.location.delete({
+      where: this.idOrLocationId(id),
     });
   }
 }

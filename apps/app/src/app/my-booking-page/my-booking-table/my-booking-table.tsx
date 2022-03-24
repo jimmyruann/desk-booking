@@ -1,26 +1,25 @@
-import { FindAllBookingResponse } from '@desk-booking/data';
+import { BookingWithAreaEntity } from '@desk-booking/data';
 import { ActionIcon, Table } from '@mantine/core';
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { HiX } from 'react-icons/hi';
-import { useUserLocation } from '../../../shared/context/UserLocation';
+dayjs.extend(relativeTime);
 
 /* eslint-disable-next-line */
 export interface MyBookingTableProps {
-  data: FindAllBookingResponse;
+  data: BookingWithAreaEntity[];
   handleDelete: (id: number) => void;
 }
 
 export function MyBookingTable({ data, handleDelete }: MyBookingTableProps) {
-  const userLocation = useUserLocation();
-
   const items = data.map((each) => {
-    const startDayJs = dayjs.tz(each.startTime, userLocation.location.timeZone);
-    const endDayJs = dayjs(each.endTime, userLocation.location.timeZone);
+    const startDayJs = dayjs(each.startTime);
+    const endDayJs = dayjs(each.endTime);
     return (
       <tr key={each.id}>
         <td className="tw-capitalize">{each.Area.Location.displayName}</td>
         <td>{each.Area.displayName || each.Area.htmlId}</td>
-        <td>{startDayJs.format('ddd MMM DD YYYY')}</td>
+        <td>{startDayJs.format('ddd, MMM DD YYYY')}</td>
         <td>{startDayJs.format('hh:mm A')}</td>
         <td>{endDayJs.format('hh:mm A')}</td>
         <td>
@@ -28,7 +27,6 @@ export function MyBookingTable({ data, handleDelete }: MyBookingTableProps) {
             ? `${endDayJs.diff(startDayJs, 'hours')}h`
             : `${endDayJs.diff(startDayJs, 'minutes')}m`}
         </td>
-        <td>{startDayJs.fromNow()}</td>
         <td className="tw-flex tw-justify-center tw-items-center">
           <ActionIcon
             color="red"
@@ -53,7 +51,6 @@ export function MyBookingTable({ data, handleDelete }: MyBookingTableProps) {
           <th>Start Time</th>
           <th>End Time</th>
           <th>Duration</th>
-          <th>When</th>
           <th>Options</th>
         </tr>
       </thead>

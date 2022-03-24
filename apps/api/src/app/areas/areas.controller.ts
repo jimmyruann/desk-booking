@@ -1,13 +1,25 @@
-import { CreateAreaDto, FindOneWithBookingQuery } from '@desk-booking/data';
+import {
+  AreaAvailabilityEntity,
+  AreaBookingsEntity,
+  AreaEntity,
+  CreateAreaDto,
+  UpdateAreaDto,
+} from '@desk-booking/data';
 import {
   Body,
   Controller,
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 import { UserRole } from '@prisma/client';
 import { Roles } from '../../auth/decorator/roles.decorator';
 import { AreasService } from './areas.service';
@@ -16,42 +28,65 @@ import { AreasService } from './areas.service';
 export class AreasController {
   constructor(private readonly areasService: AreasService) {}
 
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
-  @Post()
-  create(@Body() createAreaDto: CreateAreaDto) {
-    return this.areasService.create(createAreaDto);
-  }
-
   @Get()
-  findAll(@Query('location') location: string) {
-    return this.areasService.findAllByLocation(location);
+  @ApiOperation({ summary: `[USER, ADMIN] Find all areas` })
+  @ApiOkResponse({ type: [AreaEntity] })
+  async findAll(@Query('locationId') locationId?: string) {
+    const areas = await this.areasService.findAll(locationId);
+    return areas.map((area) => new AreaEntity(area));
   }
 
-  @Get(':idOrHtmlId')
-  findOne(@Param('idOrHtmlId') idOrHtmlId: string) {
-    return this.areasService.findOne(idOrHtmlId);
+  @Get(':id')
+  @ApiOperation({ summary: `[USER, ADMIN] Find one area` })
+  @ApiOkResponse({ type: AreaEntity })
+  async findOne(@Param('id') id: string) {
+    return new AreaEntity(await this.areasService.findOne(id));
   }
 
-  @Get(':idOrHtmlId/bookings')
-  findOneWithBookings(
-    @Param('idOrHtmlId') idOrHtmlId: string,
-    @Query() { from, to }: FindOneWithBookingQuery
-  ) {
-    return this.areasService.findOneWithBookings(idOrHtmlId, from, to);
+  @Get(':id/availabilities')
+  @ApiOperation({ summary: `Find all availabilities for an area` })
+  @ApiOkResponse({
+    type: [AreaAvailabilityEntity],
+  })
+  async findAvailabilities(@Param('id') id: string, @Query('date') date: Date) {
+    const availabilities = await this.areasService.findAvailabilities(id, date);
+    return availabilities.map(
+      (availability) => new AreaAvailabilityEntity(availability)
+    );
   }
 
-  @Get(':idOrHtmlId/availabilities')
-  findAvailabilities(
-    @Param('idOrHtmlId') idOrHtmlId: string,
-    @Query('date') date: Date
-  ) {
+  @Get(':id/bookings')
+  @ApiOperation({ summary: `Find all bookings for an area` })
+  @ApiOkResponse({
+    type: [AreaBookingsEntity],
+  })
+  async findBookings(@Param('id') id: string, @Query('date') date: Date) {
     // Keep everything in UTC to be simple
-    return this.areasService.findAvailabilities(idOrHtmlId, date);
+    const bookings = await this.areasService.findBookings(id, date);
+    return bookings.map((booking) => new AreaBookingsEntity(booking));
   }
 
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
-  @Delete(':idOrHtmlId')
-  remove(@Param('idOrHtmlId') idOrHtmlId: string) {
-    return this.areasService.remove(idOrHtmlId);
+  @Roles(UserRole.ADMIN)
+  @Post()
+  @ApiOperation({ summary: `[ADMIN] Create a new area on Map` })
+  @ApiCreatedResponse({ type: AreaEntity })
+  async create(@Body() createAreaDto: CreateAreaDto) {
+    return new AreaEntity(await this.areasService.create(createAreaDto));
+  }
+
+  @Roles(UserRole.ADMIN)
+  @Patch(':id')
+  @ApiOperation({ summary: `[ADMIN] Update an area` })
+  @ApiCreatedResponse({ type: AreaEntity })
+  async update(@Param('id') id: string, @Body() updateAreaDto: UpdateAreaDto) {
+    return new AreaEntity(await this.areasService.update(id, updateAreaDto));
+  }
+
+  @Roles(UserRole.ADMIN)
+  @Delete(':id')
+  @ApiOperation({ summary: `[ADMIN] Remove an area` })
+  @ApiOkResponse({ type: AreaEntity })
+  async remove(@Param('id') id: string) {
+    return new AreaEntity(await this.areasService.remove(id));
   }
 }

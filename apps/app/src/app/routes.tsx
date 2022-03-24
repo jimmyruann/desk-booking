@@ -1,5 +1,5 @@
-import { NotFound } from '@desk-booking/ui';
 import { RouteObject } from 'react-router';
+import NotFoundError from '../shared/components/errors/not-found-error';
 import RequireAuth from '../shared/components/RequireAuth';
 import { adminRoutes } from './admin/routes';
 import { authRoutes } from './auth/routes';
@@ -30,6 +30,6 @@ export const appRoutes: RouteObject[] = [
   authRoutes,
   {
     path: '*',
-    element: <NotFound />,
+    element: <NotFoundError />,
   },
 ];

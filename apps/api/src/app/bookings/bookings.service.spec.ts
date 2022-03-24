@@ -40,7 +40,7 @@ describe('BookingService', () => {
       prisma.area.update = jest.fn().mockReturnValueOnce(newB);
 
       expect(
-        await service.create(1, {
+        await service.createWithUser(1, {
           htmlId: 'test-1',
           bookings: [
             {
@@ -56,7 +56,7 @@ describe('BookingService', () => {
       prisma.booking.count = jest.fn().mockReturnValueOnce(1);
 
       try {
-        await service.create(1, {
+        await service.createWithUser(1, {
           htmlId: 'test-1',
           bookings: [
             {

@@ -1,4 +1,4 @@
-import { CreateFeedbackDto, CreateFeedbackReturn } from '@desk-booking/data';
+import { FeedbackEntity } from '@desk-booking/data';
 import { createStyles } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
 import { useNotifications } from '@mantine/notifications';
@@ -49,8 +49,9 @@ export function FeedbackPage(props: FeedbackPageProps) {
   });
 
   const feedbackMutation = useMutation(
-    (data: CreateFeedbackDto) => {
-      return api.client.post<CreateFeedbackReturn>('/feedback', data);
+    // CreateFeedbackDto
+    (data: any) => {
+      return api.client.post<FeedbackEntity>('/feedback', data);
     },
     {
       onSuccess: () => {

@@ -1,13 +1,20 @@
-import { AreaAvailability } from '@desk-booking/data';
+import { AreaAvailabilityEntity } from '@desk-booking/data';
 import { Checkbox, createStyles, ScrollArea, Table } from '@mantine/core';
 import { UseListState } from '@mantine/hooks/lib/use-list-state/use-list-state';
+import { useNotifications } from '@mantine/notifications';
 import { Location } from '@prisma/client';
+import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
+import { useQuery } from 'react-query';
+import Loading from '../../../../shared/components/loading/loading';
+import { useApi } from '../../../../shared/context/ApiClient';
 
 /* eslint-disable-next-line */
 export interface TimeTabProps {
-  availabilityHook: UseListState<AreaAvailability & { checked: boolean }>;
+  availabilityHook: UseListState<AreaAvailabilityEntity & { checked: boolean }>;
   location: Location;
+  htmlId: string;
+  date: Date;
 }
 
 const useStyles = createStyles((theme) => ({
@@ -17,10 +24,60 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export function TimeTab({ availabilityHook, location }: TimeTabProps) {
+export function TimeTab({
+  availabilityHook,
+  location,
+  htmlId,
+  date,
+}: TimeTabProps) {
   const { classes } = useStyles();
-
+  const api = useApi();
+  const notifications = useNotifications();
   const [availability, availabilityHandler] = availabilityHook;
+
+  const { status } = useQuery(
+    ['GET_AREA_AVAILABILITIES', { htmlId, date }] as const,
+    async ({ queryKey }) => {
+      const { date, htmlId } = queryKey[1];
+      if (!date || !htmlId) return null;
+
+      const { data } = await api.client.get<AreaAvailabilityEntity[]>(
+        `/areas/${htmlId}/availabilities`,
+        {
+          params: {
+            date: dayjs(date).tz(location.timeZone).toDate(),
+          },
+        }
+      );
+
+      return data;
+    },
+    {
+      onSuccess: (areaData) => {
+        const availabilities = areaData
+          ? areaData.map((each) => {
+              return {
+                ...each,
+                checked: false,
+              };
+            })
+          : [];
+        availabilityHandler.setState(availabilities);
+      },
+      onError: (error: AxiosError) => {
+        notifications.showNotification({
+          color: 'red',
+          title: error.response.data.title || error.name,
+          message: error.response.data.message || error.message,
+        });
+      },
+      refetchOnMount: false,
+    }
+  );
+
+  if (status === 'loading') return <Loading />;
+  if (status === 'error')
+    return <div>Something went wrong while loading Availabilities</div>;
 
   const checkAll = availability.every((value) => value.checked);
 

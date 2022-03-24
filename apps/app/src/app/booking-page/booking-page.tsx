@@ -1,20 +1,21 @@
-import { AreaAvailability, CreateBookingResponse } from '@desk-booking/data';
-import { Box, createStyles, Grid, Text } from '@mantine/core';
+import { AreaAvailabilityEntity, BookingEntity } from '@desk-booking/data';
+import { Box, Text } from '@mantine/core';
 import { useListState } from '@mantine/hooks';
 import { useNotifications } from '@mantine/notifications';
 import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
-import { ReactNode, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import MapBox from '../../shared/components/map/map';
+import MapLayout from '../../shared/components/map/map-layout';
 import { useApi } from '../../shared/context/ApiClient';
 import { useUserLocation } from '../../shared/context/UserLocation';
 import { mergeTime } from '../../shared/utils/time';
 import BookingControl from './components/booking-control/booking-control';
 import InfoBox from './components/info-box/info-box';
 import TabContainer from './components/tab-container/tab-container';
+import { TestMapContext } from './test-map-context';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -22,67 +23,60 @@ dayjs.extend(timezone);
 /* eslint-disable-next-line */
 export interface BookingPageProps {}
 
-const useStyles = createStyles((theme) => ({
-  common: {
-    backgroundColor: theme.white,
-    padding: theme.spacing.md,
-    borderRadius: theme.radius.sm,
-    boxShadow: theme.shadows.md,
-  },
-}));
-
 function BookingPage(props: BookingPageProps) {
-  const { classes } = useStyles();
-
   const api = useApi();
   const userLocation = useUserLocation();
   const notifications = useNotifications();
   const queryClient = useQueryClient();
 
+  const [date, setDate] = useState(new Date());
   const [htmlId, setHtmlId] = useState('');
   const [availability, availabilityHandler] = useListState<
-    AreaAvailability & { checked: boolean }
+    AreaAvailabilityEntity & { checked: boolean }
   >([]);
-  const [date, setDate] = useState(new Date());
 
-  const resetState = () => {
+  useEffect(() => {
+    // reset when location changes
     setHtmlId('');
     availabilityHandler.setState([]);
-    setDate(new Date());
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userLocation.location]);
 
-  const handleQueryError = (
-    error: AxiosError,
-    title?: ReactNode,
-    message?: ReactNode
-  ) => {
-    notifications.showNotification({
-      color: 'red',
-      title: title || error.response.data.title || error.name,
-      message: message || error.response.data.message || error.message,
-    });
-  };
+  // const getMapAreas = useQuery(['areas', userLocation.location], async () => {
+  //   const { data } = await api.client.get<AreaEntity[]>('/areas', {
+  //     params: {
+  //       locationId: userLocation.location.locationId,
+  //     },
+  //   });
+  //   return data;
+  // });
+
+  // if (getMapAreas.status === 'loading') return <Loading />;
+  // if (getMapAreas.status === 'error')
+  //   return <div>Something went wrong while loading Map Area data.</div>;
 
   const createBookingMutation = useMutation(
     (data: {
       htmlId: string;
       bookings: { startTime: Date; endTime: Date }[];
     }) => {
-      return api.client.post<CreateBookingResponse>('/bookings', data);
+      return api.client.post<BookingEntity[]>('/bookings/user', data);
     },
     {
       onSuccess: ({ data }) => {
         notifications.showNotification({
           color: 'green',
           title: 'Booking Confirmed',
-          message: (
-            <Text>
-              You have booked <b>{data.displayName}</b>.
-            </Text>
-          ),
+          message: <Text>You have booked.</Text>,
         });
       },
-      onError: (error: AxiosError) => handleQueryError(error),
+      onError: (error: AxiosError) => {
+        notifications.showNotification({
+          color: 'red',
+          title: error.response.data.title || error.name,
+          message: error.response.data.message || error.message,
+        });
+      },
       onSettled: () => {
         queryClient.invalidateQueries(['GET_AREA_AVAILABILITIES']);
       },
@@ -107,21 +101,15 @@ function BookingPage(props: BookingPageProps) {
   };
 
   return (
-    <Grid grow>
-      <Grid.Col
-        md={12}
-        lg={7}
-        xl={7}
-        data-cy="svgMapContainer"
-        className={classes.common}
-      >
-        <MapBox
-          htmlIdHook={[htmlId, setHtmlId]}
-          locationId={userLocation.location.locationId}
-        />
-      </Grid.Col>
-
-      <Grid.Col md={12} lg={5} xl={5} gutter="md" className={classes.common}>
+    <TestMapContext.Provider
+      value={{
+        currentId: htmlId,
+        setCurrentId: setHtmlId,
+        disabledIds: [],
+        unavailableIds: [],
+      }}
+    >
+      <MapLayout locationId={userLocation.location.locationId}>
         <InfoBox htmlId={htmlId} />
         <br />
         <Box>
@@ -142,8 +130,8 @@ function BookingPage(props: BookingPageProps) {
             availabilityHook={[availability, availabilityHandler]}
           />
         </Box>
-      </Grid.Col>
-    </Grid>
+      </MapLayout>
+    </TestMapContext.Provider>
   );
 }
 

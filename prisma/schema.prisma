@@ -31,7 +31,7 @@ model Location {
   displayName      String
   timeZone         String
   mapUrl           String
-  capacity         Int    @default(1)
+  capacity         Int    @default(100)
   allowBookingFrom Int    @default(0)
   allowBookingTill Int    @default(1439)
   Area             Area[]

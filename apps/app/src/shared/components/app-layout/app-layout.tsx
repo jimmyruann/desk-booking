@@ -21,10 +21,7 @@ export function AppLayout(props: AppLayoutProps) {
         zIndex={100}
         styles={(theme) => ({
           main: {
-            backgroundColor:
-              theme.colorScheme === 'dark'
-                ? theme.colors.dark[8]
-                : theme.colors.gray[0],
+            backgroundColor: theme.colors.gray[0],
             paddingTop: 'calc(60px + 16px)',
             [`@media (min-width: ${theme.breakpoints.sm}px)`]: {
               paddingLeft: 'calc(300px + 16px)',
