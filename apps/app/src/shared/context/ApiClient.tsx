@@ -8,6 +8,7 @@ import { TokenStorage } from '../utils/TokenStorage';
 const client = axios.create({
   baseURL: '/api',
   withCredentials: true,
+  timeout: 2000,
 });
 
 // Handle auth request header
