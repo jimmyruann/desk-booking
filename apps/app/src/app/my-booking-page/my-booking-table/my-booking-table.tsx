@@ -13,8 +13,8 @@ export interface MyBookingTableProps {
 
 export function MyBookingTable({ data, handleDelete }: MyBookingTableProps) {
   const items = data.map((each) => {
-    const startDayJs = dayjs(each.startTime);
-    const endDayJs = dayjs(each.endTime);
+    const startDayJs = dayjs.tz(each.startTime, each.Area.Location.timeZone);
+    const endDayJs = dayjs(each.endTime, each.Area.Location.timeZone);
     return (
       <tr key={each.id}>
         <td className="tw-capitalize">{each.Area.Location.displayName}</td>

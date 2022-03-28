@@ -8,19 +8,24 @@ import { TokenStorage } from '../utils/TokenStorage';
 const client = axios.create({
   baseURL: '/api',
   withCredentials: true,
+  timeout: 2000,
 });
 
 // Handle auth request header
 client.interceptors.request.use((request) => {
-  request.headers['Authorization'] = `Bearer ${getAccessToken()}`;
+  const accessToken = getAccessToken();
+  if (accessToken) {
+    request.headers['Authorization'] = `Bearer ${getAccessToken()}`;
+  }
   return request;
 });
 
 // Handle refresh
 createAuthRefreshInterceptor(client, (failedRequest) =>
   axios
-    //<RefreshTokenResponse>
-    .post(`/api/auth/refresh`)
+    .post(`/api/auth/refresh`, null, {
+      timeout: 2000,
+    })
     .then((tokenRefreshResponse) => {
       saveAccessToken(tokenRefreshResponse.data.access_token);
       failedRequest.response.config.headers[
