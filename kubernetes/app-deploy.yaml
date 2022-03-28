@@ -54,6 +54,28 @@ spec:
             - name: API_PORT
               value: '3333'
 ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-migration
+  labels:
+    app: db-migration
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db-migration
+  template:
+    spec:
+      containers:
+        - name: db-migration
+          image: jimmyruann/desk_booking_prisma_migration
+          env:
+            - name: DATABASE_URL
+              value: $DATABASE_URL
+            - name: ADMIN_INITIAL_PASSWORD
+              value: $ADMIN_INITIAL_PASSWORD
+---
 apiVersion: v1
 kind: Service
 metadata:
