@@ -38,22 +38,10 @@ function BookingPage(props: BookingPageProps) {
   useEffect(() => {
     // reset when location changes
     setHtmlId('');
+    setDate(new Date());
     availabilityHandler.setState([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLocation.location]);
-
-  // const getMapAreas = useQuery(['areas', userLocation.location], async () => {
-  //   const { data } = await api.client.get<AreaEntity[]>('/areas', {
-  //     params: {
-  //       locationId: userLocation.location.locationId,
-  //     },
-  //   });
-  //   return data;
-  // });
-
-  // if (getMapAreas.status === 'loading') return <Loading />;
-  // if (getMapAreas.status === 'error')
-  //   return <div>Something went wrong while loading Map Area data.</div>;
 
   const createBookingMutation = useMutation(
     (data: {
