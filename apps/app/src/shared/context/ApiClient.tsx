@@ -13,7 +13,10 @@ const client = axios.create({
 
 // Handle auth request header
 client.interceptors.request.use((request) => {
-  request.headers['Authorization'] = `Bearer ${getAccessToken()}`;
+  const accessToken = getAccessToken();
+  if (accessToken) {
+    request.headers['Authorization'] = `Bearer ${getAccessToken()}`;
+  }
   return request;
 });
 
