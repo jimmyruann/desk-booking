@@ -8,11 +8,11 @@ import { AuthenticationProvider } from '../shared/context/Authentication';
 import { appRoutes } from './routes';
 
 const myQueryClient = new QueryClient({
-  // defaultOptions: {
-  //   queries: {
-  //     refetchOnWindowFocus: false,
-  //   },
-  // },
+  defaultOptions: {
+    queries: {
+      retry: 2,
+    },
+  },
 });
 
 export function App() {
