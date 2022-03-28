@@ -1,5 +1,15 @@
-import { All, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { SignupUserDto, UserEntity } from '@desk-booking/data';
+import {
+  All,
+  Body,
+  Controller,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { ApiCreatedResponse } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { COOKIE_CONSTANT } from '../constants/cookie';
 import { JWT_CONSTANT } from '../constants/jwt';
@@ -65,5 +75,12 @@ export class AuthController {
       .json({
         message: 'You have logged out.',
       });
+  }
+
+  @ApiCreatedResponse({ type: UserEntity })
+  @Post('signup')
+  async signup(@Body() signupUserDto: SignupUserDto) {
+    const user = await this.authService.signup(signupUserDto);
+    return new UserEntity(user);
   }
 }

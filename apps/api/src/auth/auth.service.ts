@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { SignupUserDto } from '@desk-booking/data';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcryptjs';
 import { v4 as uuid } from 'uuid';
@@ -43,5 +44,28 @@ export class AuthService {
 
   async removeRefreshToken({ id }: Express.User) {
     return true;
+  }
+
+  async signup(signupUserDto: SignupUserDto) {
+    const emailExist = await this.prisma.user.count({
+      where: {
+        email: signupUserDto.email,
+      },
+    });
+
+    if (emailExist)
+      throw new HttpException(
+        `The email ${signupUserDto.email} already exist.`,
+        HttpStatus.BAD_REQUEST
+      );
+
+    const { password, ...rest } = signupUserDto;
+
+    return await this.prisma.user.create({
+      data: {
+        ...rest,
+        password: bcrypt.hashSync(password),
+      },
+    });
   }
 }
