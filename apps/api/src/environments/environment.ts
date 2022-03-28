@@ -7,4 +7,5 @@ export const environment = {
     REFRESH_SECRET: 'ogoCODLSJj1/MrhLx7Wj5Q',
     REFRESH_EXPIRE: '7d',
   },
+  hCaptchaSecret: '0x0000000000000000000000000000000000000000',
 };

@@ -21,4 +21,9 @@ export class SignupUserDto {
   @IsNotEmpty()
   @MinLength(8)
   password: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @MinLength(1)
+  hCaptchaToken: string;
 }

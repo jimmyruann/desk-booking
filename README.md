@@ -12,11 +12,12 @@ This fullstack application is best to run on container services (Docker, Kuberne
 
 You will need to create a `.env` file in the root directory containing the following:
 
-| ENV_VARIABLE           | Required | Description                  | Example                           |
-| ---------------------- | -------- | ---------------------------- | --------------------------------- |
-| DATABASE_URL           | ✔️       | Postgres database URL        | postgres://user:pass@host:port/db |
-| ADMIN_INITIAL_PASSWORD | ✔️       | Password                     | example_password                  |
-| TZ                     |          | Default timezone for backend | UTC                               |
+| ENV_VARIABLE           | Required | Description                  | Example                                    |
+| ---------------------- | -------- | ---------------------------- | ------------------------------------------ |
+| DATABASE_URL           | ✔️       | Postgres database URL        | postgres://user:pass@host:port/db          |
+| ADMIN_INITIAL_PASSWORD | ✔️       | Password                     | example_password                           |
+| HCAPTCHA_SECRET        | ✔️       | hCaptcha secret              | 0x0000000000000000000000000000000000000000 |
+| TZ                     |          | Default timezone for backend | UTC                                        |
 
 ```
 yarn install

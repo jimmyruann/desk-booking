@@ -1,15 +1,16 @@
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 import {
   Button,
   createStyles,
   Group,
   InputWrapper,
   PasswordInput,
-  Space,
   TextInput,
 } from '@mantine/core';
 import { UseFormReturnType } from '@mantine/form/lib/use-form';
 import React from 'react';
 import { HiLockClosed, HiMail, HiOutlineLogin, HiUser } from 'react-icons/hi';
+import { environment } from '../../../../environments/environment';
 
 export interface SignUpFormValueProps {
   email: string;
@@ -17,12 +18,14 @@ export interface SignUpFormValueProps {
   lastName: string;
   password: string;
   confirmPassword: string;
+  hCaptchaToken: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface SignUpFormProps extends React.HTMLAttributes<HTMLFormElement> {
   form: UseFormReturnType<SignUpFormValueProps>;
   handleSubmit: (values: SignUpFormValueProps) => void;
+  hCaptchaRef?: React.MutableRefObject<HCaptcha>;
 }
 
 const useStyles = createStyles((theme) => ({
@@ -32,7 +35,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export const SignUpForm = React.forwardRef<HTMLFormElement, SignUpFormProps>(
-  ({ form, handleSubmit, ...props }, ref) => {
+  ({ form, handleSubmit, hCaptchaRef, ...props }, ref) => {
     const { classes } = useStyles();
     return (
       <form
@@ -94,7 +97,15 @@ export const SignUpForm = React.forwardRef<HTMLFormElement, SignUpFormProps>(
               {...form.getInputProps('confirmPassword')}
             />
           </InputWrapper>
-          <Space />
+
+          <InputWrapper {...form.getInputProps('hCaptchaToken')}>
+            <HCaptcha
+              sitekey={environment.hCaptchaSiteKey}
+              onVerify={(token) => form.setFieldValue('hCaptchaToken', token)}
+              ref={hCaptchaRef}
+            />
+          </InputWrapper>
+
           <Button
             uppercase
             leftIcon={<HiOutlineLogin size={18} />}

@@ -1,17 +1,17 @@
 import { SignupUserDto, UserEntity } from '@desk-booking/data';
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { LoadingOverlay, Space, Text } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import { useNotifications } from '@mantine/notifications';
 import { AxiosError } from 'axios';
 import { AxiosAuthRefreshRequestConfig } from 'axios-auth-refresh';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useMutation } from 'react-query';
-import { useNavigate } from 'react-router';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { axiosApiClient } from '../../../shared/api/api';
 import AuthFormLayouts from '../components/AuthFormLayouts';
-import SignUpForm from './components/signup-form';
+import SignUpForm, { SignUpFormValueProps } from './components/signup-form';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface SignUpPageProps {}
@@ -30,6 +30,9 @@ export const signUpFormSchema = z
       message: 'Password must be at least 8 characters.',
     }),
     confirmPassword: z.string(),
+    hCaptchaToken: z
+      .string()
+      .nonempty({ message: 'Please complete reCaptcha' }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match.",
@@ -51,9 +54,12 @@ const createUser = async (values: SignupUserDto) => {
 export const SignUpPage = (props: SignUpPageProps) => {
   const notifications = useNotifications();
   const navigation = useNavigate();
+
   const [userCreated, setUserCreated] = useState(false);
 
-  const form = useForm({
+  const hCaptchaRef = useRef<HCaptcha>(null);
+
+  const form = useForm<SignUpFormValueProps>({
     schema: zodResolver(signUpFormSchema),
     initialValues: {
       email: '',
@@ -61,6 +67,7 @@ export const SignUpPage = (props: SignUpPageProps) => {
       lastName: '',
       password: '',
       confirmPassword: '',
+      hCaptchaToken: '',
     },
   });
 
@@ -85,10 +92,13 @@ export const SignUpPage = (props: SignUpPageProps) => {
           error.message ||
           'Something went wrong.';
 
+        hCaptchaRef.current && hCaptchaRef.current.resetCaptcha();
+
         form.setValues({
           ...values,
           password: '',
           confirmPassword: '',
+          hCaptchaToken: '',
         });
 
         form.setFieldError('email', errorMessage);
@@ -127,9 +137,17 @@ export const SignUpPage = (props: SignUpPageProps) => {
       ) : (
         <div style={{ position: 'relative' }}>
           <LoadingOverlay visible={createUserMutation.isLoading} />
-          <SignUpForm form={form} handleSubmit={handleSubmit} />
+          <SignUpForm
+            form={form}
+            handleSubmit={handleSubmit}
+            hCaptchaRef={hCaptchaRef}
+          />
         </div>
       )}
+      <Space h="lg" />
+      <Text align="center" color="gray">
+        Have an account? <Link to="/auth/login">Login In</Link>
+      </Text>
     </AuthFormLayouts>
   );
 };

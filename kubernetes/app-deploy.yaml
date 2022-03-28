@@ -26,6 +26,8 @@ spec:
               value: $JWT_ACCESS_SECRET
             - name: JWT_REFRESH_SECRET
               value: $JWT_REFRESH_SECRET
+            - name: HCAPTCHA_SECRET
+              value: $HCAPTCHA_SECRET
 ---
 apiVersion: apps/v1
 kind: Deployment

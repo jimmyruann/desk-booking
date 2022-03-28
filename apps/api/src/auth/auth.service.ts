@@ -1,9 +1,11 @@
 import { SignupUserDto } from '@desk-booking/data';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import axios from 'axios';
 import bcrypt from 'bcryptjs';
 import { v4 as uuid } from 'uuid';
 import { JWT_CONSTANT } from '../constants/jwt';
+import { environment } from '../environments/environment';
 import { PrismaService } from '../shared/prisma/prisma.service';
 import { RefreshAuthPayLoad } from './auth.type';
 
@@ -47,19 +49,39 @@ export class AuthService {
   }
 
   async signup(signupUserDto: SignupUserDto) {
+    // test hCaptcha first
+    const { hCaptchaToken, password, ...rest } = signupUserDto;
+
+    try {
+      const { data: hCaptchaResult } = await axios.post<{ success: boolean }>(
+        'https://hcaptcha.com/siteverify',
+        `response=${hCaptchaToken}&secret=${environment.hCaptchaSecret}`,
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+      );
+
+      if (!hCaptchaResult.success) throw new Error();
+    } catch (error) {
+      throw new HttpException(
+        `ReCaptcha failed, please try again.`,
+        HttpStatus.BAD_REQUEST
+      );
+    }
+
     const emailExist = await this.prisma.user.count({
       where: {
-        email: signupUserDto.email,
+        email: rest.email,
       },
     });
 
     if (emailExist)
       throw new HttpException(
-        `The email ${signupUserDto.email} already exist.`,
+        `The email ${rest.email} already exist.`,
         HttpStatus.BAD_REQUEST
       );
-
-    const { password, ...rest } = signupUserDto;
 
     return await this.prisma.user.create({
       data: {
