@@ -23,8 +23,9 @@ client.interceptors.request.use((request) => {
 // Handle refresh
 createAuthRefreshInterceptor(client, (failedRequest) =>
   axios
-    //<RefreshTokenResponse>
-    .post(`/api/auth/refresh`)
+    .post(`/api/auth/refresh`, null, {
+      timeout: 2000,
+    })
     .then((tokenRefreshResponse) => {
       saveAccessToken(tokenRefreshResponse.data.access_token);
       failedRequest.response.config.headers[
