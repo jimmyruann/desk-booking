@@ -1,6 +1,8 @@
+import { Space, Text } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
 import validator from 'validator';
 import { useAuth } from '../../../shared/context/Authentication';
+import AuthFormLayouts from '../components/AuthFormLayouts';
 import { LoginForm } from './components/login-form';
 
 /* eslint-disable-next-line */
@@ -34,7 +36,15 @@ export function LoginPage(props: LoginPageProps) {
     }
   };
 
-  return <LoginForm form={form} handleLogin={handleLogin} />;
+  return (
+    <AuthFormLayouts>
+      <Text size="xl" weight={500} align="center">
+        DESK BOOKING SERVICE
+      </Text>
+      <Space h="sm" />
+      <LoginForm form={form} handleLogin={handleLogin} />
+    </AuthFormLayouts>
+  );
 }
 
 export default LoginPage;
