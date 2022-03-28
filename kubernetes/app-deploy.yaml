@@ -18,7 +18,7 @@ spec:
       containers:
         - name: api
           image: jimmyruann/desk_booking_api:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           env:
             - name: DATABASE_URL
               value: $DATABASE_URL
@@ -49,7 +49,7 @@ spec:
       containers:
         - name: frontend
           image: jimmyruann/desk_booking_app:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           env:
             - name: API_HOST
               value: api
@@ -75,6 +75,7 @@ spec:
       containers:
         - name: db-migration
           image: jimmyruann/desk_booking_prisma_migration
+          imagePullPolicy: Always
           env:
             - name: DATABASE_URL
               value: $DATABASE_URL
