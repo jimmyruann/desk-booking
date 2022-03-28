@@ -66,6 +66,9 @@ spec:
     matchLabels:
       app: db-migration
   template:
+    metadata:
+      labels:
+        app: db-migration
     spec:
       containers:
         - name: db-migration
@@ -75,18 +78,6 @@ spec:
               value: $DATABASE_URL
             - name: ADMIN_INITIAL_PASSWORD
               value: $ADMIN_INITIAL_PASSWORD
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: load-balance
-spec:
-  type: LoadBalancer
-  selector:
-    app: frontend
-  ports:
-    - port: 80
-      targetPort: 80
 ---
 apiVersion: v1
 kind: Service
@@ -111,3 +102,19 @@ spec:
     - port: 80
   selector:
     app: frontend
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: http-ingress
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80
