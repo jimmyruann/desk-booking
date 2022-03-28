@@ -17,15 +17,15 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: api
-          image: desk_booking_api:latest
+          image: jimmyruann/desk_booking_api:latest
           imagePullPolicy: IfNotPresent
           env:
             - name: DATABASE_URL
-              value: postgres://postgres:password@db:5432/postgres?schema=public
+              value: $DATABASE_URL
             - name: JWT_ACCESS_SECRET
-              value: abcdedg
+              value: $JWT_ACCESS_SECRET
             - name: JWT_REFRESH_SECRET
-              value: hijklmn
+              value: $JWT_REFRESH_SECRET
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -46,7 +46,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: frontend
-          image: desk_booking_app:latest
+          image: jimmyruann/desk_booking_app:latest
           imagePullPolicy: IfNotPresent
           env:
             - name: API_HOST

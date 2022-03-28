@@ -25,9 +25,11 @@ spec:
                   fieldPath: metadata.namespace
       containers:
         - name: db-migration
-          image: desk_booking_prisma_migration
+          image: jimmyruann/desk_booking_prisma_migration
           imagePullPolicy: Never
           env:
             - name: DATABASE_URL
-              value: postgres://postgres:password@db:5432/postgres?schema=public
+              value: $DATABASE_URL
+            - name: ADMIN_INITIAL_PASSWORD
+              value: $ADMIN_INITIAL_PASSWORD
       restartPolicy: Never
