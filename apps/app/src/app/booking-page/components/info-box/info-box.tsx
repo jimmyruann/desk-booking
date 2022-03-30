@@ -24,7 +24,7 @@ export function InfoBox({ htmlId }: InfoBoxProps) {
     <Group direction="column">
       <section>
         <Text data-cy="svgMapHeadingLocation">
-          Location: <b>{userLocation.location.displayName}</b>
+          Location: <b>{userLocation.currentLocation.displayName}</b>
         </Text>
         <Text data-cy="svgMapHeadingHtmlId">
           Area: <b>{htmlId || '-'}</b>
@@ -35,7 +35,7 @@ export function InfoBox({ htmlId }: InfoBoxProps) {
           Note*
         </Text>
         <Text data-cy="currentLocationTimeZone">
-          Timezone: <b>{userLocation.location.timeZone}</b>.
+          Timezone: <b>{userLocation.currentLocation.timeZone}</b>.
         </Text>
       </section>
     </Group>

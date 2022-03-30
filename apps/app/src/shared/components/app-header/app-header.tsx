@@ -39,13 +39,10 @@ export function AppHeader({ opened, setOpened }: AppHeaderProps) {
       <Menu.Item
         key={each.locationId}
         className={
-          userLocation.location &&
-          userLocation.location.locationId === each.locationId &&
+          userLocation.currentLocation.locationId === each.locationId &&
           classes.active
         }
-        onClick={() =>
-          userLocation.setLocation(userLocation.findLocation(each.locationId))
-        }
+        onClick={() => userLocation.changeCurrentLocation(each.locationId)}
         data-cy={`location-${each.locationId}`}
       >
         {each.displayName}

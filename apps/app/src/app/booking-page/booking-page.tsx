@@ -41,7 +41,7 @@ function BookingPage(props: BookingPageProps) {
     setDate(new Date());
     availabilityHandler.setState([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userLocation.location]);
+  }, [userLocation.currentLocation]);
 
   const createBookingMutation = useMutation(
     (data: {
@@ -97,7 +97,7 @@ function BookingPage(props: BookingPageProps) {
         unavailableIds: [],
       }}
     >
-      <MapLayout locationId={userLocation.location.locationId}>
+      <MapLayout locationId={userLocation.currentLocation.locationId}>
         <InfoBox htmlId={htmlId} />
         <br />
         <Box>
@@ -114,7 +114,7 @@ function BookingPage(props: BookingPageProps) {
           <TabContainer
             date={date}
             htmlId={htmlId}
-            location={userLocation.location}
+            location={userLocation.currentLocation}
             availabilityHook={[availability, availabilityHandler]}
           />
         </Box>
