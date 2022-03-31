@@ -27,6 +27,15 @@ export class FeedbackController {
   }
 
   @Roles(UserRole.ADMIN)
+  @Get('list')
+  @ApiOperation({ summary: '[ADMIN] Get Feedback list' })
+  @ApiOkResponse({ type: [FeedbackEntity] })
+  async getList() {
+    const feedbacks = await this.feedbackService.getList();
+    return feedbacks.map((feedback) => new FeedbackEntity(feedback));
+  }
+
+  @Roles(UserRole.ADMIN)
   @Get(':id')
   @ApiOperation({ summary: '[ADMIN] Find one feedback' })
   @ApiOkResponse({ type: FeedbackEntity })

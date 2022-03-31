@@ -3,8 +3,8 @@ import { Grid, NativeSelect, Text } from '@mantine/core';
 import { Location } from '@prisma/client';
 import _ from 'lodash';
 import { useQuery } from 'react-query';
-import Loading from '../../../../../shared/components/loading/loading';
-import { useApi } from '../../../../../shared/context/ApiClient';
+import Loading from '../../../../../../shared/components/loading/loading';
+import { useApi } from '../../../../../../shared/context/ApiClient';
 
 /* eslint-disable-next-line */
 export interface HeaderProps {

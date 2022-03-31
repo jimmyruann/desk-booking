@@ -103,3 +103,5 @@ export const TestMapAreas = ({
   }
   return <g {...props}></g>;
 };
+
+export default TestMapAreas;

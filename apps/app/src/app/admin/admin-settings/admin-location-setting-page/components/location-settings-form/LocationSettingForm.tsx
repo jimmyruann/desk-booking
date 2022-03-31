@@ -7,7 +7,7 @@ import {
 } from '@mantine/core';
 import { TimeRangeInput } from '@mantine/dates';
 import { UseFormReturnType } from '@mantine/form/lib/use-form';
-import TimeZones from '../../../../../assets/timezones.json';
+import TimeZones from '../../../../../../assets/timezones.json';
 
 export type LocationFormInputProps = {
   displayName: string;

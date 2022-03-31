@@ -10,4 +10,8 @@ export class AreaTypeEntity implements AreaType {
 
   @ApiProperty()
   interval: number;
+
+  constructor(partial: Partial<AreaTypeEntity>) {
+    Object.assign(this, partial);
+  }
 }

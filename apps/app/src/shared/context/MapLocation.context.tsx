@@ -13,37 +13,39 @@ const MapLocationContext = React.createContext<MapLocationContext>(null);
 
 interface MapLocationProviderProps {
   children: React.ReactNode;
-  initialLocationId: string;
   locations: LocationEntity[];
-  useLocationHook?: () => [LocationEntity, (location: LocationEntity) => void];
+  currentLocation?: LocationEntity;
+  defaultCurrentLocation?: LocationEntity;
+  onChangeCurrentLocation?: (location: LocationEntity) => void;
 }
 
 export const MapLocationProvider = ({
   children,
-  initialLocationId,
   locations,
+  currentLocation,
+  defaultCurrentLocation,
+  onChangeCurrentLocation,
 }: MapLocationProviderProps) => {
+  const [_currentLocation, handleCurrentLocationChange] = useUncontrolled({
+    value: currentLocation,
+    defaultValue: defaultCurrentLocation,
+    finalValue: locations[0],
+    rule: (val) => typeof val === 'object',
+    onChange: onChangeCurrentLocation,
+  });
+
   const findLocation = (locationId: string) => {
     return locations.find((location) => location.locationId === locationId);
-  };
-
-  // let [location, setLocation] = useState<LocationEntity>(
-  //   findLocation(initialLocationId)
-  // );
-
-  const [_locationId, handleLocationIdChange] = useUncontrolled<string>({});
-
-  const changeCurrentLocation = (locationId: string) => {
-    setLocation(findLocation(locationId));
   };
 
   return (
     <MapLocationContext.Provider
       value={{
-        currentLocation: location,
+        currentLocation: _currentLocation,
         locations,
         findLocation,
-        changeCurrentLocation,
+        changeCurrentLocation: (locationId) =>
+          handleCurrentLocationChange(findLocation(locationId)),
       }}
     >
       {children}

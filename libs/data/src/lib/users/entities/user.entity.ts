@@ -32,3 +32,17 @@ export class UserEntity implements User {
     Object.assign(this, rest);
   }
 }
+
+export class UserInfoEntity implements Partial<User> {
+  @ApiProperty()
+  id: number;
+
+  @ApiProperty()
+  email: string;
+
+  @ApiProperty()
+  firstName: string;
+
+  @ApiProperty()
+  lastName: string;
+}

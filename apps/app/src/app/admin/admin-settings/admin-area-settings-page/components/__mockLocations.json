@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "locationId": "test-location",
+    "displayName": "Test Location",
+    "timeZone": "UTC",
+    "mapUrl": "",
+    "capacity": 100,
+    "allowBookingFrom": 0,
+    "allowBookingTill": 1439
+  }
+]
