@@ -1,0 +1,14 @@
+{
+  "reject": [
+    "@nrwl/*",
+    "react",
+    "react-dom",
+    "react-test-renderer",
+    "@testing-library/react",
+    "d3",
+    "@types/d3",
+    "@svgr/webpack",
+    "url-loader",
+    "@types/node"
+  ]
+}
