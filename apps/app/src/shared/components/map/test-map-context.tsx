@@ -1,10 +1,10 @@
 import React from 'react';
 
-interface TestMapContextProps {
+export interface TestMapContextProps {
   currentId: string;
   setCurrentId: (currentId: string) => void;
-  disabledIds: string[];
-  unavailableIds: string[];
+  disabledIds?: string[];
+  unavailableIds?: string[];
 }
 
 export const TestMapContext = React.createContext<TestMapContextProps>(null);

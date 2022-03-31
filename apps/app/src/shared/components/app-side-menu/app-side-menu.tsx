@@ -23,8 +23,8 @@ const admin: AppSideMenuItemProps = {
   initiallyOpened: false,
   links: [
     { label: 'Dashboard', link: '/admin' },
-    { label: 'Location Settings', link: '/admin/settings/location' },
-    { label: 'Area Settings', link: '/admin/settings/area' },
+    { label: 'App Settings', link: '/admin/settings' },
+    { label: 'User Feedbacks', link: '/admin/feedbacks' },
   ],
 };
 

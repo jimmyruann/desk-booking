@@ -19,7 +19,9 @@ export class FeedbackService {
     return await this.prisma.feedback.findUnique({
       where: { id },
       include: {
-        User: true,
+        User: {
+          select: { id: true, firstName: true, lastName: true, email: true },
+        },
       },
     });
   }
@@ -27,8 +29,43 @@ export class FeedbackService {
   async findAll() {
     return await this.prisma.feedback.findMany({
       include: {
-        User: true,
+        User: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+      },
+      orderBy: {
+        updatedAt: 'desc',
       },
     });
+  }
+
+  async getList() {
+    const result = await this.prisma.feedback.findMany({
+      select: {
+        id: true,
+        type: true,
+        title: true,
+        createAt: true,
+        updatedAt: true,
+        User: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+      },
+      orderBy: {
+        updatedAt: 'desc',
+      },
+    });
+
+    return result;
   }
 }

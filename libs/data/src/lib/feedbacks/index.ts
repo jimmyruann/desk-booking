@@ -1,3 +1,3 @@
-export { UpdateAreaDto } from '../areas';
-export { CreateFeedbackDto } from './dto/create-feedback.dto';
-export { FeedbackEntity } from './entities/feedback.entity';
+export * from '../areas';
+export * from './dto/create-feedback.dto';
+export * from './entities/feedback.entity';

@@ -2,7 +2,7 @@ import axios from 'axios';
 import * as d3 from 'd3';
 import React, { useEffect, useRef } from 'react';
 import { useQuery } from 'react-query';
-import MapBoxSkeleton from '../../shared/components/map/map-skeleton';
+import MapBoxSkeleton from './map-skeleton';
 import { TestMapAreas } from './test-map-areas';
 import { TestMapBase } from './test-map-base';
 

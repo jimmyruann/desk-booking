@@ -1,5 +1,5 @@
 import { AreaAvailabilityEntity, BookingEntity } from '@desk-booking/data';
-import { Box, Text } from '@mantine/core';
+import { Box, Paper, Text } from '@mantine/core';
 import { useListState } from '@mantine/hooks';
 import { useNotifications } from '@mantine/notifications';
 import { AxiosError } from 'axios';
@@ -15,7 +15,6 @@ import { mergeTime } from '../../shared/utils/time';
 import BookingControl from './components/booking-control/booking-control';
 import InfoBox from './components/info-box/info-box';
 import TabContainer from './components/tab-container/tab-container';
-import { TestMapContext } from './test-map-context';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -89,15 +88,16 @@ function BookingPage(props: BookingPageProps) {
   };
 
   return (
-    <TestMapContext.Provider
-      value={{
-        currentId: htmlId,
-        setCurrentId: setHtmlId,
-        disabledIds: [],
-        unavailableIds: [],
-      }}
-    >
-      <MapLayout locationId={userLocation.currentLocation.locationId}>
+    <Paper shadow="xs" p="md">
+      <MapLayout
+        locationId={userLocation.currentLocation.locationId}
+        mapContextProps={{
+          currentId: htmlId,
+          setCurrentId: setHtmlId,
+          disabledIds: [], // TODO: fetch from database and exclude those that are not allowed to be booked
+          unavailableIds: [],
+        }}
+      >
         <InfoBox htmlId={htmlId} />
         <br />
         <Box>
@@ -119,7 +119,7 @@ function BookingPage(props: BookingPageProps) {
           />
         </Box>
       </MapLayout>
-    </TestMapContext.Provider>
+    </Paper>
   );
 }
 

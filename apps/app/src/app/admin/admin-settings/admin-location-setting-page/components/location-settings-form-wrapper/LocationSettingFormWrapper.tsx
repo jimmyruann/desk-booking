@@ -5,9 +5,9 @@ import dayjs from 'dayjs';
 import { useEffect } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import z from 'zod';
-import { useApi } from '../../../../../shared/context/ApiClient';
+import { useApi } from '../../../../../../shared/context/ApiClient';
 import LocationSettingForm, {
-  LocationFormInputProps,
+  LocationFormInputProps
 } from '../location-settings-form/LocationSettingForm';
 
 /* eslint-disable-next-line */
