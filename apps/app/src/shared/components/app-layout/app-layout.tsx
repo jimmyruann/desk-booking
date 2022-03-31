@@ -2,7 +2,7 @@ import { LocationEntity } from '@desk-booking/data';
 import { AppShell } from '@mantine/core';
 import { useState } from 'react';
 import { Outlet } from 'react-router';
-import { axiosApiClient } from '../../api/api';
+import { axiosApiClient } from '../../api';
 import { withMapLocationProvider } from '../../context/MapLocation.context';
 import AppHeader from '../app-header/app-header';
 import AppSideMenu from '../app-side-menu/app-side-menu';

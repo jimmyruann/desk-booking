@@ -6,10 +6,9 @@ import { Location } from '@prisma/client';
 import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
 import { useQuery } from 'react-query';
+import { axiosApiClient } from '../../../../shared/api';
 import Loading from '../../../../shared/components/loading/loading';
-import { useApi } from '../../../../shared/context/ApiClient';
 
-/* eslint-disable-next-line */
 export interface TimeTabProps {
   availabilityHook: UseListState<AreaAvailabilityEntity & { checked: boolean }>;
   location: Location;
@@ -24,6 +23,18 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
+const getAreaAvailabilityEntity = async (htmlId: string, date: Date) => {
+  if (!htmlId || !date) return [];
+
+  const { data } = await axiosApiClient.get<AreaAvailabilityEntity[]>(
+    `/areas/${htmlId}/availabilities`,
+    {
+      params: { date },
+    }
+  );
+  return data;
+};
+
 export function TimeTab({
   availabilityHook,
   location,
@@ -31,38 +42,26 @@ export function TimeTab({
   date,
 }: TimeTabProps) {
   const { classes } = useStyles();
-  const api = useApi();
   const notifications = useNotifications();
   const [availability, availabilityHandler] = availabilityHook;
 
   const { status } = useQuery(
-    ['GET_AREA_AVAILABILITIES', { htmlId, date }] as const,
-    async ({ queryKey }) => {
-      const { date, htmlId } = queryKey[1];
-      if (!date || !htmlId) return null;
-
-      const { data } = await api.client.get<AreaAvailabilityEntity[]>(
-        `/areas/${htmlId}/availabilities`,
-        {
-          params: {
-            date: dayjs(date).tz(location.timeZone).toDate(),
-          },
-        }
-      );
-
-      return data;
-    },
+    ['GET_AREA_AVAILABILITIES', htmlId, date],
+    () =>
+      getAreaAvailabilityEntity(
+        htmlId,
+        dayjs(date).tz(location.timeZone).toDate()
+      ),
     {
-      onSuccess: (areaData) => {
-        const availabilities = areaData
-          ? areaData.map((each) => {
-              return {
-                ...each,
-                checked: false,
-              };
-            })
-          : [];
-        availabilityHandler.setState(availabilities);
+      onSuccess: (data) => {
+        availabilityHandler.setState(
+          data.map((each) => {
+            return {
+              ...each,
+              checked: false,
+            };
+          })
+        );
       },
       onError: (error: AxiosError) => {
         notifications.showNotification({
@@ -71,7 +70,6 @@ export function TimeTab({
           message: error.response.data.message || error.message,
         });
       },
-      refetchOnMount: false,
     }
   );
 
@@ -109,7 +107,7 @@ export function TimeTab({
   });
 
   return (
-    <ScrollArea style={{ height: 300 }} offsetScrollbars>
+    <ScrollArea style={{ height: 350 }} offsetScrollbars>
       <Table id="availabilityTable">
         <thead>
           <tr>

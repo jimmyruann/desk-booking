@@ -2,7 +2,7 @@ import { LocationEntity } from '@desk-booking/data';
 import { useUncontrolled } from '@mantine/hooks';
 import React from 'react';
 import { useQuery } from 'react-query';
-import { axiosApiClient } from '../api/api';
+import { axiosApiClient } from '../api';
 import Loading from '../components/loading/loading';
 
 interface MapLocationContext {

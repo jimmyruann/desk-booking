@@ -2,6 +2,7 @@ import {
   AreaAvailabilityEntity,
   AreaEntity,
   BookingEntity,
+  CreateBookingDto,
 } from '@desk-booking/data';
 import { Box, Paper, Text } from '@mantine/core';
 import { useListState } from '@mantine/hooks';
@@ -12,22 +13,18 @@ import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { axiosApiClient } from '../../shared/api/api';
+import { axiosApiClient } from '../../shared/api';
 import Loading from '../../shared/components/loading/loading';
 import MapLayout from '../../shared/components/map/map-layout';
-import { useApi } from '../../shared/context/ApiClient';
 import { useMapLocation } from '../../shared/context/MapLocation.context';
 // import { useUserLocation } from '../../shared/context/UserLocation';
 import { mergeTime } from '../../shared/utils/time';
 import BookingControl from './components/booking-control/booking-control';
 import InfoBox from './components/info-box/info-box';
-import TabContainer from './components/tab-container/tab-container';
+import TabContainer from './components/tabs/tab-container';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
-
-/* eslint-disable-next-line */
-export interface BookingPageProps {}
 
 const getLocationAreas = async (locationId: string) => {
   const { data } = await axiosApiClient.get<AreaEntity[]>('/areas', {
@@ -36,8 +33,15 @@ const getLocationAreas = async (locationId: string) => {
   return data;
 };
 
-function BookingPage(props: BookingPageProps) {
-  const api = useApi();
+const createBooking = async (values: CreateBookingDto) => {
+  const { data } = await axiosApiClient.post<BookingEntity[]>(
+    '/bookings/user',
+    values
+  );
+  return data;
+};
+
+function BookingPage() {
   const userLocation = useMapLocation();
   const notifications = useNotifications();
   const queryClient = useQueryClient();
@@ -61,33 +65,26 @@ function BookingPage(props: BookingPageProps) {
     () => getLocationAreas(userLocation.currentLocation.locationId)
   );
 
-  const createBookingMutation = useMutation(
-    (data: {
-      htmlId: string;
-      bookings: { startTime: Date; endTime: Date }[];
-    }) => {
-      return api.client.post<BookingEntity[]>('/bookings/user', data);
+  const createBookingMutation = useMutation(createBooking, {
+    onSuccess: (data) => {
+      notifications.showNotification({
+        color: 'green',
+        title: 'Booking Confirmed',
+        message: <Text>You have booked.</Text>,
+      });
     },
-    {
-      onSuccess: ({ data }) => {
-        notifications.showNotification({
-          color: 'green',
-          title: 'Booking Confirmed',
-          message: <Text>You have booked.</Text>,
-        });
-      },
-      onError: (error: AxiosError) => {
-        notifications.showNotification({
-          color: 'red',
-          title: error.response.data.title || error.name,
-          message: error.response.data.message || error.message,
-        });
-      },
-      onSettled: () => {
-        queryClient.invalidateQueries(['GET_AREA_AVAILABILITIES']);
-      },
-    }
-  );
+    onError: (error: AxiosError) => {
+      notifications.showNotification({
+        color: 'red',
+        title: error.response.data.title || error.name,
+        message: error.response.data.message || error.message,
+      });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(['GET_AREA_AVAILABILITIES']);
+      queryClient.invalidateQueries(['GET_AREA_BOOKINGS']);
+    },
+  });
 
   const handleMakeBooking = () => {
     const checkedTime = availability

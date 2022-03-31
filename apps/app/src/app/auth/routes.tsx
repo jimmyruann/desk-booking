@@ -1,5 +1,5 @@
 import { RouteObject } from 'react-router';
-import RedirectAuth from '../../shared/components/RedirectAuth';
+import RedirectAuth from '../../shared/guards/RedirectAuth.guard';
 import LoginPage from './login-page/login-page';
 import SignUpPage from './signup-page/signup-page';
 

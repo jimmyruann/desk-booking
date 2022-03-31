@@ -2,10 +2,9 @@ import { AreaAvailabilityEntity } from '@desk-booking/data';
 import { Tabs } from '@mantine/core';
 import { UseListState } from '@mantine/hooks/lib/use-list-state/use-list-state';
 import { Location } from '@prisma/client';
-import { useState } from 'react';
 import { HiOutlineCalendar, HiOutlineUserGroup } from 'react-icons/hi';
-import PeopleTab from '../people-tab/people-tab';
-import TimeTab from '../time-tab/time-tab';
+import BookedTab from './booked-tab';
+import TimeTab from './time-tab';
 
 interface TabContainerProps {
   availabilityHook: UseListState<AreaAvailabilityEntity & { checked: boolean }>;
@@ -21,10 +20,14 @@ export const TabContainer = ({
   location,
 }: TabContainerProps) => {
   const [availability, availabilityHandler] = availabilityHook;
-  const [activeTab, setActiveTab] = useState(0);
 
   return (
-    <Tabs grow active={activeTab} onTabChange={setActiveTab}>
+    <Tabs
+      grow
+      sx={() => ({
+        minHeight: 350,
+      })}
+    >
       <Tabs.Tab
         label="Booking"
         icon={<HiOutlineCalendar size={18} id="bookingTab" />}
@@ -38,10 +41,10 @@ export const TabContainer = ({
       </Tabs.Tab>
 
       <Tabs.Tab
-        label="People"
+        label="Booked"
         icon={<HiOutlineUserGroup size={18} id="peopleTab" />}
       >
-        <PeopleTab htmlId={htmlId} date={date} location={location} />
+        <BookedTab htmlId={htmlId} date={date} location={location} />
       </Tabs.Tab>
     </Tabs>
   );

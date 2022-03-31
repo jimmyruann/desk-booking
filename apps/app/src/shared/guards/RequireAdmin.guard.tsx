@@ -1,6 +1,6 @@
 import { UserRole } from '@prisma/client';
 import { Navigate, Outlet, useLocation } from 'react-router';
-import { useAuth } from '../context/Authentication';
+import { useAuth } from '../context/Authentication.context';
 
 export function RequireAdmin() {
   const auth = useAuth();

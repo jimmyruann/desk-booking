@@ -6,9 +6,9 @@ import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { axiosApiClient } from '../../shared/api';
 import { ServerError } from '../../shared/components/errors/server-error';
 import Loading from '../../shared/components/loading/loading';
-import { useApi } from '../../shared/context/ApiClient';
 import MyBookingTable from './my-booking-table/my-booking-table';
 
 /* eslint-disable-next-line */
@@ -27,12 +27,30 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
+const getBookingWithAreaEntity = async (params: {
+  startTime: Date;
+  endTime: Date;
+}) => {
+  const { data } = await axiosApiClient.get<BookingWithAreaEntity[]>(
+    '/bookings/user/withArea',
+    { params }
+  );
+
+  return data;
+};
+
+const deleteBooking = async (id: number) => {
+  const { data } = await axiosApiClient.delete<BookingEntity>(
+    `/bookings/${id}`
+  );
+  return data;
+};
+
 export function MyBookingPage(props: MyBookingPageProps) {
-  const api = useApi();
   const notifications = useNotifications();
   const queryClient = useQueryClient();
 
-  const [dates, setDates] = useState<[Date | null, Date | null]>([
+  const [dates, setDates] = useState<[Date, Date]>([
     dayjs().startOf('day').toDate(),
     dayjs().endOf('week').toDate(),
   ]);
@@ -40,20 +58,12 @@ export function MyBookingPage(props: MyBookingPageProps) {
   const { classes } = useStyles();
 
   const myBookingsQuery = useQuery(
-    ['GET_MY_BOOKINGS', { startTime: dates[0], endTime: dates[1] }] as const,
-    async ({ queryKey }) => {
-      const { startTime, endTime } = queryKey[1];
-      if (!startTime || !endTime) return [];
-
-      const { data } = await api.client.get<BookingWithAreaEntity[]>(
-        '/bookings/user/withArea',
-        {
-          params: { startTime, endTime },
-        }
-      );
-
-      return data;
-    },
+    'getBookingWithAreaEntity',
+    () =>
+      getBookingWithAreaEntity({
+        startTime: dates[0],
+        endTime: dates[1],
+      }),
     {
       onError: (error: AxiosError) => {
         notifications.showNotification({
@@ -64,37 +74,32 @@ export function MyBookingPage(props: MyBookingPageProps) {
     }
   );
 
-  const deleteBookingMutation = useMutation(
-    (data: { id: number }) => {
-      return api.client.delete<BookingEntity>(`/bookings/${data.id}`);
-    },
-    {
-      onSuccess: ({ data }) => {
-        notifications.showNotification({
-          color: 'green',
-          title: 'Your booking was canceled',
-          message: `Have a nice day.`,
-        });
+  const deleteBookingMutation = useMutation(deleteBooking, {
+    onSuccess: (data) => {
+      notifications.showNotification({
+        color: 'green',
+        title: 'Your booking was canceled',
+        message: `Have a nice day.`,
+      });
 
-        queryClient.invalidateQueries(['GET_MY_BOOKINGS']);
-      },
-      onError: (error: AxiosError) => {
-        notifications.showNotification({
-          color: 'red',
-          title: 'Unable to cancel your booking.',
-          message:
-            error.response.data.message ||
-            error.message ||
-            'Something went wrong.',
-        });
-      },
-    }
-  );
+      queryClient.invalidateQueries(['GET_MY_BOOKINGS']);
+    },
+    onError: (error: AxiosError) => {
+      notifications.showNotification({
+        color: 'red',
+        title: 'Unable to cancel your booking.',
+        message:
+          error.response.data.message ||
+          error.message ||
+          'Something went wrong.',
+      });
+    },
+  });
 
   const handleOnClickDelete = (id: number) => {
     // eslint-disable-next-line no-restricted-globals
     if (confirm('Are you sure you want to cancel this booking?')) {
-      deleteBookingMutation.mutate({ id });
+      deleteBookingMutation.mutate(id);
     }
   };
 

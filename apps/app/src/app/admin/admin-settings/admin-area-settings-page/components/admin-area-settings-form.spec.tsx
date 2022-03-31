@@ -2,7 +2,6 @@ import { NotificationsProvider } from '@mantine/notifications';
 import { cleanup, render, waitFor } from '@testing-library/react';
 import nock from 'nock';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { MapLocationProvider } from '../../../../../shared/context/MapLocation.context';
 import AdminAreaSettingsForm from './admin-area-settings-form';
 
 const mockLocations = [
@@ -31,9 +30,7 @@ describe('AdminAreaSettingsForm', () => {
 
   const wrapper = ({ children }) => (
     <QueryClientProvider client={queryClient}>
-      <MapLocationProvider locations={mockLocations}>
-        <NotificationsProvider>{children}</NotificationsProvider>
-      </MapLocationProvider>
+      <NotificationsProvider>{children}</NotificationsProvider>
     </QueryClientProvider>
   );
 
@@ -66,9 +63,16 @@ describe('AdminAreaSettingsForm', () => {
   });
 
   it('should render correctly', async () => {
-    const container = render(<AdminAreaSettingsForm htmlId={htmlIdTest} />, {
-      wrapper,
-    });
+    const container = render(
+      <AdminAreaSettingsForm
+        htmlId={htmlIdTest}
+        locations={mockLocations}
+        currentLocation={mockLocations[0]}
+      />,
+      {
+        wrapper,
+      }
+    );
 
     await waitFor(() => container.getByTestId('adminAreaSettingsForm'));
 

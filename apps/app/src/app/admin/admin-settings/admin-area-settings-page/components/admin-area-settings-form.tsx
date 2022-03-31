@@ -14,7 +14,7 @@ import { AxiosError } from 'axios';
 import { HiChevronDown } from 'react-icons/hi';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { z } from 'zod';
-import { axiosApiClient } from '../../../../../shared/api/api';
+import { axiosApiClient } from '../../../../../shared/api';
 import Loading from '../../../../../shared/components/loading/loading';
 
 interface AdminAreaSettingsFormProps {

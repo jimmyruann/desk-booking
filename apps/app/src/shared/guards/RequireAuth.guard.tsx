@@ -1,6 +1,6 @@
 import { Navigate, useLocation } from 'react-router';
-import { useAuth } from '../context/Authentication';
-import AppLayout from './app-layout/app-layout';
+import AppLayout from '../components/app-layout/app-layout';
+import { useAuth } from '../context/Authentication.context';
 
 export function RequireAuth() {
   const auth = useAuth();

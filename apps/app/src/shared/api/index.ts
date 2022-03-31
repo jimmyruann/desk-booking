@@ -2,7 +2,7 @@ import axios from 'axios';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import dayjs from 'dayjs';
 import validator from 'validator';
-import { TokenStorage } from '../utils/TokenStorage';
+import { TokenStorage } from './TokenStorage';
 
 export type getAccessTokenFn = () => string | null;
 export type saveAccessTokenFn = (token: string | null) => void;
