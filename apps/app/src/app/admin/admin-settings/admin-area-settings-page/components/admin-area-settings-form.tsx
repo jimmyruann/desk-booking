@@ -1,4 +1,4 @@
-import { AreaEntity, AreaTypeEntity } from '@desk-booking/data';
+import { AreaEntity, AreaTypeEntity, LocationEntity } from '@desk-booking/data';
 import {
   Button,
   Checkbox,
@@ -12,14 +12,15 @@ import { useForm, zodResolver } from '@mantine/form';
 import { useNotifications } from '@mantine/notifications';
 import { AxiosError } from 'axios';
 import { HiChevronDown } from 'react-icons/hi';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { z } from 'zod';
 import { axiosApiClient } from '../../../../../shared/api/api';
 import Loading from '../../../../../shared/components/loading/loading';
-import { useMapLocation } from '../../../../../shared/context/MapLocation.context';
 
 interface AdminAreaSettingsFormProps {
   htmlId: string;
+  locations: LocationEntity[];
+  currentLocation: LocationEntity;
 }
 
 const getAreaData = async (htmlId: string) => {
@@ -51,10 +52,11 @@ const areaSettingFormSchema = z.object({
 
 export const AdminAreaSettingsForm = ({
   htmlId,
-  ...props
+  locations,
+  currentLocation,
 }: AdminAreaSettingsFormProps) => {
   const notifications = useNotifications();
-  const mapLocations = useMapLocation();
+  const queryClient = useQueryClient();
   const form = useForm<AreaEntity>({
     schema: zodResolver(areaSettingFormSchema),
     initialValues: {
@@ -94,6 +96,11 @@ export const AdminAreaSettingsForm = ({
           title: 'Success',
           message: `Updated area id: ${data.id} (${data.displayName})`,
         });
+
+        queryClient.invalidateQueries([
+          'locationAreas',
+          currentLocation.locationId,
+        ]);
       },
       onError: (error: AxiosError) => {
         notifications.showNotification({
@@ -115,7 +122,6 @@ export const AdminAreaSettingsForm = ({
 
   return (
     <form
-      {...props}
       onSubmit={form.onSubmit((values) =>
         updateAreaSettingMutation.mutate(values)
       )}
@@ -134,7 +140,7 @@ export const AdminAreaSettingsForm = ({
             disabled
             {...form.getInputProps('locationId')}
           >
-            {mapLocations.locations.map((location) => (
+            {locations.map((location) => (
               <option value={location.id} key={location.id}>
                 {location.displayName}
               </option>

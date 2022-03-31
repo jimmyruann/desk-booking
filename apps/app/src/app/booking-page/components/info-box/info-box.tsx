@@ -1,5 +1,6 @@
 import { createStyles, Group, Text } from '@mantine/core';
-import { useUserLocation } from '../../../../shared/context/UserLocation';
+import { useMapLocation } from '../../../../shared/context/MapLocation.context';
+// import { useUserLocation } from '../../../../shared/context/UserLocation';
 
 const useStyles = createStyles((theme) => ({
   common: {
@@ -18,7 +19,7 @@ export interface InfoBoxProps {
 export function InfoBox({ htmlId }: InfoBoxProps) {
   const { classes } = useStyles();
 
-  const userLocation = useUserLocation();
+  const userLocation = useMapLocation();
 
   return (
     <Group direction="column">

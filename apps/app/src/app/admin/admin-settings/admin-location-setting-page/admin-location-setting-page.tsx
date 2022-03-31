@@ -1,17 +1,17 @@
-import { Space } from '@mantine/core';
-import { Location } from '@prisma/client';
-import { useState } from 'react';
+import { Divider, Space, Text } from '@mantine/core';
+import {
+  useMapLocation,
+  withMapLocationProvider,
+} from '../../../../shared/context/MapLocation.context';
+import AdminLocationChanger from '../../components/admin-location-changer';
 import AdminPageLayout from '../../components/admin-page-layout';
-import { LocationSettingFormWrapper } from './components/location-settings-form-wrapper/LocationSettingFormWrapper';
-import LocationSettingFormWrapperSkeleton from './components/location-settings-form-wrapper/LocationSettingFormWrapperSkeleton';
-import LocationSettingHeader from './components/location-settings-header/LocationSettingHeader';
+import LocationSettingFormWrapper from './components/location-settings-form-wrapper/LocationSettingFormWrapper';
 
 /* eslint-disable-next-line */
 export interface AdminLocationSettingPageProps {}
 
 export function AdminLocationSettingPage(props: AdminLocationSettingPageProps) {
-  const [location, setLocation] = useState<Location>(null);
-
+  const mapLocation = useMapLocation();
   return (
     <AdminPageLayout
       breadCrumbList={[
@@ -19,15 +19,19 @@ export function AdminLocationSettingPage(props: AdminLocationSettingPageProps) {
         { title: 'Location Settings', href: '/admin/settings/location' },
       ]}
     >
-      <LocationSettingHeader handleLocationChange={setLocation} />
-      <Space h="lg" />
-      {location ? (
-        <LocationSettingFormWrapper location={location} />
-      ) : (
-        <LocationSettingFormWrapperSkeleton />
-      )}
+      <AdminLocationChanger {...mapLocation} />
+      <Divider my="sm" />
+      <Text
+        sx={(theme) => ({
+          fontSize: 24,
+        })}
+      >
+        <b>{mapLocation.currentLocation.displayName}</b> Settings
+      </Text>
+      <Space h="sm" />
+      <LocationSettingFormWrapper location={mapLocation.currentLocation} />
     </AdminPageLayout>
   );
 }
 
-export default AdminLocationSettingPage;
+export default withMapLocationProvider(AdminLocationSettingPage);

@@ -1,4 +1,8 @@
-import { AreaAvailabilityEntity, BookingEntity } from '@desk-booking/data';
+import {
+  AreaAvailabilityEntity,
+  AreaEntity,
+  BookingEntity,
+} from '@desk-booking/data';
 import { Box, Paper, Text } from '@mantine/core';
 import { useListState } from '@mantine/hooks';
 import { useNotifications } from '@mantine/notifications';
@@ -7,10 +11,13 @@ import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { useEffect, useState } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { axiosApiClient } from '../../shared/api/api';
+import Loading from '../../shared/components/loading/loading';
 import MapLayout from '../../shared/components/map/map-layout';
 import { useApi } from '../../shared/context/ApiClient';
-import { useUserLocation } from '../../shared/context/UserLocation';
+import { useMapLocation } from '../../shared/context/MapLocation.context';
+// import { useUserLocation } from '../../shared/context/UserLocation';
 import { mergeTime } from '../../shared/utils/time';
 import BookingControl from './components/booking-control/booking-control';
 import InfoBox from './components/info-box/info-box';
@@ -22,9 +29,16 @@ dayjs.extend(timezone);
 /* eslint-disable-next-line */
 export interface BookingPageProps {}
 
+const getLocationAreas = async (locationId: string) => {
+  const { data } = await axiosApiClient.get<AreaEntity[]>('/areas', {
+    params: { locationId },
+  });
+  return data;
+};
+
 function BookingPage(props: BookingPageProps) {
   const api = useApi();
-  const userLocation = useUserLocation();
+  const userLocation = useMapLocation();
   const notifications = useNotifications();
   const queryClient = useQueryClient();
 
@@ -41,6 +55,11 @@ function BookingPage(props: BookingPageProps) {
     availabilityHandler.setState([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLocation.currentLocation]);
+
+  const { data: locationAreasData, status: locationAreasStatus } = useQuery(
+    ['locationAreas', userLocation.currentLocation.locationId],
+    () => getLocationAreas(userLocation.currentLocation.locationId)
+  );
 
   const createBookingMutation = useMutation(
     (data: {
@@ -87,6 +106,10 @@ function BookingPage(props: BookingPageProps) {
     });
   };
 
+  if (locationAreasStatus === 'loading') return <Loading />;
+  if (locationAreasStatus === 'error')
+    return <div>Unable to get Location areas</div>;
+
   return (
     <Paper shadow="xs" p="md">
       <MapLayout
@@ -94,7 +117,9 @@ function BookingPage(props: BookingPageProps) {
         mapContextProps={{
           currentId: htmlId,
           setCurrentId: setHtmlId,
-          disabledIds: [], // TODO: fetch from database and exclude those that are not allowed to be booked
+          disabledIds: locationAreasData
+            .filter((locationArea) => !locationArea.allowBooking)
+            .map((locationArea) => locationArea.htmlId),
           unavailableIds: [],
         }}
       >

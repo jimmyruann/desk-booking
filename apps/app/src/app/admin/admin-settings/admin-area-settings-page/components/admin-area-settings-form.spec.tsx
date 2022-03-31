@@ -4,7 +4,19 @@ import nock from 'nock';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { MapLocationProvider } from '../../../../../shared/context/MapLocation.context';
 import AdminAreaSettingsForm from './admin-area-settings-form';
-import mockLocations from './__mockLocations.json';
+
+const mockLocations = [
+  {
+    id: 1,
+    locationId: 'test-location',
+    displayName: 'Test Location',
+    timeZone: 'UTC',
+    mapUrl: '',
+    capacity: 100,
+    allowBookingFrom: 0,
+    allowBookingTill: 1439,
+  },
+];
 
 describe('AdminAreaSettingsForm', () => {
   beforeEach(cleanup);
