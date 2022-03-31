@@ -1,3 +1,3 @@
-export { CreateLocationDto } from './dto/create-location.dto';
-export { UpdateLocationDto } from './dto/update-location.dto';
-export { LocationEntity } from './entities/location.entity';
+export * from './dto/create-location.dto';
+export * from './dto/update-location.dto';
+export * from './entities/location.entity';

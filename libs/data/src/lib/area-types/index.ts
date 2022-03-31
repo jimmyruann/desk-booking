@@ -1,1 +1,1 @@
-export { AreaTypeEntity } from './entities/area-types.entity';
+export * from './entities/area-types.entity';
