@@ -5,6 +5,7 @@ import { useNotifications } from '@mantine/notifications';
 import { Location } from '@prisma/client';
 import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
+import ms from 'ms';
 import { useQuery } from 'react-query';
 import { axiosApiClient } from '../../../../shared/api';
 import Loading from '../../../../shared/components/loading/loading';
@@ -53,6 +54,7 @@ export function TimeTab({
         dayjs(date).tz(location.timeZone).toDate()
       ),
     {
+      staleTime: ms('10s'),
       onSuccess: (data) => {
         availabilityHandler.setState(
           data.map((each) => {

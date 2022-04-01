@@ -11,6 +11,7 @@ import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
+import ms from 'ms';
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { axiosApiClient } from '../../shared/api';
@@ -62,7 +63,10 @@ function BookingPage() {
 
   const { data: locationAreasData, status: locationAreasStatus } = useQuery(
     ['locationAreas', userLocation.currentLocation.locationId],
-    () => getLocationAreas(userLocation.currentLocation.locationId)
+    () => getLocationAreas(userLocation.currentLocation.locationId),
+    {
+      staleTime: ms('5m'),
+    }
   );
 
   const createBookingMutation = useMutation(createBooking, {

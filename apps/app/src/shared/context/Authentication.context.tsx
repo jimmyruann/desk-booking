@@ -1,9 +1,10 @@
+import { UserEntity } from '@desk-booking/data';
 import { User } from '@prisma/client';
 import { AxiosError } from 'axios';
 import { AxiosAuthRefreshRequestConfig } from 'axios-auth-refresh';
-import React, { useEffect, useState } from 'react';
-import { useMutation } from 'react-query';
-import { axiosApiClient, saveAccessToken } from '../api';
+import React, { useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
+import { axiosApiClient } from '../api';
 // import { useApi } from './ApiClient';
 
 interface AuthenticationContext {
@@ -25,11 +26,8 @@ interface LoginCredProps {
   password: string;
 }
 
-const refreshSessionRequest = async () => {
-  const { data } = await axiosApiClient.post('/auth/refresh', null, {
-    skipAuthRefresh: true,
-  } as AxiosAuthRefreshRequestConfig);
-
+const getUser = async () => {
+  const { data } = await axiosApiClient.get<UserEntity>('/user');
   return data;
 };
 
@@ -53,40 +51,28 @@ export const AuthenticationProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [user, setUser] = useState<Omit<User, 'password'> | null>(null);
+  const [user, setUser] = useState<UserEntity | null>(null);
 
-  const refreshSessionMutation = useMutation(refreshSessionRequest, {
+  const userQuery = useQuery('me', getUser, {
+    retry: 0,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
     onSuccess: (data) => {
-      saveAccessToken(data.access_token);
-      setUser(data.user);
+      setUser(data);
     },
   });
 
   const loginMutation = useMutation(loginRequest, {
     onSuccess: (data) => {
-      saveAccessToken(data.access_token);
-      setUser(data.user);
+      setUser(data);
     },
   });
 
   const logoutMutation = useMutation(logoutRequest, {
     onSettled: () => {
-      saveAccessToken(null);
       setUser(null);
     },
   });
-
-  useEffect(() => {
-    // https://dev.to/jexperton/how-to-fix-the-react-memory-leak-warning-d4i
-    let cancel = false;
-
-    if (!user || cancel) refreshSessionMutation.mutate();
-
-    return () => {
-      cancel = true;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const login = async (
     loginCred: LoginCredProps
@@ -104,7 +90,7 @@ export const AuthenticationProvider = ({
     <AuthenticationContext.Provider
       value={{
         isLoading:
-          refreshSessionMutation.isLoading ||
+          userQuery.isLoading ||
           loginMutation.isLoading ||
           logoutMutation.isLoading,
         user,
