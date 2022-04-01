@@ -1,7 +1,7 @@
 version: '3.3'
 services:
   db_migration:
-    image: jimmyruann/desk_booking_prisma_migration
+    image: jimmyruann/desk_booking_prisma
     environment:
       DATABASE_URL: ${DATABASE_URL}
       ADMIN_INITIAL_PASSWORD: ${ADMIN_INITIAL_PASSWORD}

@@ -7,7 +7,7 @@
       "options": {
         "commands": [
           "nx build prisma --prod",
-          "docker build -f ./prisma/Dockerfile . -t desk_booking_prisma_migration"
+          "docker build -f ./prisma/Dockerfile . -t desk_booking_prisma"
         ],
         "parallel": false
       }
