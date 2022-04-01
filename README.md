@@ -15,17 +15,17 @@ You will need to create a `.env` file in the root directory containing the follo
 | ENV_VARIABLE           | Required | Description                  | Example                                    |
 | ---------------------- | -------- | ---------------------------- | ------------------------------------------ |
 | DATABASE_URL           | ✔️       | Postgres database URL        | postgres://user:pass@host:port/db          |
+| REDIS_URL              | ✔️       | Redis database URL           | redis://localhost:6379                     |
 | ADMIN_INITIAL_PASSWORD | ✔️       | Password                     | example_password                           |
 | HCAPTCHA_SECRET        | ✔️       | hCaptcha secret              | 0x0000000000000000000000000000000000000000 |
+| APP_SESSION_SECRET     | ✔️       | Secret for securing sessions | example_secret                             |
 | TZ                     |          | Default timezone for backend | UTC                                        |
 
 ```
 yarn install
 
-# Start Docker PostgreSQL container
-# default user is postgres and database is postgres
-# construct DATABASE_URL and save it in .env
-docker run -d -p :5432:5432 -e POSTGRES_PASSWORD=password postgres
+## Docker compose file
+docker-compose -f docker/docker-compose.dev.yaml up -d
 
 ## DB Migration
 yarn prisma migrate deploy

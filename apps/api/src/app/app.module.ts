@@ -58,13 +58,16 @@ export class AppModule implements NestModule {
     consumer
       .apply(
         session({
+          name: 'hd:sid',
           store: this.redisService.getRedisStore(),
           secret: environment.appSessionSecret,
           saveUninitialized: false,
           resave: false,
+          unset: 'destroy',
           cookie: {
+            httpOnly: true,
             sameSite: true,
-            maxAge: ms('7d'),
+            maxAge: ms('3d'),
             secure: environment.production,
           },
         })

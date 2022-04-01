@@ -16,15 +16,17 @@ spec:
     spec:
       containers:
         - name: api
-          image: jimmyruann/desk_booking_api:latest
-          imagePullPolicy: Always
+          image: desk_booking_api:latest
+          imagePullPolicy: Never
           env:
             - name: DATABASE_URL
-              value: $DATABASE_URL
+              value: postgres://postgres:password@postgres:5432/postgres
             - name: REDIS_URL
               value: redis://redis:6379
             - name: HCAPTCHA_SECRET
-              value: $HCAPTCHA_SECRET
+              value: '0x0000000000000000000000000000000000000000'
+            - name: APP_SESSION_SECRET
+              value: example-secret
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -44,8 +46,8 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: jimmyruann/desk_booking_app:latest
-          imagePullPolicy: Always
+          image: desk_booking_app:latest
+          imagePullPolicy: Never
           env:
             - name: API_HOST
               value: api
@@ -73,10 +75,11 @@ spec:
           image: redis:latest
           volumeMounts:
             - name: redis-pv-volume
+              mountPath: /mnt/redis
       volumes:
         - name: redis-pv-volume
           hostPath:
-            path: '/mnt/redis'
+            path: /mnt/redis
             type: Directory
 ---
 apiVersion: apps/v1
@@ -97,15 +100,13 @@ spec:
     spec:
       containers:
         - name: db-migration
-          image: jimmyruann/desk_booking_prisma_migration
-          imagePullPolicy: Always
+          image: desk_booking_prisma_migration:latest
+          imagePullPolicy: Never
           env:
             - name: DATABASE_URL
-              value: $DATABASE_URL
+              value: postgres://postgres:password@postgres:5432/postgres
             - name: ADMIN_INITIAL_PASSWORD
-              value: $ADMIN_INITIAL_PASSWORD
-            - name: APP_SESSION_SECRET
-              value: $APP_SESSION_SECRET
+              value: password
 ---
 apiVersion: v1
 kind: Service
@@ -126,8 +127,11 @@ metadata:
   labels:
     app: frontend
 spec:
+  type: NodePort
   ports:
     - port: 80
+      targetPort: 80
+      nodePort: 30007
   selector:
     app: frontend
 ---
@@ -143,18 +147,39 @@ spec:
   selector:
     app: redis
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: http-ingress
+  name: postgres
+  labels:
+    app: postgres
 spec:
-  rules:
-    - http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: frontend
-                port:
-                  number: 80
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:latest
+          env:
+            - name: POSTGRES_PASSWORD
+              value: password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: postgres
+---
+
