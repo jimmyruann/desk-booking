@@ -14,7 +14,6 @@ spec:
       labels:
         app: api
     spec:
-      terminationGracePeriodSeconds: 30
       containers:
         - name: api
           image: jimmyruann/desk_booking_api:latest
@@ -22,10 +21,8 @@ spec:
           env:
             - name: DATABASE_URL
               value: $DATABASE_URL
-            - name: JWT_ACCESS_SECRET
-              value: $JWT_ACCESS_SECRET
-            - name: JWT_REFRESH_SECRET
-              value: $JWT_REFRESH_SECRET
+            - name: REDIS_URL
+              value: redis://redis:6379
             - name: HCAPTCHA_SECRET
               value: $HCAPTCHA_SECRET
 ---
@@ -45,7 +42,6 @@ spec:
       labels:
         app: frontend
     spec:
-      terminationGracePeriodSeconds: 30
       containers:
         - name: frontend
           image: jimmyruann/desk_booking_app:latest
@@ -55,6 +51,33 @@ spec:
               value: api
             - name: API_PORT
               value: '3333'
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:latest
+          volumeMounts:
+            - name: redis-pv-volume
+      volumes:
+        - name: redis-pv-volume
+          hostPath:
+            path: '/mnt/redis'
+            type: Directory
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -81,6 +104,8 @@ spec:
               value: $DATABASE_URL
             - name: ADMIN_INITIAL_PASSWORD
               value: $ADMIN_INITIAL_PASSWORD
+            - name: APP_SESSION_SECRET
+              value: $APP_SESSION_SECRET
 ---
 apiVersion: v1
 kind: Service
@@ -105,6 +130,18 @@ spec:
     - port: 80
   selector:
     app: frontend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  ports:
+    - port: 6379
+  selector:
+    app: redis
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress

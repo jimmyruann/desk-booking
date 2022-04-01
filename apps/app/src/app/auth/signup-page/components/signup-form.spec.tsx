@@ -16,6 +16,7 @@ describe('SignUpForm', () => {
           lastName: '',
           password: '',
           confirmPassword: '',
+          hCaptchaToken: '',
         },
       })
     );
@@ -33,6 +34,7 @@ describe('SignUpForm', () => {
       lastName: 'Test',
       password: 'test1234567',
       confirmPassword: 'test1234567',
+      hCaptchaToken: '10000000-aaaa-bbbb-cccc-000000000001',
     };
     const handleSubmit = jest.fn();
     const form = renderHook(() =>

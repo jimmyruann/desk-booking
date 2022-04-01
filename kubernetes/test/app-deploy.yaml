@@ -1,0 +1,185 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  labels:
+    app: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api
+          image: desk_booking_api:latest
+          imagePullPolicy: Never
+          env:
+            - name: DATABASE_URL
+              value: postgres://postgres:password@postgres:5432/postgres
+            - name: REDIS_URL
+              value: redis://redis:6379
+            - name: HCAPTCHA_SECRET
+              value: '0x0000000000000000000000000000000000000000'
+            - name: APP_SESSION_SECRET
+              value: example-secret
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: desk_booking_app:latest
+          imagePullPolicy: Never
+          env:
+            - name: API_HOST
+              value: api
+            - name: API_PORT
+              value: '3333'
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:latest
+          volumeMounts:
+            - name: redis-pv-volume
+              mountPath: /mnt/redis
+      volumes:
+        - name: redis-pv-volume
+          hostPath:
+            path: /mnt/redis
+            type: Directory
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-migration
+  labels:
+    app: db-migration
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db-migration
+  template:
+    metadata:
+      labels:
+        app: db-migration
+    spec:
+      containers:
+        - name: db-migration
+          image: desk_booking_prisma_migration:latest
+          imagePullPolicy: Never
+          env:
+            - name: DATABASE_URL
+              value: postgres://postgres:password@postgres:5432/postgres
+            - name: ADMIN_INITIAL_PASSWORD
+              value: password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  labels:
+    app: api
+spec:
+  ports:
+    - port: 3333
+  selector:
+    app: api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30007
+  selector:
+    app: frontend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  ports:
+    - port: 6379
+  selector:
+    app: redis
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:latest
+          env:
+            - name: POSTGRES_PASSWORD
+              value: password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: postgres
+---
+

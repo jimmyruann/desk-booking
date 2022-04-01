@@ -1,5 +1,5 @@
 import { RouteObject } from 'react-router';
-import RequireAdmin from '../../shared/components/RequireAdmin';
+import RequireAdmin from '../../shared/guards/RequireAdmin.guard';
 import AdminFeedbackPage from './admin-feedback-page/admin-feedback-page';
 import AdminPage from './admin-page';
 import AdminAreaSettingsPage from './admin-settings/admin-area-settings-page/admin-area-settings-page';

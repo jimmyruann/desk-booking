@@ -5,7 +5,8 @@ import {
   Textarea,
   TextInput,
 } from '@mantine/core';
-import { UseForm } from '@mantine/hooks/lib/use-form/use-form';
+import { useForm, zodResolver } from '@mantine/form';
+import { z } from 'zod';
 
 export interface FeedbackFormInputProps {
   type: string;
@@ -14,16 +15,34 @@ export interface FeedbackFormInputProps {
 }
 
 export interface FeedbackFormProps {
-  form: UseForm<FeedbackFormInputProps>;
   handleSubmit: (values: FeedbackFormInputProps) => void;
 }
 
-export const FeedbackForm = ({ form, handleSubmit }: FeedbackFormProps) => {
+const feedbackFormSchema = z.object({
+  type: z.string().min(1, { message: 'Feedback type must not be empty.' }),
+  title: z.string().min(1, { message: 'Title must not be empty.' }),
+  message: z.string().min(1, { message: 'Description must not be empty.' }),
+});
+
+export const FeedbackForm = ({ handleSubmit }: FeedbackFormProps) => {
+  const form = useForm({
+    schema: zodResolver(feedbackFormSchema),
+    initialValues: {
+      type: 'idea',
+      title: '',
+      message: '',
+    },
+  });
+
   return (
     <form
-      onSubmit={form.onSubmit((values) => handleSubmit(values))}
+      onSubmit={form.onSubmit((values) => {
+        form.reset();
+        handleSubmit(values);
+      })}
       className="tw-py-8"
       name="feedbackForm"
+      data-testid="feedbackForm"
     >
       <Group direction="column" grow>
         <NativeSelect

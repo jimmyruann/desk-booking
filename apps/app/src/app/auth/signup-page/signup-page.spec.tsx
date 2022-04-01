@@ -31,13 +31,6 @@ describe('SignUpPage', () => {
   beforeEach(cleanup);
 
   it('should render', () => {
-    const mockedUsedNavigate = jest.fn();
-
-    jest.mock('react-router-dom', () => ({
-      ...(jest.requireActual('react-router-dom') as any),
-      useNavigate: () => mockedUsedNavigate,
-    }));
-
     const { baseElement } = render(<SignUpPage />, {
       wrapper,
     });

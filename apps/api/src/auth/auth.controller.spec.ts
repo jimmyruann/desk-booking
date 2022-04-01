@@ -1,128 +1,124 @@
-import { getMockReq, getMockRes } from '@jest-mock/express';
-import { JwtService } from '@nestjs/jwt';
-import { Test, TestingModule } from '@nestjs/testing';
-import { COOKIE_CONSTANT } from '../constants/cookie';
-import { testDataHelper } from '../shared/helper/testDataHelper';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './guards/local.guard';
-import { RefreshJwtAuthGuard } from './guards/refresh-jwt.guard';
+// import { getMockReq, getMockRes } from '@jest-mock/express';
+// import { JwtService } from '@nestjs/jwt';
+// import { Test, TestingModule } from '@nestjs/testing';
+// import { COOKIE_CONSTANT } from '../constants/cookie';
+// import { testDataHelper } from '../shared/helper/testDataHelper';
+// import { AuthController } from './auth.controller';
+// import { AuthService } from './auth.service';
+// import { LocalAuthGuard } from './guards/local.guard';
 
-describe('AuthController', () => {
-  let controller: AuthController;
+// describe('AuthController', () => {
+//   let controller: AuthController;
 
-  const [{ password, ...user }] = testDataHelper.generateUser();
+//   const [{ password, ...user }] = testDataHelper.generateUser();
 
-  const req = getMockReq({
-    user,
-  });
-  const { res, mockClear } = getMockRes();
+//   const req = getMockReq({
+//     user,
+//   });
+//   const { res, mockClear } = getMockRes();
 
-  const mockAuthService = {
-    generateAccessToken: jest.fn().mockImplementation(() => {
-      return { access_token: 'GENERATED_ACCESS_JWT' };
-    }),
-    generateRefreshToken: jest.fn().mockImplementation(() => {
-      return { refresh_token: 'GENERATED_REFRESH_JWT' };
-    }),
-    removeRefreshToken: jest.fn().mockImplementation(() => {
-      return true;
-    }),
-  };
+//   const mockAuthService = {
+//     generateAccessToken: jest.fn().mockImplementation(() => {
+//       return { access_token: 'GENERATED_ACCESS_JWT' };
+//     }),
+//     generateRefreshToken: jest.fn().mockImplementation(() => {
+//       return { refresh_token: 'GENERATED_REFRESH_JWT' };
+//     }),
+//     removeRefreshToken: jest.fn().mockImplementation(() => {
+//       return true;
+//     }),
+//   };
 
-  const mockJwtService = {
-    verifyAsync: jest.fn().mockImplementation(async () => {
-      return req.user;
-    }),
-  };
+//   const mockJwtService = {
+//     verifyAsync: jest.fn().mockImplementation(async () => {
+//       return req.user;
+//     }),
+//   };
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      //   imports: [JwtModule.register({})],
-      controllers: [AuthController],
-      providers: [
-        AuthService,
-        {
-          provide: LocalAuthGuard,
-          useValue: jest.fn().mockImplementation(() => true),
-        },
-        {
-          provide: RefreshJwtAuthGuard,
-          useValue: jest.fn().mockImplementation(() => true),
-        },
-        {
-          provide: JwtService,
-          useValue: mockJwtService,
-        },
-      ],
-    })
-      .overrideProvider(AuthService)
-      .useValue(mockAuthService)
-      .compile();
+//   beforeEach(async () => {
+//     const module: TestingModule = await Test.createTestingModule({
+//       //   imports: [JwtModule.register({})],
+//       controllers: [AuthController],
+//       providers: [
+//         AuthService,
+//         {
+//           provide: LocalAuthGuard,
+//           useValue: jest.fn().mockImplementation(() => true),
+//         },
 
-    controller = module.get<AuthController>(AuthController);
-    mockClear();
-  });
+//         {
+//           provide: JwtService,
+//           useValue: mockJwtService,
+//         },
+//       ],
+//     })
+//       .overrideProvider(AuthService)
+//       .useValue(mockAuthService)
+//       .compile();
 
-  it('should be defined', async () => {
-    expect(controller).toBeDefined();
-  });
+//     controller = module.get<AuthController>(AuthController);
+//     mockClear();
+//   });
 
-  it('should login', () => {
-    controller.login(req.user, res);
+//   it('should be defined', async () => {
+//     expect(controller).toBeDefined();
+//   });
 
-    // set refresh token in cookie
-    expect(res.cookie).toHaveBeenCalledWith(
-      COOKIE_CONSTANT.refresh.name,
-      'GENERATED_REFRESH_JWT',
-      COOKIE_CONSTANT.refresh.options
-    );
+//   it('should login', () => {
+//     controller.login(req.user, res);
 
-    // return access_token and user
-    expect(res.json).toHaveBeenCalledWith(
-      expect.objectContaining({
-        user: req.user,
-        access_token: 'GENERATED_ACCESS_JWT',
-      })
-    );
-  });
+//     // set refresh token in cookie
+//     expect(res.cookie).toHaveBeenCalledWith(
+//       COOKIE_CONSTANT.refresh.name,
+//       'GENERATED_REFRESH_JWT',
+//       COOKIE_CONSTANT.refresh.options
+//     );
 
-  it('should refresh access token', () => {
-    expect(controller.refresh(req.user)).toEqual({
-      access_token: 'GENERATED_ACCESS_JWT',
-      user: req.user,
-    });
-  });
+//     // return access_token and user
+//     expect(res.json).toHaveBeenCalledWith(
+//       expect.objectContaining({
+//         user: req.user,
+//         access_token: 'GENERATED_ACCESS_JWT',
+//       })
+//     );
+//   });
 
-  it('should logout - without refresh cookie', async () => {
-    await controller.logout(req, res);
+//   it('should refresh access token', () => {
+//     expect(controller.refresh(req.user)).toEqual({
+//       access_token: 'GENERATED_ACCESS_JWT',
+//       user: req.user,
+//     });
+//   });
 
-    // remove cookie
-    expect(res.clearCookie).toBeCalledWith(COOKIE_CONSTANT.refresh.name, {
-      maxAge: 0,
-    });
+//   it('should logout - without refresh cookie', async () => {
+//     await controller.logout(req, res);
 
-    expect(res.json).toBeCalledWith(
-      expect.objectContaining({
-        message: 'You have logged out.',
-      })
-    );
-  });
+//     // remove cookie
+//     expect(res.clearCookie).toBeCalledWith(COOKIE_CONSTANT.refresh.name, {
+//       maxAge: 0,
+//     });
 
-  it('should logout - with refresh cookie', async () => {
-    req.cookies[COOKIE_CONSTANT.refresh.name] = 'GENERATED_REFRESH_JWT';
+//     expect(res.json).toBeCalledWith(
+//       expect.objectContaining({
+//         message: 'You have logged out.',
+//       })
+//     );
+//   });
 
-    await controller.logout(req, res);
+//   it('should logout - with refresh cookie', async () => {
+//     req.cookies[COOKIE_CONSTANT.refresh.name] = 'GENERATED_REFRESH_JWT';
 
-    // remove cookie
-    expect(res.clearCookie).toBeCalledWith(COOKIE_CONSTANT.refresh.name, {
-      maxAge: 0,
-    });
+//     await controller.logout(req, res);
 
-    expect(res.json).toBeCalledWith(
-      expect.objectContaining({
-        message: 'You have logged out.',
-      })
-    );
-  });
-});
+//     // remove cookie
+//     expect(res.clearCookie).toBeCalledWith(COOKIE_CONSTANT.refresh.name, {
+//       maxAge: 0,
+//     });
+
+//     expect(res.json).toBeCalledWith(
+//       expect.objectContaining({
+//         message: 'You have logged out.',
+//       })
+//     );
+//   });
+// });

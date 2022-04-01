@@ -7,9 +7,10 @@ import { AxiosError } from 'axios';
 import { AxiosAuthRefreshRequestConfig } from 'axios-auth-refresh';
 import { useRef, useState } from 'react';
 import { useMutation } from 'react-query';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 import { z } from 'zod';
-import { axiosApiClient } from '../../../shared/api/api';
+import { axiosApiClient } from '../../../shared/api';
 import AuthFormLayouts from '../components/AuthFormLayouts';
 import SignUpForm, { SignUpFormValueProps } from './components/signup-form';
 

@@ -9,7 +9,8 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { MdOutlineMyLocation } from 'react-icons/md';
-import { useUserLocation } from '../../context/UserLocation';
+import { useMapLocation } from '../../context/MapLocation.context';
+// import { useUserLocation } from '../../context/UserLocation';
 
 /* eslint-disable-next-line */
 export interface AppHeaderProps {
@@ -29,7 +30,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export function AppHeader({ opened, setOpened }: AppHeaderProps) {
-  const userLocation = useUserLocation();
+  const userLocation = useMapLocation();
   const theme = useMantineTheme();
   const { classes } = useStyles();
 

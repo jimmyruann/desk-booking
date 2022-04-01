@@ -1,3 +1,4 @@
+import { LocationEntity, UpdateLocationDto } from '@desk-booking/data';
 import { useForm, zodResolver } from '@mantine/form';
 import { useNotifications } from '@mantine/notifications';
 import { Location } from '@prisma/client';
@@ -5,9 +6,9 @@ import dayjs from 'dayjs';
 import { useEffect } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import z from 'zod';
-import { useApi } from '../../../../../../shared/context/ApiClient';
+import { axiosApiClient } from '../../../../../../shared/api';
 import LocationSettingForm, {
-  LocationFormInputProps
+  LocationFormInputProps,
 } from '../location-settings-form/LocationSettingForm';
 
 /* eslint-disable-next-line */
@@ -22,6 +23,14 @@ const formSchema = z.object({
   capacity: z.number().min(0).max(100),
   allowBookingBetween: z.date().array(),
 });
+
+const updateLocation = async (id: number, values: UpdateLocationDto) => {
+  const { data } = await axiosApiClient.patch<LocationEntity>(
+    `/locations/${id}`,
+    values
+  );
+  return data;
+};
 
 export function LocationSettingFormWrapper({
   location,
@@ -47,7 +56,6 @@ export function LocationSettingFormWrapper({
     };
   };
 
-  const api = useApi();
   const notifications = useNotifications();
   const queryClient = useQueryClient();
 
@@ -60,7 +68,7 @@ export function LocationSettingFormWrapper({
     ({ id, values }: { id: number; values: LocationFormInputProps }) => {
       const { allowBookingBetween, ...rest } = values;
 
-      const updateData = {
+      return updateLocation(id, {
         ...rest,
         allowBookingFrom:
           allowBookingBetween[0].getHours() * 60 +
@@ -68,12 +76,10 @@ export function LocationSettingFormWrapper({
         allowBookingTill:
           allowBookingBetween[1].getHours() * 60 +
           allowBookingBetween[1].getMinutes(),
-      };
-
-      return api.client.patch(`/locations/${id}`, updateData);
+      });
     },
     {
-      onSuccess: ({ data }) => {
+      onSuccess: (data) => {
         queryClient.invalidateQueries(['GET_ALL_LOCATIONS']);
         notifications.showNotification({
           color: 'green',

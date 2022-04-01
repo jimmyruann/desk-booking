@@ -3,14 +3,15 @@ import { NotificationsProvider } from '@mantine/notifications';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { useRoutes } from 'react-router';
-import { ApiClientProvider } from '../shared/context/ApiClient';
-import { AuthenticationProvider } from '../shared/context/Authentication';
+import { withAppRouter } from '../shared/components/app-router/app-router';
+import appRouterHistory from '../shared/components/app-router/app-router-history';
+import { AuthenticationProvider } from '../shared/context/Authentication.context';
 import { appRoutes } from './routes';
 
 const myQueryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 2,
+      retry: 1,
     },
   },
 });
@@ -20,15 +21,13 @@ export function App() {
   return (
     <QueryClientProvider client={myQueryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
-      <ApiClientProvider>
-        <AuthenticationProvider>
-          <MantineProvider withNormalizeCSS withGlobalStyles>
-            <NotificationsProvider>{routes}</NotificationsProvider>
-          </MantineProvider>
-        </AuthenticationProvider>
-      </ApiClientProvider>
+      <AuthenticationProvider>
+        <MantineProvider withNormalizeCSS withGlobalStyles>
+          <NotificationsProvider>{routes}</NotificationsProvider>
+        </MantineProvider>
+      </AuthenticationProvider>
     </QueryClientProvider>
   );
 }
 
-export default App;
+export default withAppRouter(App, appRouterHistory);

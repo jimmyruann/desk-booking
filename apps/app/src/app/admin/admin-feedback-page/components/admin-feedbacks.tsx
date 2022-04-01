@@ -1,11 +1,14 @@
 import { FeedbackListEntity } from '@desk-booking/data';
 import { createStyles, Table, Text } from '@mantine/core';
 import dayjs from 'dayjs';
+import utcPlugin from 'dayjs/plugin/utc';
 import { useQuery } from 'react-query';
-import { useNavigate } from 'react-router-dom';
-import { axiosApiClient } from '../../../../shared/api/api';
+import { useNavigate } from 'react-router';
+import { axiosApiClient } from '../../../../shared/api';
 import { ServerError } from '../../../../shared/components/errors/server-error';
 import Loading from '../../../../shared/components/loading/loading';
+
+dayjs.extend(utcPlugin);
 
 const getFeedbacks = async () => {
   const { data } = await axiosApiClient.get<FeedbackListEntity[]>(
@@ -25,8 +28,9 @@ const useStyles = createStyles((theme) => ({
 
 export const AdminFeedbacks = () => {
   const { classes } = useStyles();
-  const { data, status } = useQuery('feedbacks', () => getFeedbacks());
   const navigation = useNavigate();
+
+  const { data, status } = useQuery('feedbacks', () => getFeedbacks());
   if (status === 'loading') return <Loading fullscreen />;
   if (status === 'error') return <ServerError />;
 
@@ -51,7 +55,7 @@ export const AdminFeedbacks = () => {
   });
 
   return (
-    <Table>
+    <Table data-testid="feedbackValues">
       <thead>
         <tr>
           <th>User</th>
@@ -61,7 +65,7 @@ export const AdminFeedbacks = () => {
           <th>Time</th>
         </tr>
       </thead>
-      <tbody>{feedbacks}</tbody>
+      <tbody data-testid="feedbackValuesTBody">{feedbacks}</tbody>
     </Table>
   );
 };

@@ -1,4 +1,9 @@
-import { AreaAvailabilityEntity, BookingEntity } from '@desk-booking/data';
+import {
+  AreaAvailabilityEntity,
+  AreaEntity,
+  BookingEntity,
+  CreateBookingDto,
+} from '@desk-booking/data';
 import { Box, Paper, Text } from '@mantine/core';
 import { useListState } from '@mantine/hooks';
 import { useNotifications } from '@mantine/notifications';
@@ -6,25 +11,39 @@ import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
+import ms from 'ms';
 import { useEffect, useState } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { axiosApiClient } from '../../shared/api';
+import Loading from '../../shared/components/loading/loading';
 import MapLayout from '../../shared/components/map/map-layout';
-import { useApi } from '../../shared/context/ApiClient';
-import { useUserLocation } from '../../shared/context/UserLocation';
+import { useMapLocation } from '../../shared/context/MapLocation.context';
+// import { useUserLocation } from '../../shared/context/UserLocation';
 import { mergeTime } from '../../shared/utils/time';
 import BookingControl from './components/booking-control/booking-control';
 import InfoBox from './components/info-box/info-box';
-import TabContainer from './components/tab-container/tab-container';
+import TabContainer from './components/tabs/tab-container';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-/* eslint-disable-next-line */
-export interface BookingPageProps {}
+const getLocationAreas = async (locationId: string) => {
+  const { data } = await axiosApiClient.get<AreaEntity[]>('/areas', {
+    params: { locationId },
+  });
+  return data;
+};
 
-function BookingPage(props: BookingPageProps) {
-  const api = useApi();
-  const userLocation = useUserLocation();
+const createBooking = async (values: CreateBookingDto) => {
+  const { data } = await axiosApiClient.post<BookingEntity[]>(
+    '/bookings/user',
+    values
+  );
+  return data;
+};
+
+function BookingPage() {
+  const userLocation = useMapLocation();
   const notifications = useNotifications();
   const queryClient = useQueryClient();
 
@@ -42,33 +61,34 @@ function BookingPage(props: BookingPageProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLocation.currentLocation]);
 
-  const createBookingMutation = useMutation(
-    (data: {
-      htmlId: string;
-      bookings: { startTime: Date; endTime: Date }[];
-    }) => {
-      return api.client.post<BookingEntity[]>('/bookings/user', data);
-    },
+  const { data: locationAreasData, status: locationAreasStatus } = useQuery(
+    ['locationAreas', userLocation.currentLocation.locationId],
+    () => getLocationAreas(userLocation.currentLocation.locationId),
     {
-      onSuccess: ({ data }) => {
-        notifications.showNotification({
-          color: 'green',
-          title: 'Booking Confirmed',
-          message: <Text>You have booked.</Text>,
-        });
-      },
-      onError: (error: AxiosError) => {
-        notifications.showNotification({
-          color: 'red',
-          title: error.response.data.title || error.name,
-          message: error.response.data.message || error.message,
-        });
-      },
-      onSettled: () => {
-        queryClient.invalidateQueries(['GET_AREA_AVAILABILITIES']);
-      },
+      staleTime: ms('5m'),
     }
   );
+
+  const createBookingMutation = useMutation(createBooking, {
+    onSuccess: (data) => {
+      notifications.showNotification({
+        color: 'green',
+        title: 'Booking Confirmed',
+        message: <Text>You have booked.</Text>,
+      });
+    },
+    onError: (error: AxiosError) => {
+      notifications.showNotification({
+        color: 'red',
+        title: error.response.data.title || error.name,
+        message: error.response.data.message || error.message,
+      });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(['GET_AREA_AVAILABILITIES']);
+      queryClient.invalidateQueries(['GET_AREA_BOOKINGS']);
+    },
+  });
 
   const handleMakeBooking = () => {
     const checkedTime = availability
@@ -87,6 +107,10 @@ function BookingPage(props: BookingPageProps) {
     });
   };
 
+  if (locationAreasStatus === 'loading') return <Loading />;
+  if (locationAreasStatus === 'error')
+    return <div>Unable to get Location areas</div>;
+
   return (
     <Paper shadow="xs" p="md">
       <MapLayout
@@ -94,7 +118,9 @@ function BookingPage(props: BookingPageProps) {
         mapContextProps={{
           currentId: htmlId,
           setCurrentId: setHtmlId,
-          disabledIds: [], // TODO: fetch from database and exclude those that are not allowed to be booked
+          disabledIds: locationAreasData
+            .filter((locationArea) => !locationArea.allowBooking)
+            .map((locationArea) => locationArea.htmlId),
           unavailableIds: [],
         }}
       >

@@ -1,5 +1,6 @@
 import {
   CreateLocationDto,
+  FindOneStringParams,
   LocationEntity,
   UpdateLocationDto,
 } from '@desk-booking/data';
@@ -38,7 +39,7 @@ export class LocationsController {
   @Get(':id')
   @ApiOperation({ summary: '[USER, ADMIN] Find one location' })
   @ApiOkResponse({ type: LocationEntity })
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param() { id }: FindOneStringParams) {
     return new LocationEntity(await this.locationsService.findOne(id));
   }
 
@@ -55,7 +56,7 @@ export class LocationsController {
   @ApiOperation({ summary: '[ADMIN] Update a location' })
   @ApiCreatedResponse({ type: LocationEntity })
   async update(
-    @Param('id') id: string,
+    @Param() { id }: FindOneStringParams,
     @Body() updateLocationDto: UpdateLocationDto
   ) {
     return new LocationEntity(
@@ -67,7 +68,7 @@ export class LocationsController {
   @Delete(':id')
   @ApiOperation({ summary: '[ADMIN] Delete a location' })
   @ApiOkResponse({ type: LocationEntity })
-  async delete(@Param('id') id: string) {
+  async delete(@Param() { id }: FindOneStringParams) {
     return new LocationEntity(await this.locationsService.delete(id));
   }
 }

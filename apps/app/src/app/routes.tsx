@@ -1,6 +1,6 @@
 import { RouteObject } from 'react-router';
 import NotFoundError from '../shared/components/errors/not-found-error';
-import RequireAuth from '../shared/components/RequireAuth';
+import RequireAuth from '../shared/guards/RequireAuth.guard';
 import { adminRoutes } from './admin/routes';
 import { authRoutes } from './auth/routes';
 import BookingPage from './booking-page/booking-page';

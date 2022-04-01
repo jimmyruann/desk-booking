@@ -1,11 +1,13 @@
 import { FeedbackEntity } from '@desk-booking/data';
 import { Table } from '@mantine/core';
 import dayjs from 'dayjs';
+import utcPlugin from 'dayjs/plugin/utc';
 import { useQuery } from 'react-query';
-import { axiosApiClient } from '../../../../shared/api/api';
+import { axiosApiClient } from '../../../../shared/api';
 import Loading from '../../../../shared/components/loading/loading';
+dayjs.extend(utcPlugin);
 
-interface AdminFeedback {
+interface AdminFeedbackProps {
   id: number;
 }
 
@@ -14,7 +16,7 @@ const getFeedback = async (id: number) => {
   return data;
 };
 
-export const AdminFeedback = ({ id }: AdminFeedback) => {
+export const AdminFeedback = ({ id }: AdminFeedbackProps) => {
   const { data, status } = useQuery(['feedback', id], () => getFeedback(id));
 
   if (status === 'loading') return <Loading fullscreen />;
@@ -37,7 +39,7 @@ export const AdminFeedback = ({ id }: AdminFeedback) => {
   ];
 
   return (
-    <Table>
+    <Table data-testid="feedbackValues">
       <thead>
         <tr>
           <th>Type</th>
@@ -46,7 +48,7 @@ export const AdminFeedback = ({ id }: AdminFeedback) => {
       </thead>
       <tbody>
         {tableData.map((each, i) => (
-          <tr>
+          <tr key={i}>
             <td>
               <b>{each.type}</b>
             </td>

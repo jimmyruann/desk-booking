@@ -3,6 +3,7 @@ import {
   AreaBookingsEntity,
   AreaEntity,
   CreateAreaDto,
+  FindOneStringParams,
   UpdateAreaDto,
 } from '@desk-booking/data';
 import {
@@ -39,7 +40,7 @@ export class AreasController {
   @Get(':id')
   @ApiOperation({ summary: `[USER, ADMIN] Find one area` })
   @ApiOkResponse({ type: AreaEntity })
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param() { id }: FindOneStringParams) {
     return new AreaEntity(await this.areasService.findOne(id));
   }
 
@@ -48,7 +49,10 @@ export class AreasController {
   @ApiOkResponse({
     type: [AreaAvailabilityEntity],
   })
-  async findAvailabilities(@Param('id') id: string, @Query('date') date: Date) {
+  async findAvailabilities(
+    @Param() { id }: FindOneStringParams,
+    @Query('date') date: Date
+  ) {
     const availabilities = await this.areasService.findAvailabilities(id, date);
     return availabilities.map(
       (availability) => new AreaAvailabilityEntity(availability)
@@ -60,7 +64,10 @@ export class AreasController {
   @ApiOkResponse({
     type: [AreaBookingsEntity],
   })
-  async findBookings(@Param('id') id: string, @Query('date') date: Date) {
+  async findBookings(
+    @Param() { id }: FindOneStringParams,
+    @Query('date') date: Date
+  ) {
     // Keep everything in UTC to be simple
     const bookings = await this.areasService.findBookings(id, date);
     return bookings.map((booking) => new AreaBookingsEntity(booking));
@@ -78,7 +85,10 @@ export class AreasController {
   @Patch(':id')
   @ApiOperation({ summary: `[ADMIN] Update an area` })
   @ApiCreatedResponse({ type: AreaEntity })
-  async update(@Param('id') id: string, @Body() updateAreaDto: UpdateAreaDto) {
+  async update(
+    @Param() { id }: FindOneStringParams,
+    @Body() updateAreaDto: UpdateAreaDto
+  ) {
     return new AreaEntity(await this.areasService.update(id, updateAreaDto));
   }
 
@@ -86,7 +96,7 @@ export class AreasController {
   @Delete(':id')
   @ApiOperation({ summary: `[ADMIN] Remove an area` })
   @ApiOkResponse({ type: AreaEntity })
-  async remove(@Param('id') id: string) {
+  async remove(@Param() { id }: FindOneStringParams) {
     return new AreaEntity(await this.areasService.remove(id));
   }
 }

@@ -3,7 +3,7 @@ import { UserRole } from '@prisma/client';
 import { HiOutlineCalendar } from 'react-icons/hi';
 import { MdLogout } from 'react-icons/md';
 import { RiAdminLine, RiFeedbackLine } from 'react-icons/ri';
-import { useAuth } from '../../context/Authentication';
+import { useAuth } from '../../context/Authentication.context';
 import AppSideMenuItem, {
   AppSideMenuItemProps,
 } from '../app-side-menu-item/app-side-menu-item';

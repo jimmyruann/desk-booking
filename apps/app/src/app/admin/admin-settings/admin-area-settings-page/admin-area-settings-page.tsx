@@ -1,28 +1,36 @@
 import { useState } from 'react';
-import { MapLocationProvider } from '../../../../shared/context/MapLocation.context';
-import { useUserLocation } from '../../../../shared/context/UserLocation';
+import MapLayout from '../../../../shared/components/map/map-layout';
+import {
+  useMapLocation,
+  withMapLocationProvider,
+} from '../../../../shared/context/MapLocation.context';
+import AdminLocationChanger from '../../components/admin-location-changer';
 import AdminPageLayout from '../../components/admin-page-layout';
-import AdminAreaSettingsWrapper from './components/admin-area-settings-wrapper';
+import AdminAreaSettingsForm from './components/admin-area-settings-form';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface AdminAreaSettingsPageProps {}
-
-export function AdminAreaSettingsPage(props: AdminAreaSettingsPageProps) {
-  const { locations } = useUserLocation();
-  const currentHtmlIdHook = useState('');
+export function AdminAreaSettingsPage() {
+  const [currentHtmlId, setCurrentHtmlId] = useState('');
+  const mapLocation = useMapLocation();
 
   return (
-    <MapLocationProvider locations={locations}>
-      <AdminPageLayout
-        breadCrumbList={[
-          { title: 'App Settings', href: '/admin/settings' },
-          { title: 'Area Settings', href: '/admin/settings/area' },
-        ]}
+    <AdminPageLayout
+      breadCrumbList={[
+        { title: 'App Settings', href: '/admin/settings' },
+        { title: 'Area Settings', href: '/admin/settings/area' },
+      ]}
+    >
+      <AdminLocationChanger {...mapLocation} />
+      <MapLayout
+        locationId={mapLocation.currentLocation.locationId}
+        mapContextProps={{
+          currentId: currentHtmlId,
+          setCurrentId: setCurrentHtmlId,
+        }}
       >
-        <AdminAreaSettingsWrapper useCurrentHtmlId={() => currentHtmlIdHook} />
-      </AdminPageLayout>
-    </MapLocationProvider>
+        <AdminAreaSettingsForm htmlId={currentHtmlId} {...mapLocation} />
+      </MapLayout>
+    </AdminPageLayout>
   );
 }
 
-export default AdminAreaSettingsPage;
+export default withMapLocationProvider(AdminAreaSettingsPage);

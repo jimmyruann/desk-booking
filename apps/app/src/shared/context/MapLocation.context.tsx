@@ -1,6 +1,10 @@
 import { LocationEntity } from '@desk-booking/data';
 import { useUncontrolled } from '@mantine/hooks';
+import ms from 'ms';
 import React from 'react';
+import { useQuery } from 'react-query';
+import { axiosApiClient } from '../api';
+import Loading from '../components/loading/loading';
 
 interface MapLocationContext {
   currentLocation: LocationEntity;
@@ -54,3 +58,28 @@ export const MapLocationProvider = ({
 };
 
 export const useMapLocation = () => React.useContext(MapLocationContext);
+
+const getLocations = async () => {
+  const { data } = await axiosApiClient.get<LocationEntity[]>('/locations');
+  return data;
+};
+
+export const withMapLocationProvider =
+  <P extends object>(Component: React.ComponentType<P>): React.FC<P> =>
+  ({ ...props }) => {
+    const { data: locations, status } = useQuery(
+      'getLocations',
+      () => getLocations(),
+      {
+        staleTime: ms('1m'),
+      }
+    );
+    if (status === 'loading') return <Loading fullscreen />;
+    if (status === 'error') return <div>Something went wrong</div>;
+
+    return (
+      <MapLocationProvider locations={locations}>
+        <Component {...(props as P)} />
+      </MapLocationProvider>
+    );
+  };
