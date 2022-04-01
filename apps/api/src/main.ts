@@ -39,8 +39,8 @@ async function bootstrap() {
     SwaggerModule.setup('api', app, swaggerDocument);
   }
 
-  // For express-session
-  if (environment.production) app.set('trust proxy', 1);
+  // // For express-session
+  // if (environment.production) app.set('trust proxy', 1);
 
   // Express middleware
   app.use(helmet());
