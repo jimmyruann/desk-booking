@@ -100,7 +100,7 @@ spec:
     spec:
       containers:
         - name: db-migration
-          image: desk_booking_prisma_migration:latest
+          image: desk_booking_prisma:latest
           imagePullPolicy: Never
           env:
             - name: DATABASE_URL
