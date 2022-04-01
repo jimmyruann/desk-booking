@@ -25,6 +25,8 @@ spec:
               value: redis://redis:6379
             - name: HCAPTCHA_SECRET
               value: $HCAPTCHA_SECRET
+            - name: APP_SESSION_SECRET
+              value: $APP_SESSION_SECRET
 ---
 apiVersion: apps/v1
 kind: Deployment
