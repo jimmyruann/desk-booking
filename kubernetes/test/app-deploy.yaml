@@ -73,14 +73,14 @@ spec:
       containers:
         - name: redis
           image: redis:latest
-          volumeMounts:
-            - name: redis-pv-volume
-              mountPath: /mnt/redis
-      volumes:
-        - name: redis-pv-volume
-          hostPath:
-            path: /mnt/redis
-            type: Directory
+      #     volumeMounts:
+      #       - name: redis-pv-volume
+      #         mountPath: /mnt/redis
+      # volumes:
+      #   - name: redis-pv-volume
+      #     hostPath:
+      #       path: /mnt/redis
+      #       type: Directory
 ---
 apiVersion: apps/v1
 kind: Deployment

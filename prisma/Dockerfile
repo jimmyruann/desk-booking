@@ -1,23 +1,21 @@
-FROM node:14.19.0-alpine
+FROM node:16-alpine
 
 WORKDIR /app
 
 ARG DATABASE_URL
-
 ARG ADMIN_INITIAL_PASSWORD
 
 ENV DATABASE_URL ${DATABASE_URL}
-
 ENV ADMIN_INITIAL_PASSWORD ${ADMIN_INITIAL_PASSWORD}
 
-COPY package.json ./
+COPY yarn.lock ./
 
 COPY prisma ./prisma/
 
-RUN npm install -g prisma
+COPY ./dist/apps/prisma .
 
-RUN npm install bcryptjs
+RUN npx prisma generate
 
-RUN prisma generate
+RUN yarn install --production --frozen-lockfile 
 
-CMD ["sh", "-c", "prisma migrate deploy && prisma db seed && tail -f /dev/null"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node main.js && tail -f /dev/null"]

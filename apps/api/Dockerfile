@@ -1,4 +1,4 @@
-FROM node:14.19.0-alpine
+FROM node:16-alpine
 
 WORKDIR /app
 
@@ -22,6 +22,8 @@ COPY prisma ./prisma/
 
 COPY ./dist/apps/api .
 
-RUN yarn install --production
+RUN npx prisma generate && rm -rf ~/.npm/_npx && rm -rf ~/.cache/prisma
+
+RUN yarn install --production --frozen-lockfile 
 
 CMD ["node", "main.js"]
