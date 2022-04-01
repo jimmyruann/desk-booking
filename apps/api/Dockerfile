@@ -20,11 +20,11 @@ COPY package.json yarn.lock ./
 
 COPY prisma ./prisma/
 
+COPY ./dist/apps/api .
+
 RUN npm install -g prisma
 
 RUN yarn install --production
-
-COPY ./dist/apps/api .
 
 RUN prisma generate
 

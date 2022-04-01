@@ -3,13 +3,11 @@ FROM nginx
 WORKDIR /app
 
 ARG API_HOST
-
 ARG API_PORT
 
 ENV NODE_ENV production
 
 ENV API_HOST ${API_HOST}
-
 ENV API_PORT ${API_PORT}
 
 COPY ./apps/app/container /
