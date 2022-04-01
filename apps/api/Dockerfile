@@ -1,4 +1,4 @@
-FROM node:14.19.0-alpine
+FROM node:16-alpine
 
 WORKDIR /app
 
@@ -16,16 +16,14 @@ ENV HCAPTCHA_SECRET ${HCAPTCHA_SECRET}
 
 EXPOSE ${PORT}
 
-COPY package.json yarn.lock ./
+COPY yarn.lock ./
 
 COPY prisma ./prisma/
 
-RUN npm install -g prisma
-
-RUN yarn install --production
-
 COPY ./dist/apps/api .
 
-RUN prisma generate
+RUN npx prisma generate && rm -rf ~/.npm/_npx && rm -rf ~/.cache/prisma
+
+RUN yarn install --production --frozen-lockfile 
 
 CMD ["node", "main.js"]

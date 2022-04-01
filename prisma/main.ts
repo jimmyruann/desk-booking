@@ -1,8 +1,9 @@
-const { PrismaClient, UserRole } = require('@prisma/client');
-const bcrypt = require('bcryptjs');
-const areas = require('./seed/area.json');
-const locations = require('./seed/location.json');
-const areaTypes = require('./seed/areaType.json');
+import { PrismaClient, UserRole } from '@prisma/client';
+import * as bcrypt from 'bcryptjs';
+import 'tslib';
+import areas from './seed/area.json';
+import areaTypes from './seed/areaType.json';
+import locations from './seed/location.json';
 
 const prisma = new PrismaClient();
 
@@ -33,7 +34,7 @@ async function main() {
         promises.push(
           prisma.areaType.upsert({
             where: { id },
-            update: rest,
+            update: {},
             create: {
               id,
               ...rest,
@@ -50,7 +51,7 @@ async function main() {
         promises.push(
           prisma.area.upsert({
             where: { id },
-            update: rest,
+            update: {},
             create: {
               id,
               ...rest,

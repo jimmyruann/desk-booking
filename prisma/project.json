@@ -6,9 +6,27 @@
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
+          "nx build prisma --prod",
           "docker build -f ./prisma/Dockerfile . -t desk_booking_prisma_migration"
         ],
         "parallel": false
+      }
+    },
+    "build": {
+      "executor": "@nrwl/node:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/prisma",
+        "tsConfig": "prisma/tsconfig.app.json",
+        "main": "prisma/main.ts"
+      },
+      "configurations": {
+        "production": {
+          "generatePackageJson": true,
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false
+        }
       }
     }
   }
