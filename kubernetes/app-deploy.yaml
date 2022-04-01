@@ -99,6 +99,8 @@ spec:
               value: $ADMIN_INITIAL_PASSWORD
             - name: APP_SESSION_SECRET
               value: $APP_SESSION_SECRET
+            - name: REDIS_URL
+              value: redis://redis:6379
 ---
 apiVersion: v1
 kind: Service
