@@ -1,4 +1,4 @@
-import { UserEntity } from '@desk-booking/data';
+import { FindOneParams, UserEntity } from '@desk-booking/data';
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { UserRole } from '@prisma/client';
@@ -23,7 +23,7 @@ export class UserController {
   @Get(':id')
   @ApiOperation({ summary: `[ADMIN] Find one user` })
   @ApiOkResponse({ type: UserEntity })
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param() { id }: FindOneParams) {
     return new UserEntity(await this.userService.findOne(+id));
   }
 

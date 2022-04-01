@@ -2,6 +2,7 @@ import {
   BookingEntity,
   BookingWithAreaEntity,
   CreateBookingDto,
+  FindOneParams,
 } from '@desk-booking/data';
 import {
   Body,
@@ -67,7 +68,10 @@ export class BookingsController {
   @Get('/user/:id')
   @ApiOperation({ summary: `[USER] Find User's booking` })
   @ApiOkResponse({ type: BookingEntity })
-  async findOneWithUser(@User() user: Express.User, @Param('id') id: string) {
+  async findOneWithUser(
+    @User() user: Express.User,
+    @Param() { id }: FindOneParams
+  ) {
     return new BookingEntity(
       await this.bookingsService.findOneWithUser(+user.id, +id)
     );
@@ -76,7 +80,10 @@ export class BookingsController {
   @Delete('/user/:id')
   @ApiOperation({ summary: `[USER] Remove User's booking.` })
   @ApiOkResponse({ type: BookingEntity })
-  async removeWithUser(@User() user: Express.User, @Param('id') id: string) {
+  async removeWithUser(
+    @User() user: Express.User,
+    @Param() { id }: FindOneParams
+  ) {
     return new BookingEntity(
       await this.bookingsService.removeWithUser(+user.id, +id)
     );
@@ -105,7 +112,7 @@ export class BookingsController {
   @ApiOperation({ summary: '[ADMIN] Find one bookings' })
   @ApiOkResponse({ type: BookingEntity })
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param() { id }: FindOneParams) {
     return new BookingEntity(await this.bookingsService.findOne(+id));
   }
 

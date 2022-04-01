@@ -1,20 +1,13 @@
 import { SignupUserDto } from '@desk-booking/data';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import axios from 'axios';
 import bcrypt from 'bcryptjs';
-import { v4 as uuid } from 'uuid';
-import { JWT_CONSTANT } from '../constants/jwt';
 import { environment } from '../environments/environment';
 import { PrismaService } from '../shared/prisma/prisma.service';
-import { RefreshAuthPayLoad } from './auth.type';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly jwtService: JwtService
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async validateUser(email: string, password: string) {
     const user = await this.prisma.user.findUnique({
@@ -28,24 +21,6 @@ export class AuthService {
     // Can add more condition if wanted (blacklisted, deactivated, etc)
 
     return user;
-  }
-
-  generateAccessToken(user: Express.User) {
-    return {
-      access_token: this.jwtService.sign(user, JWT_CONSTANT.access),
-    };
-  }
-
-  generateRefreshToken(user: Express.User) {
-    const jwtPayload: RefreshAuthPayLoad = { user, uuid: uuid() };
-    // save the uuid
-    return {
-      refresh_token: this.jwtService.sign(jwtPayload, JWT_CONSTANT.refresh),
-    };
-  }
-
-  async removeRefreshToken({ id }: Express.User) {
-    return true;
   }
 
   async signup(signupUserDto: SignupUserDto) {

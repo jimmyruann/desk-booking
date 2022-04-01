@@ -1,8 +1,14 @@
-import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import session from 'express-session';
+import ms from 'ms';
 import { AuthModule } from '../auth/auth.module';
-import { JwtAuthGuard } from '../auth/guards/jwt.guard';
+import { SessionGuard } from '../auth/guards/session.guard';
+import { environment } from '../environments/environment';
+import { PrismaClientExceptionFilter } from '../shared/prisma/prisma-client-exception.filter';
+import { RedisModule } from '../shared/redis/redis.module';
+import { RedisService } from '../shared/redis/redis.service';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AreaTypesModule } from './area-types/area-types.module';
@@ -10,11 +16,11 @@ import { AreasModule } from './areas/areas.module';
 import { BookingsModule } from './bookings/bookings.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { LocationsModule } from './locations/locations.module';
-// import { TestModule } from './test/test.module';
 import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
+    RedisModule,
     BookingsModule,
     AreasModule,
     LocationsModule,
@@ -26,19 +32,43 @@ import { UserModule } from './user/user.module';
       ttl: 60,
       limit: 50,
     }),
-    // TestModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
+    RedisService,
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard,
+      useClass: SessionGuard,
     },
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
+    {
+      provide: APP_FILTER,
+      useClass: PrismaClientExceptionFilter,
+    },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  constructor(private readonly redisService: RedisService) {}
+
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(
+        session({
+          store: this.redisService.getRedisStore(),
+          secret: environment.appSessionSecret,
+          saveUninitialized: false,
+          resave: false,
+          cookie: {
+            sameSite: true,
+            maxAge: ms('7d'),
+            secure: environment.production,
+          },
+        })
+      )
+      .forRoutes('*');
+  }
+}

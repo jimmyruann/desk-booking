@@ -9,6 +9,7 @@
     "@types/d3",
     "@svgr/webpack",
     "url-loader",
-    "@types/node"
+    "@types/node",
+    "redis"
   ]
 }
