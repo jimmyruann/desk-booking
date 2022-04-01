@@ -16,16 +16,12 @@ ENV HCAPTCHA_SECRET ${HCAPTCHA_SECRET}
 
 EXPOSE ${PORT}
 
-COPY package.json yarn.lock ./
+COPY yarn.lock ./
 
 COPY prisma ./prisma/
 
 COPY ./dist/apps/api .
 
-RUN npm install -g prisma
-
 RUN yarn install --production
-
-RUN prisma generate
 
 CMD ["node", "main.js"]

@@ -33,7 +33,7 @@ async function main() {
         promises.push(
           prisma.areaType.upsert({
             where: { id },
-            update: rest,
+            update: {},
             create: {
               id,
               ...rest,
@@ -50,7 +50,7 @@ async function main() {
         promises.push(
           prisma.area.upsert({
             where: { id },
-            update: rest,
+            update: {},
             create: {
               id,
               ...rest,
