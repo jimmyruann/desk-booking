@@ -7,10 +7,13 @@ import {
   Post,
   Req,
   Res,
+  Session,
   UseGuards,
 } from '@nestjs/common';
 import { ApiCreatedResponse } from '@nestjs/swagger';
 import { Request, Response } from 'express';
+import { SessionData } from 'express-session';
+import { environment } from '../environments/environment';
 import { AuthService } from './auth.service';
 import { Public } from './decorator/public.decorator';
 import { User } from './decorator/user.decorator';
@@ -23,25 +26,25 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  login(@User() user: Express.User, @Req() req: Request, @Res() res: Response) {
+  login(
+    @User() user: Express.User,
+    @Session() session: SessionData,
+    @Req() req: Request,
+    @Res() res: Response
+  ) {
     // By default, nestjs will create a req.user
     // simplest way to leverage express-session is to
     // pass req.user to req.session.user
-    req.session.user = user;
-    return res.status(HttpStatus.CREATED).json(req.user);
+    session.user = user;
+    res.status(HttpStatus.CREATED).json(session.user);
   }
 
   @All('logout')
   async logout(@Req() req: Request, @Res() res: Response) {
     req.session.destroy(() => null);
-    res
-      .status(HttpStatus.OK)
-      .clearCookie('connect.sid', {
-        maxAge: 0,
-      })
-      .json({
-        message: 'You have logged out.',
-      });
+    res.status(HttpStatus.OK).clearCookie(environment.appSessionName, {
+      maxAge: 0,
+    });
   }
 
   @ApiCreatedResponse({ type: UserEntity })

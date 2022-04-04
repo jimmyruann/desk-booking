@@ -1,15 +1,29 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import cookieParser from 'cookie-parser';
+// import fs from 'fs';
 import helmet from 'helmet';
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
+import { initExpressSession } from './init/session';
+import { initSwagger } from './init/swagger';
 import { PrismaClientExceptionFilter } from './shared/prisma/prisma-client-exception.filter';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  // const keyFile = fs.readFileSync(__dirname + '/assets/certs/local-dev.key');
+  // const certFile = fs.readFileSync(__dirname + '/assets/certs/local-dev.cert');
+
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    cors: {
+      origin: 'https://localhost:4200',
+      credentials: true,
+    },
+    // httpsOptions: {
+    //   key: keyFile,
+    //   cert: certFile,
+    // },
+  });
+
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
 
@@ -25,29 +39,11 @@ async function bootstrap() {
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
-  if (!environment.production) {
-    // Swagger
-    const swaggerDocumentConfigs = new DocumentBuilder()
-      .setTitle('Desk Booking Rest API')
-      .setVersion('1.0')
-      .addBearerAuth()
-      .build();
-    const swaggerDocument = SwaggerModule.createDocument(
-      app,
-      swaggerDocumentConfigs
-    );
-    SwaggerModule.setup('api', app, swaggerDocument);
-  }
-
-  // // For express-session
-  // if (environment.production) app.set('trust proxy', 1);
+  if (!environment.production) initSwagger(app);
 
   // Express middleware
   app.use(helmet());
-  app.enableCors({
-    credentials: true,
-  });
-  app.use(cookieParser());
+  initExpressSession(app);
 
   // Start server
   const port = process.env.PORT || 3333;

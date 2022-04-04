@@ -22,8 +22,8 @@ COPY prisma ./prisma/
 
 COPY ./dist/apps/api .
 
-RUN npx prisma generate && rm -rf ~/.npm/_npx && rm -rf ~/.cache/prisma
-
 RUN yarn install --production --frozen-lockfile 
+
+RUN npx prisma generate && rm -rf ~/.npm/_npx && rm -rf ~/.cache/prisma
 
 CMD ["node", "main.js"]

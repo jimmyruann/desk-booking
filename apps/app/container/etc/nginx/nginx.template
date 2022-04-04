@@ -39,9 +39,5 @@ http {
             try_files $uri $uri/ /index.html;
         }
 
-        location /api {
-            proxy_pass http://${API_HOST}:${API_PORT};
-            proxy_set_header Host $http_host;
-        }
     }
 }

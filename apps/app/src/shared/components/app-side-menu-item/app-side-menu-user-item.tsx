@@ -9,7 +9,8 @@ import React from 'react';
 import { HiOutlineChevronRight } from 'react-icons/hi';
 
 /* eslint-disable-next-line */
-export interface AppSideMenuUserItemProps extends UnstyledButtonProps {
+export interface AppSideMenuUserItemProps
+  extends UnstyledButtonProps<'button'> {
   image: string;
   name: string;
   email: string;

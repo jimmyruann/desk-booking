@@ -48,11 +48,6 @@ spec:
         - name: frontend
           image: jimmyruann/desk_booking_app:latest
           imagePullPolicy: Always
-          env:
-            - name: API_HOST
-              value: api
-            - name: API_PORT
-              value: '3333'
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -144,14 +139,33 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: http-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_set_headers "X-Forwarded-Proto: https";
+      rewrite ^/api/(.*)$ /api/$1 break;
 spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - desk-booking.localdev.me
+      secretName: dev-local
   rules:
-    - http:
+    - host: desk-booking.localdev.me
+      http:
         paths:
-          - path: /
+          - path: /?(.*)
             pathType: Prefix
             backend:
               service:
                 name: frontend
                 port:
                   number: 80
+          - path: /api/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: api
+                port:
+                  number: 3333

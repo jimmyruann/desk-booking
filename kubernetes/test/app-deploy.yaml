@@ -73,14 +73,6 @@ spec:
       containers:
         - name: redis
           image: redis:latest
-      #     volumeMounts:
-      #       - name: redis-pv-volume
-      #         mountPath: /mnt/redis
-      # volumes:
-      #   - name: redis-pv-volume
-      #     hostPath:
-      #       path: /mnt/redis
-      #       type: Directory
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -127,11 +119,8 @@ metadata:
   labels:
     app: frontend
 spec:
-  type: NodePort
   ports:
     - port: 80
-      targetPort: 80
-      nodePort: 30007
   selector:
     app: frontend
 ---
@@ -182,4 +171,37 @@ spec:
   selector:
     app: postgres
 ---
-
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: http-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_set_headers "X-Forwarded-Proto: https";
+      rewrite ^/api/(.*)$ /api/$1 break;
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - desk-booking.localdev.me
+      secretName: dev-local
+  rules:
+    - host: desk-booking.localdev.me
+      http:
+        paths:
+          - path: /?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80
+          - path: /api/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: api
+                port:
+                  number: 3333

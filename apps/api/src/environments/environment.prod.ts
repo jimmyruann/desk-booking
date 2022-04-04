@@ -3,4 +3,5 @@ export const environment = {
   hCaptchaSecret: process.env.HCAPTCHA_SECRET,
   appSessionSecret: process.env.APP_SESSION_SECRET,
   redisUrl: process.env.REDIS_URL,
+  appSessionName: 'hd_sid',
 };

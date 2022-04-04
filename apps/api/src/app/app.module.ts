@@ -1,11 +1,8 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import session from 'express-session';
-import ms from 'ms';
 import { AuthModule } from '../auth/auth.module';
 import { SessionGuard } from '../auth/guards/session.guard';
-import { environment } from '../environments/environment';
 import { PrismaClientExceptionFilter } from '../shared/prisma/prisma-client-exception.filter';
 import { RedisModule } from '../shared/redis/redis.module';
 import { RedisService } from '../shared/redis/redis.service';
@@ -51,27 +48,30 @@ import { UserModule } from './user/user.module';
     },
   ],
 })
-export class AppModule implements NestModule {
-  constructor(private readonly redisService: RedisService) {}
 
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(
-        session({
-          name: 'hd:sid',
-          store: this.redisService.getRedisStore(),
-          secret: environment.appSessionSecret,
-          saveUninitialized: false,
-          resave: false,
-          unset: 'destroy',
-          cookie: {
-            httpOnly: true,
-            sameSite: true,
-            maxAge: ms('3d'),
-            secure: environment.production,
-          },
-        })
-      )
-      .forRoutes('*');
-  }
-}
+// export class AppModule implements NestModule {
+//   constructor(private readonly redisService: RedisService) {}
+
+//   configure(consumer: MiddlewareConsumer) {
+//     consumer
+//       .apply(
+//         session({
+//           name: 'hd_sid',
+//           store: this.redisService.getRedisStore(),
+//           secret: environment.appSessionSecret,
+//           saveUninitialized: false,
+//           resave: false,
+//           unset: 'destroy',
+//           genid: () => uuid(),
+//           cookie: {
+//             httpOnly: false,
+//             maxAge: ms('3d'),
+//             secure: true,
+//             sameSite: 'none',
+//           },
+//         })
+//       )
+//       .forRoutes('*');
+//   }
+// }
+export class AppModule {}
