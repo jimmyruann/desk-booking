@@ -2,8 +2,8 @@ if [ -z "$1" ]; then
     echo "No argument supplied"
 
 else
-    # sudo apt update
-    # sudo apt install jq
+    sudo apt update
+    sudo apt install jq
 
     DATABASE_USER=$(echo $1 | jq -r '.username')
     DATABASE_PASSWORD=$(echo $1 | jq -r '.password')

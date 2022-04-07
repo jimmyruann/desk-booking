@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: hotdesk-dynatrace-com-cert
+  namespace: istio-system
+spec:
+  secretName: hotdesk-dynatrace-com-cert
+  issuerRef:
+    name: letsencrypt-issuer
+    kind: Issuer
+    group: cert-manager.io
+  commonName: hotdesk.dynatrace.com
+  dnsNames:
+    - hotdesk.dynatrace.com

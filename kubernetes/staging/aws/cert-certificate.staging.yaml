@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: staging-hotdesk-dynatrace-com-cert
+  namespace: istio-system
+spec:
+  secretName: staging-hotdesk-dynatrace-com-cert
+  issuerRef:
+    name: letsencrypt-staging-issuer
+    kind: Issuer
+    group: cert-manager.io
+  commonName: staging.hotdesk.dynatrace.com
+  dnsNames:
+    - staging.hotdesk.dynatrace.com
