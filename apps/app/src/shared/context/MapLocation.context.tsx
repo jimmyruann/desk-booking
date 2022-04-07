@@ -59,19 +59,24 @@ export const MapLocationProvider = ({
 
 export const useMapLocation = () => React.useContext(MapLocationContext);
 
-const getLocations = async () => {
-  const { data } = await axiosApiClient.get<LocationEntity[]>('/locations');
+const getLocations = async (showDisabled: boolean) => {
+  const { data } = await axiosApiClient.get<LocationEntity[]>('/locations', {
+    params: { showDisabled },
+  });
   return data;
 };
 
 export const withMapLocationProvider =
-  <P extends object>(Component: React.ComponentType<P>): React.FC<P> =>
+  <P extends object>(
+    Component: React.ComponentType<P>,
+    showDisabled = false
+  ): React.FC<P> =>
   ({ ...props }) => {
     const { data: locations, status } = useQuery(
-      'getLocations',
-      () => getLocations(),
+      ['getLocations', showDisabled],
+      () => getLocations(showDisabled),
       {
-        staleTime: ms('1m'),
+        staleTime: ms('30s'),
       }
     );
     if (status === 'loading') return <Loading fullscreen />;

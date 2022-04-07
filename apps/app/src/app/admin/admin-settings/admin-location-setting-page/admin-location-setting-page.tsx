@@ -34,4 +34,4 @@ export function AdminLocationSettingPage(props: AdminLocationSettingPageProps) {
   );
 }
 
-export default withMapLocationProvider(AdminLocationSettingPage);
+export default withMapLocationProvider(AdminLocationSettingPage, true);

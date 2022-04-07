@@ -33,4 +33,4 @@ export function AdminAreaSettingsPage() {
   );
 }
 
-export default withMapLocationProvider(AdminAreaSettingsPage);
+export default withMapLocationProvider(AdminAreaSettingsPage, true);
