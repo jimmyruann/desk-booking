@@ -26,14 +26,15 @@ model User {
 }
 
 model Location {
-  id               Int    @id @default(autoincrement())
-  locationId       String @unique
+  id               Int     @id @default(autoincrement())
+  locationId       String  @unique
   displayName      String
   timeZone         String
   mapUrl           String
-  capacity         Int    @default(100)
-  allowBookingFrom Int    @default(0)
-  allowBookingTill Int    @default(1439)
+  capacity         Int     @default(100)
+  allowBookingFrom Int     @default(0)
+  allowBookingTill Int     @default(1439)
+  disabled         Boolean @default(false)
   Area             Area[]
 }
 

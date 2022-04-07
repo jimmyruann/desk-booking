@@ -26,6 +26,9 @@ export class LocationEntity implements Location {
   @ApiProperty({ default: 1439 })
   allowBookingTill: number;
 
+  @ApiProperty({ default: false })
+  disabled: boolean;
+
   constructor(partial: Partial<LocationEntity>) {
     Object.assign(this, partial);
   }
