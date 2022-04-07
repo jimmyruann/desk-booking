@@ -3,7 +3,7 @@ import { useForm } from '@mantine/hooks';
 import { Link } from 'react-router-dom';
 import validator from 'validator';
 import { useAuth } from '../../../shared/context/Authentication.context';
-import AuthFormLayouts from '../components/AuthFormLayouts';
+import AuthFormLayouts from '../components/auth-form-layout';
 import { LoginForm } from './components/login-form';
 
 /* eslint-disable-next-line */
