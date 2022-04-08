@@ -1,4 +1,5 @@
-import { Button, createStyles, SimpleGrid } from '@mantine/core';
+import { AreaEntity } from '@desk-booking/data';
+import { Button, createStyles, Group, Select, SimpleGrid } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 
 const useStyles = createStyles((theme) => ({
@@ -9,49 +10,70 @@ const useStyles = createStyles((theme) => ({
 
 /* eslint-disable-next-line */
 export interface BookingControlProps {
-  dateHook: [Date, (date: Date) => void];
+  areasData: {
+    allowed: AreaEntity[];
+    notAllowed: AreaEntity[];
+  };
+  useHtmlId: () => [string, (htmlId: string) => void];
+  useDate: () => [Date, (date: Date) => void];
   handleSubmit: () => void;
   disableButton: boolean;
 }
 
 export function BookingControl({
-  dateHook,
+  areasData,
+  useHtmlId,
+  useDate,
   handleSubmit,
   disableButton,
 }: BookingControlProps) {
   const { classes } = useStyles();
-  const [date, setDate] = dateHook;
+  const [htmlId, setHtmlId] = useHtmlId();
+  const [date, setDate] = useDate();
 
   return (
-    <SimpleGrid
-      cols={2}
-      sx={() => ({
-        alignItems: 'end',
-      })}
-    >
-      <DatePicker
-        label="Pick Date"
-        value={date}
-        onChange={setDate}
-        minDate={new Date()}
+    <Group grow direction="column" spacing="sm">
+      <Select
+        data={areasData.allowed.map((area) => ({
+          label: area.displayName,
+          value: area.htmlId,
+        }))}
+        value={htmlId}
+        onChange={setHtmlId}
+        label="Select Area"
         required
-        excludeDate={(date) => date.getDay() === 0 || date.getDay() === 6}
-        firstDayOfWeek="sunday"
-        className={classes.datePicker}
-        allowFreeInput
-        clearable={false}
-        data-cy="selectDate"
       />
-      <Button
-        color="teal"
-        onClick={handleSubmit}
-        disabled={disableButton}
-        fullWidth
-        id="submitBookings"
+      <SimpleGrid
+        cols={2}
+        sx={() => ({
+          alignItems: 'end',
+        })}
+        data-testid="bookingControls"
       >
-        Confirm & Book
-      </Button>
-    </SimpleGrid>
+        <DatePicker
+          label="Pick Date"
+          value={date}
+          onChange={setDate}
+          minDate={new Date()}
+          required
+          excludeDate={(date) => date.getDay() === 0 || date.getDay() === 6}
+          firstDayOfWeek="sunday"
+          className={classes.datePicker}
+          allowFreeInput
+          clearable={false}
+          data-cy="selectDate"
+        />
+        <Button
+          color="teal"
+          onClick={handleSubmit}
+          disabled={disableButton}
+          fullWidth
+          id="submitBookings"
+        >
+          Confirm & Book
+        </Button>
+      </SimpleGrid>
+    </Group>
   );
 }
 

@@ -29,7 +29,6 @@ export class AuthController {
   login(
     @User() user: Express.User,
     @Session() session: SessionData,
-    @Req() req: Request,
     @Res() res: Response
   ) {
     // By default, nestjs will create a req.user
@@ -40,11 +39,16 @@ export class AuthController {
   }
 
   @All('logout')
-  async logout(@Req() req: Request, @Res() res: Response) {
+  logout(@Req() req: Request, @Res() res: Response) {
     req.session.destroy(() => null);
-    res.status(HttpStatus.OK).clearCookie(environment.appSessionName, {
-      maxAge: 0,
-    });
+    res
+      .status(HttpStatus.OK)
+      .clearCookie(environment.appSessionName, {
+        maxAge: 0,
+      })
+      .json({
+        message: 'You have logged out.',
+      });
   }
 
   @ApiCreatedResponse({ type: UserEntity })

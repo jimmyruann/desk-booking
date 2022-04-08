@@ -1,7 +1,10 @@
-import { Card, Container, createStyles } from '@mantine/core';
+import { Box, Container, createStyles, Paper } from '@mantine/core';
 import React from 'react';
 
 const useStyles = createStyles((theme) => ({
+  box: {
+    backgroundColor: theme.colors.gray[0],
+  },
   container: {
     width: '100%',
     height: '100vh',
@@ -9,9 +12,7 @@ const useStyles = createStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  card: {
-    width: '400px',
-  },
+  paper: { width: 400 },
 }));
 
 export const AuthFormLayouts = ({
@@ -22,11 +23,13 @@ export const AuthFormLayouts = ({
   const { classes } = useStyles();
 
   return (
-    <Container className={classes.container}>
-      <Card shadow="sm" p="xl" withBorder className={classes.card}>
-        {children}
-      </Card>
-    </Container>
+    <Box className={classes.box}>
+      <Container className={classes.container}>
+        <Paper shadow="sm" p="xl" className={classes.paper}>
+          {children}
+        </Paper>
+      </Container>
+    </Box>
   );
 };
 

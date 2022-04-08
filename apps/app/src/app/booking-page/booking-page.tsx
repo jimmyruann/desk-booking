@@ -21,17 +21,35 @@ import { useMapLocation } from '../../shared/context/MapLocation.context';
 // import { useUserLocation } from '../../shared/context/UserLocation';
 import { mergeTime } from '../../shared/utils/time';
 import BookingControl from './components/booking-control/booking-control';
-import InfoBox from './components/info-box/info-box';
 import TabContainer from './components/tabs/tab-container';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
+const filterAreaBookingStatus = (areas: AreaEntity[]) => {
+  areas = areas.sort((a, b) =>
+    a.displayName.localeCompare(b.displayName, undefined, { numeric: true })
+  );
+
+  const allowed: AreaEntity[] = [];
+  const notAllowed: AreaEntity[] = [];
+
+  for (let i = 0; i < areas.length; i++) {
+    const area = areas[i];
+    area.allowBooking ? allowed.push(area) : notAllowed.push(area);
+  }
+
+  return {
+    allowed,
+    notAllowed,
+  };
+};
+
 const getLocationAreas = async (locationId: string) => {
   const { data } = await axiosApiClient.get<AreaEntity[]>('/areas', {
     params: { locationId },
   });
-  return data;
+  return filterAreaBookingStatus(data);
 };
 
 const createBooking = async (values: CreateBookingDto) => {
@@ -42,31 +60,35 @@ const createBooking = async (values: CreateBookingDto) => {
   return data;
 };
 
+const initialStates = {
+  date: new Date(),
+  htmlId: '',
+  availability: [],
+};
+
 function BookingPage() {
   const userLocation = useMapLocation();
   const notifications = useNotifications();
   const queryClient = useQueryClient();
 
-  const [date, setDate] = useState(new Date());
-  const [htmlId, setHtmlId] = useState('');
+  const [date, setDate] = useState(initialStates.date);
+  const [htmlId, setHtmlId] = useState(initialStates.htmlId);
   const [availability, availabilityHandler] = useListState<
     AreaAvailabilityEntity & { checked: boolean }
-  >([]);
+  >(initialStates.availability);
 
+  // Reset state when location changes
   useEffect(() => {
-    // reset when location changes
-    setHtmlId('');
-    setDate(new Date());
-    availabilityHandler.setState([]);
+    setDate(initialStates.date);
+    setHtmlId(initialStates.htmlId);
+    availabilityHandler.setState(initialStates.availability);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLocation.currentLocation]);
 
-  const { data: locationAreasData, status: locationAreasStatus } = useQuery(
+  const areasQuery = useQuery(
     ['locationAreas', userLocation.currentLocation.locationId],
     () => getLocationAreas(userLocation.currentLocation.locationId),
-    {
-      staleTime: ms('5m'),
-    }
+    { staleTime: ms('5m') }
   );
 
   const createBookingMutation = useMutation(createBooking, {
@@ -90,7 +112,7 @@ function BookingPage() {
     },
   });
 
-  const handleMakeBooking = () => {
+  const handleSubmit = () => {
     const checkedTime = availability
       .map(
         (curr) =>
@@ -107,8 +129,8 @@ function BookingPage() {
     });
   };
 
-  if (locationAreasStatus === 'loading') return <Loading />;
-  if (locationAreasStatus === 'error')
+  if (areasQuery.status === 'loading') return <Loading />;
+  if (areasQuery.status === 'error')
     return <div>Unable to get Location areas</div>;
 
   return (
@@ -118,18 +140,16 @@ function BookingPage() {
         mapContextProps={{
           currentId: htmlId,
           setCurrentId: setHtmlId,
-          disabledIds: locationAreasData
-            .filter((locationArea) => !locationArea.allowBooking)
-            .map((locationArea) => locationArea.htmlId),
+          disabledIds: areasQuery.data.notAllowed.map((area) => area.htmlId),
           unavailableIds: [],
         }}
       >
-        <InfoBox htmlId={htmlId} />
-        <br />
         <Box>
           <BookingControl
-            dateHook={[date, setDate]}
-            handleSubmit={handleMakeBooking}
+            areasData={areasQuery.data}
+            useHtmlId={() => [htmlId, setHtmlId]}
+            useDate={() => [date, setDate]}
+            handleSubmit={handleSubmit}
             disableButton={
               !!(
                 createBookingMutation.isLoading ||

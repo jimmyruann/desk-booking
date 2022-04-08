@@ -1,55 +1,42 @@
 import {
   Button,
-  createStyles,
   Group,
   InputWrapper,
-  LoadingOverlay,
+  Loader,
   PasswordInput,
   Space,
   TextInput,
 } from '@mantine/core';
-import { UseForm } from '@mantine/hooks/lib/use-form/use-form';
-import { useState } from 'react';
+import { UseFormReturnType } from '@mantine/form/lib/use-form';
 import { HiFingerPrint, HiLockClosed, HiOutlineLogin } from 'react-icons/hi';
 
-/* eslint-disable-next-line */
-interface LoginCred {
+export interface LoginCred {
   email: string;
   password: string;
 }
 
 export interface LoginFormProps {
   handleLogin: (loginCred: LoginCred) => void;
-  form: UseForm<LoginCred>;
+  form: UseFormReturnType<LoginCred>;
+  status: 'error' | 'loading' | 'success' | 'idle';
 }
 
-const useStyles = createStyles((theme) => ({
-  input: {
-    width: '100%',
-  },
-}));
-
-export function LoginForm({ form, handleLogin }: LoginFormProps) {
-  const { classes } = useStyles();
-  const [loading, setLoading] = useState(false);
-
-  const handleFormSubmit = (loginCred: typeof form['values']) => {
-    setLoading(true);
-    setTimeout(() => {
-      handleLogin(loginCred);
-      setLoading(false);
-    }, 1500);
-  };
-
+export function LoginForm({ form, handleLogin, status }: LoginFormProps) {
   return (
     <form
-      onSubmit={form.onSubmit(handleFormSubmit)}
+      onSubmit={form.onSubmit((loginCred) => handleLogin(loginCred))}
       style={{ position: 'relative' }}
       name="loginForm"
+      data-testid="loginForm"
     >
-      <LoadingOverlay visible={loading} />
       <Group position="center" direction="column" spacing="xs">
-        <InputWrapper required label="Email" className={classes.input}>
+        <InputWrapper
+          required
+          label="Email"
+          sx={() => ({
+            width: '100%',
+          })}
+        >
           <TextInput
             icon={<HiFingerPrint size={18} />}
             placeholder="Email"
@@ -59,7 +46,13 @@ export function LoginForm({ form, handleLogin }: LoginFormProps) {
             {...form.getInputProps('email')}
           />
         </InputWrapper>
-        <InputWrapper required label="Password" className={classes.input}>
+        <InputWrapper
+          required
+          label="Password"
+          sx={() => ({
+            width: '100%',
+          })}
+        >
           <PasswordInput
             icon={<HiLockClosed size={18} />}
             placeholder="Password"
@@ -74,8 +67,9 @@ export function LoginForm({ form, handleLogin }: LoginFormProps) {
           leftIcon={<HiOutlineLogin size={18} />}
           fullWidth
           type="submit"
+          disabled={status === 'loading'}
         >
-          Login
+          {status === 'loading' ? <Loader color="orange" /> : <>Login</>}
         </Button>
       </Group>
     </form>

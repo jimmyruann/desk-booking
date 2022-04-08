@@ -1,40 +1,38 @@
 import { Space, Text } from '@mantine/core';
-import { useForm } from '@mantine/hooks';
+import { useForm, zodResolver } from '@mantine/form';
 import { Link } from 'react-router-dom';
-import validator from 'validator';
+import { z } from 'zod';
 import { useAuth } from '../../../shared/context/Authentication.context';
-import AuthFormLayouts from '../components/AuthFormLayouts';
-import { LoginForm } from './components/login-form';
+import AuthFormLayouts from '../components/auth-form-layout';
+import { LoginCred, LoginForm } from './components/login-form';
 
-/* eslint-disable-next-line */
-export interface LoginPageProps {}
+const formSchema = z.object({
+  email: z.string().email('Email is not valid'),
+  password: z.string(),
+});
 
-export function LoginPage(props: LoginPageProps) {
+export function LoginPage() {
   const auth = useAuth();
   const form = useForm({
+    schema: zodResolver(formSchema),
     initialValues: {
       email: '',
       password: '',
     },
-    validationRules: {
-      email: (value) => validator.isEmail(value),
-      password: (value) => !validator.isEmpty(value),
-    },
-    errorMessages: {
-      email: 'Email is not valid',
-      password: 'Password is required.',
-    },
   });
 
-  const handleLogin = async (loginCred: typeof form['values']) => {
-    const [data, err] = await auth.login(loginCred);
-    if (!data && err) {
-      form.setFieldError('email', err);
-      form.setValues({
-        email: loginCred.email,
-        password: '',
-      });
-    }
+  const handleLogin = (loginCred: LoginCred) => {
+    auth.login.mutate(loginCred, {
+      onError: (error) => {
+        form.reset();
+        form.setFieldError(
+          'email',
+          error.response.data.message ||
+            error.message ||
+            'Something went wrong.'
+        );
+      },
+    });
   };
 
   return (
@@ -43,7 +41,11 @@ export function LoginPage(props: LoginPageProps) {
         DESK BOOKING SERVICE
       </Text>
       <Space h="sm" />
-      <LoginForm form={form} handleLogin={handleLogin} />
+      <LoginForm
+        form={form}
+        handleLogin={handleLogin}
+        status={auth.login.status}
+      />
       <Space h="lg" />
       <Text align="center" color="gray">
         Don't have a account? <Link to="/auth/signup">Sign Up</Link>

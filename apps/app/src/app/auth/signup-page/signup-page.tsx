@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import { z } from 'zod';
 import { axiosApiClient } from '../../../shared/api';
-import AuthFormLayouts from '../components/AuthFormLayouts';
+import AuthFormLayouts from '../components/auth-form-layout';
 import SignUpForm, { SignUpFormValueProps } from './components/signup-form';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
