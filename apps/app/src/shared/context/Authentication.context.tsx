@@ -3,7 +3,7 @@ import { User } from '@prisma/client';
 import { AxiosError } from 'axios';
 import { AxiosAuthRefreshRequestConfig } from 'axios-auth-refresh';
 import React, { useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, UseMutationResult, useQuery } from 'react-query';
 import { axiosApiClient } from '../api';
 // import { useApi } from './ApiClient';
 
@@ -11,10 +11,7 @@ interface AuthenticationContext {
   isLoading: boolean;
   user: Omit<User, 'password'>;
   setUser: (user: User) => void;
-  login: (loginCred: {
-    email: string;
-    password: string;
-  }) => Promise<[boolean, string | null]>;
+  login: UseMutationResult<UserEntity, AxiosError, LoginCredProps, unknown>;
   logout: () => void;
 }
 
@@ -32,9 +29,13 @@ const getUser = async () => {
 };
 
 const loginRequest = async (loginCred: LoginCredProps) => {
-  const { data } = await axiosApiClient.post('/auth/login', loginCred, {
-    skipAuthRefresh: true,
-  } as AxiosAuthRefreshRequestConfig);
+  const { data } = await axiosApiClient.post<UserEntity>(
+    '/auth/login',
+    loginCred,
+    {
+      skipAuthRefresh: true,
+    } as AxiosAuthRefreshRequestConfig
+  );
 
   return data;
 };
@@ -62,11 +63,14 @@ export const AuthenticationProvider = ({
     },
   });
 
-  const loginMutation = useMutation(loginRequest, {
-    onSuccess: (data) => {
-      setUser(data);
-    },
-  });
+  const loginMutation = useMutation<UserEntity, AxiosError, LoginCredProps>(
+    loginRequest,
+    {
+      onSuccess: (data) => {
+        setUser(data);
+      },
+    }
+  );
 
   const logoutMutation = useMutation(logoutRequest, {
     onSettled: () => {
@@ -74,17 +78,17 @@ export const AuthenticationProvider = ({
     },
   });
 
-  const login = async (
-    loginCred: LoginCredProps
-  ): Promise<[boolean, string | null]> => {
-    try {
-      await loginMutation.mutateAsync(loginCred);
-      return [true, null];
-    } catch (error) {
-      const err = error as AxiosError;
-      return [false, err.response.data.message || err.message];
-    }
-  };
+  // const login = async (
+  //   loginCred: LoginCredProps
+  // ): Promise<[boolean, string | null]> => {
+  //   try {
+  //     await loginMutation.mutateAsync(loginCred);
+  //     return [true, null];
+  //   } catch (error) {
+  //     const err = error as AxiosError;
+  //     return [false, err.response.data.message || err.message];
+  //   }
+  // };
 
   return (
     <AuthenticationContext.Provider
@@ -95,7 +99,7 @@ export const AuthenticationProvider = ({
           logoutMutation.isLoading,
         user,
         setUser,
-        login,
+        login: loginMutation,
         logout: () => logoutMutation.mutate(),
       }}
     >
