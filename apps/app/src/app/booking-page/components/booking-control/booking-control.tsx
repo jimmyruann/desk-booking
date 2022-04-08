@@ -28,6 +28,7 @@ export function BookingControl({
       sx={() => ({
         alignItems: 'end',
       })}
+      data-testid="bookingControls"
     >
       <DatePicker
         label="Pick Date"
