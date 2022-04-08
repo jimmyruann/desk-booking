@@ -23,23 +23,3 @@ axiosApiClient.interceptors.response.use((originalResponse) => {
 
   return originalResponse;
 });
-
-// Redirect if 401 or 403
-axiosApiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (axios.isAxiosError(error)) {
-      if (error.response) {
-        if (error.response.status === 401) {
-          if (!window.location.pathname.includes('/auth')) {
-            window.location.replace('/auth/login');
-          }
-        }
-        if (error.response.status === 403) {
-          window.location.replace('/');
-        }
-      }
-    }
-    return Promise.reject(error);
-  }
-);

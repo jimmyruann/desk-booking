@@ -2,15 +2,19 @@ import { UserEntity } from '@desk-booking/data';
 import { User } from '@prisma/client';
 import { AxiosError } from 'axios';
 import { AxiosAuthRefreshRequestConfig } from 'axios-auth-refresh';
-import React, { useState } from 'react';
-import { useMutation, UseMutationResult, useQuery } from 'react-query';
+import React from 'react';
+import {
+  useMutation,
+  UseMutationResult,
+  useQuery,
+  useQueryClient,
+} from 'react-query';
 import { axiosApiClient } from '../api';
 // import { useApi } from './ApiClient';
 
 interface AuthenticationContext {
   isLoading: boolean;
   user: Omit<User, 'password'>;
-  setUser: (user: User) => void;
   login: UseMutationResult<UserEntity, AxiosError, LoginCredProps, unknown>;
   logout: () => void;
 }
@@ -23,7 +27,7 @@ interface LoginCredProps {
   password: string;
 }
 
-const getUser = async () => {
+const getMe = async () => {
   const { data } = await axiosApiClient.get<UserEntity>('/user');
   return data;
 };
@@ -52,55 +56,36 @@ export const AuthenticationProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [user, setUser] = useState<UserEntity | null>(null);
+  const queryClient = useQueryClient();
 
-  const userQuery = useQuery('me', getUser, {
+  const { data: user, status } = useQuery('me', getMe, {
     retry: 0,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
-    onSuccess: (data) => {
-      setUser(data);
-    },
   });
 
   const loginMutation = useMutation<UserEntity, AxiosError, LoginCredProps>(
     loginRequest,
     {
-      onSuccess: (data) => {
-        setUser(data);
+      onSettled: () => {
+        queryClient.invalidateQueries(['me']);
       },
     }
   );
 
   const logoutMutation = useMutation(logoutRequest, {
     onSettled: () => {
-      setUser(null);
+      queryClient.removeQueries(['me']);
     },
   });
-
-  // const login = async (
-  //   loginCred: LoginCredProps
-  // ): Promise<[boolean, string | null]> => {
-  //   try {
-  //     await loginMutation.mutateAsync(loginCred);
-  //     return [true, null];
-  //   } catch (error) {
-  //     const err = error as AxiosError;
-  //     return [false, err.response.data.message || err.message];
-  //   }
-  // };
 
   return (
     <AuthenticationContext.Provider
       value={{
-        isLoading:
-          userQuery.isLoading ||
-          loginMutation.isLoading ||
-          logoutMutation.isLoading,
         user,
-        setUser,
+        isLoading: status === 'loading',
         login: loginMutation,
-        logout: () => logoutMutation.mutate(),
+        logout: logoutMutation.mutate,
       }}
     >
       {children}
