@@ -9,11 +9,17 @@ describe('BookingControl', () => {
 
   it('should render', () => {
     const dateHook = renderHook(() => useState(new Date()));
+    const htmlIdHook = renderHook(() => useState(''));
     const handleSubmit = jest.fn();
 
     const container = render(
       <BookingControl
-        dateHook={dateHook.result.current}
+        areasData={{
+          allowed: [],
+          notAllowed: [],
+        }}
+        useHtmlId={() => htmlIdHook.result.current}
+        useDate={() => dateHook.result.current}
         handleSubmit={handleSubmit}
         disableButton={false}
       />
@@ -24,11 +30,17 @@ describe('BookingControl', () => {
 
   it('should disable button', () => {
     const dateHook = renderHook(() => useState(new Date()));
+    const htmlIdHook = renderHook(() => useState(''));
     const handleSubmit = jest.fn();
 
     const container = render(
       <BookingControl
-        dateHook={dateHook.result.current}
+        areasData={{
+          allowed: [],
+          notAllowed: [],
+        }}
+        useHtmlId={() => htmlIdHook.result.current}
+        useDate={() => dateHook.result.current}
         handleSubmit={handleSubmit}
         disableButton={true}
       />
@@ -40,13 +52,18 @@ describe('BookingControl', () => {
   });
 
   it('should submit', () => {
-    const testDate = new Date();
-    const dateHook = renderHook(() => useState(testDate));
+    const dateHook = renderHook(() => useState(new Date()));
+    const htmlIdHook = renderHook(() => useState(''));
     const handleSubmit = jest.fn();
 
     const container = render(
       <BookingControl
-        dateHook={dateHook.result.current}
+        areasData={{
+          allowed: [],
+          notAllowed: [],
+        }}
+        useHtmlId={() => htmlIdHook.result.current}
+        useDate={() => dateHook.result.current}
         handleSubmit={handleSubmit}
         disableButton={false}
       />
