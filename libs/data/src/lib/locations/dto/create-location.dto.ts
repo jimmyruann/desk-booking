@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Location } from '@prisma/client';
 
-export class CreateLocationDto {
+export class CreateLocationDto implements Omit<Location, 'id'> {
   @ApiProperty()
   locationId: string;
 
@@ -21,4 +22,7 @@ export class CreateLocationDto {
 
   @ApiPropertyOptional({ default: 1439 })
   allowBookingTill: number;
+
+  @ApiProperty({ default: false })
+  disabled: boolean;
 }
