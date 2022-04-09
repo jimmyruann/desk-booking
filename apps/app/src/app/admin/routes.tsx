@@ -1,5 +1,4 @@
 import { RouteObject } from 'react-router';
-import RequireAdmin from '../../shared/guards/RequireAdmin.guard';
 import AdminFeedbackPage from './admin-feedback-page/admin-feedback-page';
 import AdminPage from './admin-page';
 import AdminAreaSettingsPage from './admin-settings/admin-area-settings-page/admin-area-settings-page';
@@ -7,8 +6,6 @@ import AdminLocationSettingPage from './admin-settings/admin-location-setting-pa
 import AdminSettingsPage from './admin-settings/admin-settings-page';
 
 export const adminRoutes: RouteObject = {
-  path: 'admin',
-  element: <RequireAdmin />,
   children: [
     { index: true, element: <AdminPage /> },
     {
