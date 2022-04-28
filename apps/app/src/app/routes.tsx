@@ -8,7 +8,6 @@ import { authRoutes } from './auth/routes';
 import BookingPage from './booking-page/booking-page';
 import FeedbackPage from './feedback-page/feedback-page';
 import MyBookingPage from './my-booking-page/my-booking-page';
-import PeoplePage from './people-page/people-page';
 
 export const appRoutes: RouteObject[] = [
   {
@@ -25,10 +24,6 @@ export const appRoutes: RouteObject[] = [
           {
             index: true,
             element: <BookingPage />,
-          },
-          {
-            path: 'people',
-            element: <PeoplePage />,
           },
           {
             path: 'me',

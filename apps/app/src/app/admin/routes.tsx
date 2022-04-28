@@ -1,13 +1,13 @@
 import { RouteObject } from 'react-router';
 import AdminFeedbackPage from './admin-feedback-page/admin-feedback-page';
-import AdminPage from './admin-page';
-import AdminAreaSettingsPage from './admin-settings/admin-area-settings-page/admin-area-settings-page';
-import AdminLocationSettingPage from './admin-settings/admin-location-setting-page/admin-location-setting-page';
-import AdminSettingsPage from './admin-settings/admin-settings-page';
+import AdminHomePage from './admin-home-page/admin-home-page';
+import AdminAreaSettingsPage from './admin-settings-page/admin-area-settings-page/admin-area-settings-page';
+import AdminLocationSettingPage from './admin-settings-page/admin-location-setting-page/admin-location-setting-page';
+import AdminSettingsPage from './admin-settings-page/admin-settings-page';
 
 export const adminRoutes: RouteObject = {
   children: [
-    { index: true, element: <AdminPage /> },
+    { index: true, element: <AdminHomePage /> },
     {
       path: 'settings',
       children: [

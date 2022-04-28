@@ -10,14 +10,11 @@ const useStyles = createStyles((theme) => ({
 
 /* eslint-disable-next-line */
 export interface BookingControlProps {
-  areasData: {
-    allowed: AreaEntity[];
-    notAllowed: AreaEntity[];
-  };
+  areasData: AreaEntity[];
   useHtmlId: () => [string, (htmlId: string) => void];
   useDate: () => [Date, (date: Date) => void];
   handleSubmit: () => void;
-  disableButton: boolean;
+  disableButton?: boolean;
 }
 
 export function BookingControl({
@@ -34,7 +31,7 @@ export function BookingControl({
   return (
     <Group grow direction="column" spacing="sm">
       <Select
-        data={areasData.allowed.map((area) => ({
+        data={areasData.map((area) => ({
           label: area.displayName,
           value: area.htmlId,
         }))}

@@ -1,5 +1,9 @@
-import { BookingEntity, BookingWithAreaEntity } from '@desk-booking/data';
-import { createStyles, Space, Text } from '@mantine/core';
+// import { BookingEntity, BookingWithAreaEntity } from '@desk-booking/data';
+import {
+  FindAllBookingsResponse,
+  FindOneBookingResponse,
+} from '@desk-booking/data';
+import { Paper, Space } from '@mantine/core';
 import { DateRangePicker } from '@mantine/dates';
 import { useNotifications } from '@mantine/notifications';
 import { AxiosError } from 'axios';
@@ -7,46 +11,38 @@ import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { axiosApiClient } from '../../shared/api';
-import { ServerError } from '../../shared/components/errors/server-error';
-import Loading from '../../shared/components/loading/loading';
 import MyBookingTable from './my-booking-table/my-booking-table';
 
 /* eslint-disable-next-line */
 export interface MyBookingPageProps {}
 
-const useStyles = createStyles((theme) => ({
-  common: {
-    backgroundColor: theme.white,
-    padding: theme.spacing.md,
-    borderRadius: theme.radius.sm,
-    boxShadow: theme.shadows.md,
-  },
-  title: {
-    fontWeight: 700,
-    fontSize: 20,
-  },
-}));
-
-const getBookingWithAreaEntity = async (params: {
+const getMyBookings = async (params: {
   startTime: Date;
   endTime: Date;
+  take?: number;
+  skip?: number;
 }) => {
-  const { data } = await axiosApiClient.get<BookingWithAreaEntity[]>(
-    '/bookings/user/withArea',
-    { params }
-  );
-
-  return data;
-};
-
-const deleteBooking = async (id: number) => {
-  const { data } = await axiosApiClient.delete<BookingEntity>(
-    `/bookings/${id}`
+  const { data } = await axiosApiClient.get<FindAllBookingsResponse>(
+    '/bookings',
+    {
+      params: {
+        ...params,
+        startTime: params.startTime.getTime(),
+        endTime: params.endTime.getTime(),
+      },
+    }
   );
   return data;
 };
 
-export function MyBookingPage(props: MyBookingPageProps) {
+const deleteMyBooking = async (bookingId: number) => {
+  const { data } = await axiosApiClient.delete<FindOneBookingResponse>(
+    `/bookings/${bookingId}`
+  );
+  return data;
+};
+
+export const MyBookingPage = (props: MyBookingPageProps) => {
   const notifications = useNotifications();
   const queryClient = useQueryClient();
 
@@ -55,60 +51,47 @@ export function MyBookingPage(props: MyBookingPageProps) {
     dayjs().endOf('week').toDate(),
   ]);
 
-  const { classes } = useStyles();
-
-  const myBookingsQuery = useQuery(
-    'getBookingWithAreaEntity',
+  const getMyBookingsQuery = useQuery(
+    ['myBookings', dates],
     () =>
-      getBookingWithAreaEntity({
+      getMyBookings({
         startTime: dates[0],
         endTime: dates[1],
       }),
     {
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    }
+  );
+
+  const deleteMyBookingMutation = useMutation(
+    (bookingId: number) => deleteMyBooking(bookingId),
+    {
+      onSuccess: (data) => {
+        notifications.showNotification({
+          color: 'green',
+          title: 'Your booking was canceled',
+          message: `Have a nice day.`,
+        });
+
+        queryClient.invalidateQueries(['myBookings']);
+      },
       onError: (error: AxiosError) => {
         notifications.showNotification({
-          title: 'Something went wrong',
-          message: error.response.data.message || error.message,
+          color: 'red',
+          title: error.response.data.title || 'Unable to cancel your booking.',
+          message:
+            error.response.data.message ||
+            error.message ||
+            'Something went wrong.',
         });
       },
     }
   );
 
-  const deleteBookingMutation = useMutation(deleteBooking, {
-    onSuccess: (data) => {
-      notifications.showNotification({
-        color: 'green',
-        title: 'Your booking was canceled',
-        message: `Have a nice day.`,
-      });
-
-      queryClient.invalidateQueries(['GET_MY_BOOKINGS']);
-    },
-    onError: (error: AxiosError) => {
-      notifications.showNotification({
-        color: 'red',
-        title: 'Unable to cancel your booking.',
-        message:
-          error.response.data.message ||
-          error.message ||
-          'Something went wrong.',
-      });
-    },
-  });
-
-  const handleOnClickDelete = (id: number) => {
-    // eslint-disable-next-line no-restricted-globals
-    if (confirm('Are you sure you want to cancel this booking?')) {
-      deleteBookingMutation.mutate(id);
-    }
-  };
-
-  if (myBookingsQuery.status === 'loading') return <Loading fullscreen />;
-  if (myBookingsQuery.status === 'error') return <ServerError />;
-
   return (
-    <>
-      <div className={classes.common}>
+    <div>
+      <Paper shadow="xs" p="md">
         <DateRangePicker
           label="Find your Bookings"
           placeholder="Pick dates range"
@@ -116,20 +99,18 @@ export function MyBookingPage(props: MyBookingPageProps) {
           onChange={setDates}
           closeCalendarOnChange={false}
         />
-      </div>
-      <Space h="sm" />
-      <div className={classes.common}>
-        <Text className={classes.title}>My Bookings</Text>
-        <Space h="md" />
-        {myBookingsQuery.data && (
-          <MyBookingTable
-            data={myBookingsQuery.data}
-            handleDelete={handleOnClickDelete}
-          />
-        )}
-      </div>
-    </>
+      </Paper>
+      <Space h="md" />
+      <Paper shadow="xs" p="md">
+        <MyBookingTable
+          isLoading={getMyBookingsQuery.isLoading}
+          isError={getMyBookingsQuery.isError}
+          data={getMyBookingsQuery.data}
+          deleteMutation={deleteMyBookingMutation.mutate}
+        />
+      </Paper>
+    </div>
   );
-}
+};
 
 export default MyBookingPage;

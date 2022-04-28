@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Booking } from '@prisma/client';
-import { AreaWithLocationEntity } from '../../areas/entities/areas.entity';
 
 export class BookingEntity implements Booking {
   @ApiProperty()
@@ -25,16 +24,6 @@ export class BookingEntity implements Booking {
   updatedAt: Date;
 
   constructor(partial: Partial<BookingEntity>) {
-    Object.assign(this, partial);
-  }
-}
-
-export class BookingWithAreaEntity extends BookingEntity {
-  @ApiProperty()
-  Area: AreaWithLocationEntity;
-
-  constructor(partial: Partial<BookingWithAreaEntity>) {
-    super(partial);
     Object.assign(this, partial);
   }
 }

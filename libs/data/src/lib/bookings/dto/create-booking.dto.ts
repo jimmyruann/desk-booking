@@ -1,19 +1,44 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { ArrayMinSize, IsArray, IsNotEmpty, Validate } from 'class-validator';
-import { IsBeforeConstraint } from './IsBeforeConstraint';
+import {
+  ArrayMinSize,
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  Min,
+  Validate,
+  ValidateNested,
+  ValidationArguments,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+} from 'class-validator';
 
-class BookingsTime {
-  @ApiProperty()
-  @IsNotEmpty()
-  @Type(() => Date)
-  @Validate(IsBeforeConstraint, ['endTime'])
-  readonly startTime: Date;
+@ValidatorConstraint()
+class IsLessThan implements ValidatorConstraintInterface {
+  validate(propertyValue: number, args: ValidationArguments) {
+    return propertyValue < args.object[args.constraints[0]];
+  }
 
-  @ApiProperty()
-  @IsNotEmpty()
-  @Type(() => Date)
-  readonly endTime: Date;
+  defaultMessage(args: ValidationArguments) {
+    return `"${args.property}" must be less than "${args.constraints[0]}"`;
+  }
+}
+
+export class BookingsTime {
+  @ApiProperty({
+    type: Number,
+  })
+  @IsNumber()
+  @Min(1)
+  @Validate(IsLessThan, ['endTime'])
+  readonly startTime: number;
+
+  @ApiProperty({
+    type: Number,
+  })
+  @IsNumber()
+  @Min(1)
+  readonly endTime: number;
 }
 
 export class CreateBookingDto {
@@ -24,6 +49,7 @@ export class CreateBookingDto {
   @ApiProperty({
     type: () => [BookingsTime],
   })
+  @ValidateNested()
   @IsArray()
   @ArrayMinSize(1)
   @Type(() => BookingsTime)

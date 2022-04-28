@@ -1,16 +1,9 @@
-import { Divider, Space, Text } from '@mantine/core';
-import {
-  useMapLocation,
-  withMapLocationProvider,
-} from '../../../../shared/context/MapLocation.context';
-import AdminLocationChanger from '../../components/admin-location-changer';
+import { Space, Text } from '@mantine/core';
+import { useMapLocation } from '../../../../shared/context/MapLocation.context';
 import AdminPageLayout from '../../components/admin-page-layout';
 import AdminLocationSettingForm from './components/admin-location-setting-form';
 
-/* eslint-disable-next-line */
-export interface AdminLocationSettingPageProps {}
-
-export function AdminLocationSettingPage(props: AdminLocationSettingPageProps) {
+export function AdminLocationSettingPage() {
   const mapLocation = useMapLocation();
   return (
     <AdminPageLayout
@@ -19,8 +12,6 @@ export function AdminLocationSettingPage(props: AdminLocationSettingPageProps) {
         { title: 'Location Settings', href: '/admin/settings/location' },
       ]}
     >
-      <AdminLocationChanger {...mapLocation} />
-      <Divider my="sm" />
       <Text
         sx={(theme) => ({
           fontSize: 24,
@@ -34,4 +25,4 @@ export function AdminLocationSettingPage(props: AdminLocationSettingPageProps) {
   );
 }
 
-export default withMapLocationProvider(AdminLocationSettingPage, true);
+export default AdminLocationSettingPage;

@@ -1,10 +1,10 @@
 import {
   AreaAvailabilityEntity,
   AreaEntity,
-  BookingEntity,
+  BookingResponse,
   CreateBookingDto,
 } from '@desk-booking/data';
-import { Box, Paper, Text } from '@mantine/core';
+import { Box, Grid, Paper } from '@mantine/core';
 import { useListState } from '@mantine/hooks';
 import { useNotifications } from '@mantine/notifications';
 import { AxiosError } from 'axios';
@@ -15,18 +15,16 @@ import ms from 'ms';
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { axiosApiClient } from '../../shared/api';
-import Loading from '../../shared/components/loading/loading';
-import MapLayout from '../../shared/components/map/map-layout';
+import Map from '../../shared/components/map/v2/map';
 import { useMapLocation } from '../../shared/context/MapLocation.context';
-// import { useUserLocation } from '../../shared/context/UserLocation';
-import { mergeTime } from '../../shared/utils/time';
+import { mergeInterval } from '../../shared/utils/merge-interval';
 import BookingControl from './components/booking-control/booking-control';
 import TabContainer from './components/tabs/tab-container';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const filterAreaBookingStatus = (areas: AreaEntity[]) => {
+const filterAreaBookable = (areas: AreaEntity[]) => {
   areas = areas.sort((a, b) =>
     a.displayName.localeCompare(b.displayName, undefined, { numeric: true })
   );
@@ -39,22 +37,19 @@ const filterAreaBookingStatus = (areas: AreaEntity[]) => {
     area.allowBooking ? allowed.push(area) : notAllowed.push(area);
   }
 
-  return {
-    allowed,
-    notAllowed,
-  };
+  return [allowed, notAllowed];
 };
 
 const getLocationAreas = async (locationId: string) => {
   const { data } = await axiosApiClient.get<AreaEntity[]>('/areas', {
     params: { locationId },
   });
-  return filterAreaBookingStatus(data);
+  return data;
 };
 
 const createBooking = async (values: CreateBookingDto) => {
-  const { data } = await axiosApiClient.post<BookingEntity[]>(
-    '/bookings/user',
+  const { data } = await axiosApiClient.post<BookingResponse[]>(
+    '/bookings',
     values
   );
   return data;
@@ -86,7 +81,7 @@ function BookingPage() {
   }, [userLocation.currentLocation]);
 
   const areasQuery = useQuery(
-    ['locationAreas', userLocation.currentLocation.locationId],
+    ['areas', userLocation.currentLocation.locationId],
     () => getLocationAreas(userLocation.currentLocation.locationId),
     { staleTime: ms('5m') }
   );
@@ -96,7 +91,7 @@ function BookingPage() {
       notifications.showNotification({
         color: 'green',
         title: 'Booking Confirmed',
-        message: <Text>You have booked.</Text>,
+        message: 'You have booked.',
       });
     },
     onError: (error: AxiosError) => {
@@ -117,45 +112,44 @@ function BookingPage() {
       .map(
         (curr) =>
           curr.checked && {
-            startTime: curr.startTime,
-            endTime: curr.endTime,
+            startTime: curr.startTime.getTime(),
+            endTime: curr.endTime.getTime(),
           }
       )
       .filter((curr) => !!curr);
 
+    const mergedOverlapping = mergeInterval(checkedTime);
+
     createBookingMutation.mutate({
       htmlId,
-      bookings: mergeTime(checkedTime),
+      bookings: mergedOverlapping,
     });
   };
 
-  if (areasQuery.status === 'loading') return <Loading />;
+  if (areasQuery.status === 'loading') return <div>Loading ...</div>;
   if (areasQuery.status === 'error')
     return <div>Unable to get Location areas</div>;
 
+  const [areaAllowBooking, areaNotAllowBooking] = filterAreaBookable(
+    areasQuery.data
+  );
+
   return (
     <Paper shadow="xs" p="md">
-      <MapLayout
-        locationId={userLocation.currentLocation.locationId}
-        mapContextProps={{
-          currentId: htmlId,
-          setCurrentId: setHtmlId,
-          disabledIds: areasQuery.data.notAllowed.map((area) => area.htmlId),
-          unavailableIds: [],
-        }}
-      >
+      <Grid grow>
+        <Grid.Col md={12} lg={7} xl={7} data-cy="svgMapContainer">
+          <Map
+            locationId={userLocation.currentLocation.locationId}
+            useHtmlId={() => [htmlId, setHtmlId]}
+            disabledIds={areaNotAllowBooking.map((each) => each.htmlId)}
+          />
+        </Grid.Col>
         <Box>
           <BookingControl
-            areasData={areasQuery.data}
+            areasData={areaAllowBooking}
             useHtmlId={() => [htmlId, setHtmlId]}
             useDate={() => [date, setDate]}
             handleSubmit={handleSubmit}
-            disableButton={
-              !!(
-                createBookingMutation.isLoading ||
-                availability.every((value) => !value.checked)
-              )
-            }
           />
           <TabContainer
             date={date}
@@ -164,7 +158,8 @@ function BookingPage() {
             availabilityHook={[availability, availabilityHandler]}
           />
         </Box>
-      </MapLayout>
+        <Grid.Col md={12} lg={5} xl={5}></Grid.Col>
+      </Grid>
     </Paper>
   );
 }

@@ -22,9 +22,8 @@ export class LocationsService {
     });
   }
 
-  async findAll(showDisabled: boolean) {
+  async findAll() {
     return await this.prismaService.location.findMany({
-      where: showDisabled ? {} : { disabled: false },
       orderBy: {
         displayName: 'asc',
       },
