@@ -1,10 +1,10 @@
-import { BookingResponse } from '@desk-booking/data';
+import { FindAllBookingsResponse } from '@desk-booking/data';
 import { Table } from '@mantine/core';
 import AdminBookingViewTableBody from './admin-booking-view-table-body';
 
 interface AdminBookingViewTableProps {
   status: 'idle' | 'error' | 'loading' | 'success';
-  data: BookingResponse[];
+  data: FindAllBookingsResponse;
 }
 
 export const AdminBookingViewTable = ({
@@ -25,7 +25,7 @@ export const AdminBookingViewTable = ({
           <th>End</th>
         </tr>
       </thead>
-      <AdminBookingViewTableBody data={data} />
+      <AdminBookingViewTableBody data={data.data} />
     </Table>
   );
 };

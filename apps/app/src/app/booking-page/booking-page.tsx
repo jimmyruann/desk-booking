@@ -4,7 +4,7 @@ import {
   BookingResponse,
   CreateBookingDto,
 } from '@desk-booking/data';
-import { Box, Grid, Paper } from '@mantine/core';
+import { Alert, Grid, Overlay, Paper, Space } from '@mantine/core';
 import { useListState } from '@mantine/hooks';
 import { useNotifications } from '@mantine/notifications';
 import { AxiosError } from 'axios';
@@ -135,32 +135,54 @@ function BookingPage() {
   );
 
   return (
-    <Paper shadow="xs" p="md">
-      <Grid grow>
-        <Grid.Col md={12} lg={7} xl={7} data-cy="svgMapContainer">
-          <Map
-            locationId={userLocation.currentLocation.locationId}
-            useHtmlId={() => [htmlId, setHtmlId]}
-            disabledIds={areaNotAllowBooking.map((each) => each.htmlId)}
-          />
-        </Grid.Col>
-        <Box>
-          <BookingControl
-            areasData={areaAllowBooking}
-            useHtmlId={() => [htmlId, setHtmlId]}
-            useDate={() => [date, setDate]}
-            handleSubmit={handleSubmit}
-          />
-          <TabContainer
-            date={date}
-            htmlId={htmlId}
-            location={userLocation.currentLocation}
-            availabilityHook={[availability, availabilityHandler]}
-          />
-        </Box>
-        <Grid.Col md={12} lg={5} xl={5}></Grid.Col>
-      </Grid>
-    </Paper>
+    <>
+      {userLocation.currentLocation.disabled && (
+        <>
+          <Alert color="yellow">
+            <b>{userLocation.currentLocation.displayName}</b> is currently not
+            taking any booking. Contact your Admin/HR.
+          </Alert>
+          <Space h="md" />
+        </>
+      )}
+
+      <Paper
+        shadow="xs"
+        p="md"
+        sx={() => ({
+          position: 'relative',
+        })}
+      >
+        <Grid grow>
+          <Grid.Col md={12} lg={7} xl={7} data-cy="svgMapContainer">
+            <Map
+              locationId={userLocation.currentLocation.locationId}
+              useHtmlId={() => [htmlId, setHtmlId]}
+              disabledIds={areaNotAllowBooking.map((each) => each.htmlId)}
+            />
+          </Grid.Col>
+
+          <Grid.Col md={12} lg={5} xl={5}>
+            <BookingControl
+              areasData={areaAllowBooking}
+              useHtmlId={() => [htmlId, setHtmlId]}
+              useDate={() => [date, setDate]}
+              handleSubmit={handleSubmit}
+            />
+            <TabContainer
+              date={date}
+              htmlId={htmlId}
+              location={userLocation.currentLocation}
+              availabilityHook={[availability, availabilityHandler]}
+            />
+          </Grid.Col>
+        </Grid>
+
+        {userLocation.currentLocation.disabled && (
+          <Overlay opacity={0.1} color="#000" zIndex={10} blur={1} />
+        )}
+      </Paper>
+    </>
   );
 }
 

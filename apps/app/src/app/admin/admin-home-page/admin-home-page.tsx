@@ -34,7 +34,7 @@ const getMyBookings = async (params: {
 export const AdminHomePage = () => {
   const userLocation = useMapLocation();
   const [dates, setDates] = useState<[Date, Date]>([
-    dayjs().startOf('day').toDate(),
+    dayjs().startOf('week').toDate(),
     dayjs().endOf('week').toDate(),
   ]);
 
@@ -61,7 +61,7 @@ export const AdminHomePage = () => {
 
         <AdminBookingViewTable
           status={getBookingsQuery.status}
-          data={getBookingsQuery.data.data}
+          data={getBookingsQuery.data}
         />
       </Group>
     </AdminPageLayout>
