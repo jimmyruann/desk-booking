@@ -11,12 +11,14 @@ import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { axiosApiClient } from '../../shared/api';
+import { useAuth } from '../../shared/context/Authentication.context';
 import MyBookingTable from './my-booking-table/my-booking-table';
 
 /* eslint-disable-next-line */
 export interface MyBookingPageProps {}
 
 const getMyBookings = async (params: {
+  userId: number;
   startTime: Date;
   endTime: Date;
   take?: number;
@@ -43,6 +45,7 @@ const deleteMyBooking = async (bookingId: number) => {
 };
 
 export const MyBookingPage = (props: MyBookingPageProps) => {
+  const auth = useAuth();
   const notifications = useNotifications();
   const queryClient = useQueryClient();
 
@@ -55,6 +58,7 @@ export const MyBookingPage = (props: MyBookingPageProps) => {
     ['myBookings', dates],
     () =>
       getMyBookings({
+        userId: auth.user.id,
         startTime: dates[0],
         endTime: dates[1],
       }),
