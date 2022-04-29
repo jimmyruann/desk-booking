@@ -275,6 +275,16 @@ export class BookingsService {
       )
     );
 
-    return all.every((each) => !(each.length / numberOfSeats < capacity));
+    console.log(
+      all,
+      all.every((each) => {
+        console.log((each.length / numberOfSeats) * 100, capacity);
+        return !((each.length / numberOfSeats) * 100 < capacity);
+      })
+    );
+
+    return all.every(
+      (each) => !((each.length / numberOfSeats) * 100 < capacity)
+    );
   }
 }
