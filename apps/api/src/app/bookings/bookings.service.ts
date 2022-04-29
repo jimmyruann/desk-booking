@@ -148,19 +148,21 @@ export class BookingsService {
       );
     }
 
-    const hasReachedCapacity = await this.hasReachedCapacity({
-      capacity: area.Location.capacity,
-      location: area.Location,
-      bookingTime,
-    });
-    if (hasReachedCapacity) {
-      throw new HttpException(
-        {
-          title: `Capacity Reached`,
-          message: `Unable to book at this location anymore. Capacity limit reached.`,
-        },
-        HttpStatus.BAD_REQUEST
-      );
+    if (area.AreaType.name === 'desk') {
+      const hasReachedCapacity = await this.hasReachedCapacity({
+        capacity: area.Location.capacity,
+        location: area.Location,
+        bookingTime,
+      });
+      if (hasReachedCapacity) {
+        throw new HttpException(
+          {
+            title: `Capacity Reached`,
+            message: `Unable to book at this location anymore. Capacity limit reached.`,
+          },
+          HttpStatus.BAD_REQUEST
+        );
+      }
     }
 
     return await this.prisma.$transaction(
@@ -273,14 +275,6 @@ export class BookingsService {
           },
         })
       )
-    );
-
-    console.log(
-      all,
-      all.every((each) => {
-        console.log((each.length / numberOfSeats) * 100, capacity);
-        return !((each.length / numberOfSeats) * 100 < capacity);
-      })
     );
 
     return all.every(
