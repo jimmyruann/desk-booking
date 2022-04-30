@@ -7,6 +7,7 @@ This is a fullstack web application built with:
 This fullstack application is best to run on container services (Docker, Kubernetes).
 
 Staging: https://staging.hotdesk.dynatrace.com/ (email: admin@example.com, password: password)
+
 Prod: https://hotdesk.dynatrace.com/
 
 ## Get started
