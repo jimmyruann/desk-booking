@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Location } from '@prisma/client';
+import { IsNumber, Max, Min } from 'class-validator';
 
 export class CreateLocationDto implements Omit<Location, 'id'> {
   @ApiProperty()
@@ -14,7 +15,10 @@ export class CreateLocationDto implements Omit<Location, 'id'> {
   @ApiProperty()
   mapUrl: string;
 
-  @ApiPropertyOptional({ default: 100 })
+  @ApiPropertyOptional({ default: 100, minimum: 0, maximum: 100 })
+  @Min(0)
+  @Max(100)
+  @IsNumber()
   capacity: number;
 
   @ApiPropertyOptional({ default: 0 })

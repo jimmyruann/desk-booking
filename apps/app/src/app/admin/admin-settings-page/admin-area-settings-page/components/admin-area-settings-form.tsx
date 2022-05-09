@@ -1,26 +1,24 @@
-import { AreaEntity, AreaTypeEntity, LocationEntity } from '@desk-booking/data';
+import { AreaEntity, AreaTypeEntity } from '@desk-booking/data';
 import {
   Button,
   Checkbox,
   Group,
   Input,
   InputWrapper,
-  NumberInput,
   TextInput,
 } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import { useNotifications } from '@mantine/notifications';
 import { AxiosError } from 'axios';
+import { useEffect } from 'react';
 import { HiChevronDown } from 'react-icons/hi';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useMutation, useQueries, useQueryClient } from 'react-query';
 import { z } from 'zod';
 import { axiosApiClient } from '../../../../../shared/api';
-import Loading from '../../../../../shared/components/loading/loading';
+import { useMapLocation } from '../../../../../shared/context/MapLocation.context';
 
 interface AdminAreaSettingsFormProps {
   htmlId: string;
-  locations: LocationEntity[];
-  currentLocation: LocationEntity;
 }
 
 const getAreaData = async (htmlId: string) => {
@@ -50,57 +48,44 @@ const areaSettingFormSchema = z.object({
   allowBooking: z.boolean(),
 });
 
+const initialValues = {
+  id: 0,
+  locationId: 0,
+  htmlId: '',
+  displayName: '',
+  areaTypeId: 0,
+  allowBooking: false,
+};
+
 export const AdminAreaSettingsForm = ({
   htmlId,
-  locations,
-  currentLocation,
 }: AdminAreaSettingsFormProps) => {
   const notifications = useNotifications();
   const queryClient = useQueryClient();
+  const userLocation = useMapLocation();
+
   const form = useForm<AreaEntity>({
     schema: zodResolver(areaSettingFormSchema),
-    initialValues: {
-      id: 0,
-      htmlId: '',
-      displayName: '',
-      locationId: 0,
-      areaTypeId: 0,
-      allowBooking: true,
-    },
+    initialValues,
   });
 
-  const { data: areaData, status: areaDataStatus } = useQuery(
-    ['area', htmlId],
-    () => getAreaData(htmlId),
-    {
-      onSuccess: (areaData) => {
-        form.setValues(areaData);
-      },
-    }
-  );
-
-  const { data: areaTypesData, status: areaTypesDataStatus } = useQuery(
-    'areaTypes',
-    () => getAreaTypes()
-  );
+  useEffect(() => {
+    form.setValues(initialValues);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userLocation.currentLocation]);
 
   const updateAreaSettingMutation = useMutation(
     (values: AreaEntity) => updateAreaData(values),
     {
       onSuccess: (data) => {
-        form.setValues({
-          ...data,
-        });
+        form.setValues(data);
         notifications.showNotification({
           color: 'green',
           title: 'Success',
           message: `Updated area id: ${data.id} (${data.displayName})`,
         });
 
-        queryClient.invalidateQueries([
-          'locationAreas',
-          currentLocation.locationId,
-        ]);
+        queryClient.invalidateQueries(['locations']);
       },
       onError: (error: AxiosError) => {
         notifications.showNotification({
@@ -115,39 +100,33 @@ export const AdminAreaSettingsForm = ({
     }
   );
 
-  if (areaDataStatus === 'loading' || areaTypesDataStatus === 'loading')
-    return <Loading />;
-  if (areaDataStatus === 'error' || areaTypesDataStatus === 'error')
-    return <div>Something went wrong</div>;
+  const queries = useQueries([
+    { queryKey: 'areaTypes', queryFn: getAreaTypes },
+    {
+      queryKey: ['area', htmlId],
+      queryFn: () => getAreaData(htmlId),
+      onSuccess: (area: AreaEntity) => form.setValues(area),
+    },
+  ]);
+
+  const isLoading = queries.some((query) => query.isLoading);
+  const isError = queries.some((query) => query.isError);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error...</div>;
+
+  const areaTypes = queries[0].data;
+  const area = queries[1].data;
 
   return (
     <form
-      onSubmit={form.onSubmit((values) =>
-        updateAreaSettingMutation.mutate(values)
-      )}
+      onSubmit={form.onSubmit((values) => {
+        console.log(values);
+        updateAreaSettingMutation.mutate(values);
+      })}
       data-testid="adminAreaSettingsForm"
     >
       <Group direction="column" grow>
-        <InputWrapper label="ID" required aria-disabled>
-          <NumberInput name="id" disabled {...form.getInputProps('id')} />
-        </InputWrapper>
-
-        <InputWrapper label="Location" required aria-disabled>
-          <Input
-            name="locationId"
-            component="select"
-            rightSection={<HiChevronDown />}
-            disabled
-            {...form.getInputProps('locationId')}
-          >
-            {locations.map((location) => (
-              <option value={location.id} key={location.id}>
-                {location.displayName}
-              </option>
-            ))}
-          </Input>
-        </InputWrapper>
-
         <InputWrapper label="HTML ID" required>
           <TextInput name="htmlId" {...form.getInputProps('htmlId')} />
         </InputWrapper>
@@ -166,7 +145,7 @@ export const AdminAreaSettingsForm = ({
             rightSection={<HiChevronDown />}
             {...form.getInputProps('areaTypeId')}
           >
-            {areaTypesData.map((areaType) => (
+            {areaTypes.map((areaType) => (
               <option value={areaType.id} key={areaType.id}>
                 {areaType.name.toUpperCase()}
               </option>
@@ -186,7 +165,10 @@ export const AdminAreaSettingsForm = ({
           uppercase
           fullWidth
           type="submit"
-          disabled={JSON.stringify(areaData) === JSON.stringify(form.values)}
+          disabled={
+            JSON.stringify(area) === JSON.stringify(form.values) ||
+            JSON.stringify(initialValues) === JSON.stringify(form.values)
+          }
         >
           Update Record
         </Button>

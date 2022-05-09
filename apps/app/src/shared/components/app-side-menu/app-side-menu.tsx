@@ -35,7 +35,7 @@ const navRoute: AppSideMenuItemProps[] = [
     initiallyOpened: false,
     links: [
       { label: 'Availabilities', link: '/' },
-      { label: 'My Bookings', link: '/mybooking' },
+      { label: 'My Bookings', link: '/bookings/me' },
     ],
   },
   {

@@ -12,13 +12,11 @@ import {
   Param,
   Patch,
   Post,
-  Query,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiQuery,
 } from '@nestjs/swagger';
 import { UserRole } from '@prisma/client';
 import { Roles } from '../../auth/decorator/roles.decorator';
@@ -48,13 +46,8 @@ export class LocationsController {
   @Get()
   @ApiOperation({ summary: '[USER, ADMIN] Find all locations' })
   @ApiOkResponse({ type: [LocationEntity] })
-  @ApiQuery({
-    name: 'showDisabled',
-    type: Boolean,
-    required: false,
-  })
-  async findAll(@Query('showDisabled') showDisabled: boolean) {
-    const locations = await this.locationsService.findAll(showDisabled);
+  async findAll() {
+    const locations = await this.locationsService.findAll();
     return locations.map((location) => new LocationEntity(location));
   }
 

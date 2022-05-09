@@ -1,5 +1,7 @@
-import { RouteObject } from 'react-router';
+import { Navigate, RouteObject } from 'react-router';
 import NotFoundError from '../shared/components/errors/not-found-error';
+import RedirectAuth from '../shared/guards/RedirectAuth.guard';
+import RequireAdmin from '../shared/guards/RequireAdmin.guard';
 import RequireAuth from '../shared/guards/RequireAuth.guard';
 import { adminRoutes } from './admin/routes';
 import { authRoutes } from './auth/routes';
@@ -14,20 +16,37 @@ export const appRoutes: RouteObject[] = [
     children: [
       {
         index: true,
-        element: <BookingPage />,
+        element: <Navigate to="/bookings" replace />,
       },
       {
-        path: 'mybooking',
-        element: <MyBookingPage />,
+        path: 'bookings',
+        children: [
+          {
+            index: true,
+            element: <BookingPage />,
+          },
+          {
+            path: 'me',
+            element: <MyBookingPage />,
+          },
+        ],
       },
       {
         path: 'feedback',
         element: <FeedbackPage />,
       },
-      adminRoutes,
+      {
+        path: 'admin',
+        element: <RequireAdmin />,
+        children: adminRoutes.children,
+      },
     ],
   },
-  authRoutes,
+  {
+    path: '/auth',
+    element: <RedirectAuth />,
+    children: authRoutes.children,
+  },
   {
     path: '*',
     element: <NotFoundError />,
