@@ -1,7 +1,7 @@
 import {
   CreateFeedbackDto,
   FeedbackEntity,
-  FindOneParams,
+  FindOneStringParams,
 } from '@desk-booking/data';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import {
@@ -43,7 +43,7 @@ export class FeedbackController {
   @Get(':id')
   @ApiOperation({ summary: '[ADMIN] Find one feedback' })
   @ApiOkResponse({ type: FeedbackEntity })
-  async findOne(@Param() { id }: FindOneParams) {
+  async findOne(@Param() { id }: FindOneStringParams) {
     return new FeedbackEntity(await this.feedbackService.findOne(+id));
   }
 
