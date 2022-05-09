@@ -104,6 +104,7 @@ function BookingPage() {
     onSettled: () => {
       queryClient.invalidateQueries(['GET_AREA_AVAILABILITIES']);
       queryClient.invalidateQueries(['GET_AREA_BOOKINGS']);
+      queryClient.invalidateQueries(['myBookings']);
     },
   });
 

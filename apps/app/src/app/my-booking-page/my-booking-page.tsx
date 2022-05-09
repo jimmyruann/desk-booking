@@ -54,18 +54,12 @@ export const MyBookingPage = (props: MyBookingPageProps) => {
     dayjs().endOf('week').toDate(),
   ]);
 
-  const getMyBookingsQuery = useQuery(
-    ['myBookings', dates],
-    () =>
-      getMyBookings({
-        userId: auth.user.id,
-        startTime: dates[0],
-        endTime: dates[1],
-      }),
-    {
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
-    }
+  const getMyBookingsQuery = useQuery(['myBookings', dates], () =>
+    getMyBookings({
+      userId: auth.user.id,
+      startTime: dates[0],
+      endTime: dates[1],
+    })
   );
 
   const deleteMyBookingMutation = useMutation(
